@@ -96,12 +96,19 @@ ezpay/
 ## Thứ tự build (8 phases)
 
 - [x] **Phase 1** — Scaffold + Design system ✅
-- [ ] **Phase 2** — Onboarding + PIN
-  - Màn đăng nhập (email OTP, SĐT disabled)
-  - Tạo PIN → Xác nhận PIN
-  - Recovery (passkey, SĐT disabled)
-  - Nhập PIN + trạng thái khóa (4b)
-- [ ] **Phase 3** — 4 màn chính (Home Gửi, Home Nhận, Đổi tiền, Menu)
+- [x] **Phase 2** — Onboarding + PIN ✅
+  - Login · CreatePin (create+confirm) · Recovery · EnterPin · PinLocked
+  - `src/nav.jsx` NavContext, flat state router trong App.jsx
+  - `src/components/Numpad.jsx` · `src/components/PinDots.jsx`
+  - PIN → localStorage `ez_pin`, khóa 30 phút sau 4 lần sai
+- [x] **Phase 3** — 4 màn chính + NavBar ✅
+  - `src/components/NavBar.jsx` — 4 tabs, active highlight
+  - HomeSend: balance + token list (USDC/ARC/ETH) + action grid
+  - HomeReceive: QR code (qrcode.react) + action grid
+  - Swap: from/to token box, ↕ button, numpad với comma
+  - MenuScreen: balance + Nạp/Rút + 4 menu items
+  - `src/data.js` mock data · `src/icons.jsx` shared SVGs
+  - **Stub chưa kết nối**: action buttons (Danh bạ/Quét QR/Dán địa chỉ), Swap OK, menu items nav
 - [ ] **Phase 4** — Luồng Gửi (Nhập số tiền + memo → Xác nhận → Biên lai)
 - [ ] **Phase 5** — Custom QR (Tạo → Hiển thị → QR đã lưu)
 - [ ] **Phase 6** — Danh bạ + Lịch sử giao dịch
@@ -116,6 +123,8 @@ ezpay/
 - 2026-06-16: Monorepo (`frontend + functions/` trong cùng repo) — reason: Cloudflare Pages tự nhận `functions/` làm Workers, deploy 1 lần xong cả hai
 - 2026-06-16: Font Roboto Condensed, 6 màu locked (#16A34A / #000 / #CCCCCC / #FFF / #DC2626 / #F59E0B) — không thêm màu nào khác
 - 2026-06-16: Xanh dương #185FA5 trong spec cũ → bỏ, thay bằng #16A34A cho tất cả button chính
+- 2026-06-17: qrcode.react thêm vào dependencies cho QR display trong HomeReceive
+- 2026-06-17: Tất cả wallet data Phase 2–3 dùng mock (MOCK_VND, MOCK_ADDR trong src/data.js) — chưa kết nối Circle API
 
 ---
 
