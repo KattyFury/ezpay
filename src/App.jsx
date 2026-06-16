@@ -6,8 +6,15 @@ import Recovery from './screens/Recovery'
 import EnterPin from './screens/EnterPin'
 import PinLocked from './screens/PinLocked'
 import HomeSend from './screens/HomeSend'
+import HomeReceive from './screens/HomeReceive'
+import Swap from './screens/Swap'
+import MenuScreen from './screens/MenuScreen'
 
-const SCREENS = { Login, CreatePin, Recovery, EnterPin, PinLocked, HomeSend }
+const SCREENS = {
+  Login, CreatePin, Recovery,
+  EnterPin, PinLocked,
+  HomeSend, HomeReceive, Swap, MenuScreen,
+}
 
 export default function App() {
   const [nav, setNav] = useState(() => ({
