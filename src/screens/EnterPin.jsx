@@ -1,0 +1,94 @@
+import { useState, useEffect } from 'react'
+import { useNav } from '../nav'
+import Numpad from '../components/Numpad'
+import PinDots from '../components/PinDots'
+
+function LockIcon() {
+  return (
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+      <rect x="5" y="11" width="14" height="10" rx="2" fill="var(--color-black)" />
+      <path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="var(--color-black)" strokeWidth="2" fill="none" />
+    </svg>
+  )
+}
+
+const MAX_ATTEMPTS = 4
+
+export default function EnterPin() {
+  const { navigate } = useNav()
+  const [input, setInput] = useState('')
+  const [error, setError] = useState(false)
+
+  useEffect(() => {
+    const lockUntil = parseInt(localStorage.getItem('ez_locked_until') || '0')
+    if (lockUntil > Date.now()) navigate('PinLocked')
+  }, [])
+
+  function handleKey(key) {
+    if (error) return
+    if (key === 'BACK') {
+      setInput(p => p.slice(0, -1))
+      return
+    }
+    if (input.length >= 4) return
+
+    const next = input + key
+    setInput(next)
+
+    if (next.length < 4) return
+
+    const saved = localStorage.getItem('ez_pin')
+    if (next === saved) {
+      localStorage.removeItem('ez_attempts')
+      setTimeout(() => navigate('HomeSend'), 150)
+    } else {
+      const attempts = parseInt(localStorage.getItem('ez_attempts') || '0') + 1
+      localStorage.setItem('ez_attempts', String(attempts))
+      setError(true)
+      setTimeout(() => {
+        if (attempts >= MAX_ATTEMPTS) {
+          const lockUntil = Date.now() + 30 * 60 * 1000
+          localStorage.setItem('ez_locked_until', String(lockUntil))
+          navigate('PinLocked')
+        } else {
+          setError(false)
+          setInput('')
+        }
+      }, 600)
+    }
+  }
+
+  const attempts = parseInt(localStorage.getItem('ez_attempts') || '0')
+
+  return (
+    <div className="screen">
+      <div className="row-1-5 center col" style={{ gap: 24 }}>
+        <LockIcon />
+        <div className="col center" style={{ gap: 8 }}>
+          <span style={{ fontSize: 'var(--fs-content)', fontWeight: 'var(--fw-bold)' }}>
+            Nhập PIN
+          </span>
+          {error && attempts < MAX_ATTEMPTS && (
+            <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-error)' }}>
+              Sai PIN · còn {MAX_ATTEMPTS - attempts} lần
+            </span>
+          )}
+        </div>
+        <PinDots filled={input.length} error={error} />
+      </div>
+
+      <div className="row-7-9">
+        <Numpad onKey={handleKey} showComma={false} />
+      </div>
+
+      <div className="row-10 center">
+        <button
+          style={{ background: 'none', border: 'none', fontSize: 'var(--fs-label)', color: 'var(--color-primary)', cursor: 'pointer', textDecoration: 'underline' }}
+          onClick={() => navigate('ForgotPin')}
+        >
+          Quên PIN?
+        </button>
+      </div>
+    </div>
+  )
+}

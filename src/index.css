@@ -132,3 +132,89 @@ body {
   padding: 8px 0;
 }
 .row10-dual .btn { flex: 1; }
+
+/* ── Numpad ── */
+.numpad {
+  display: grid;
+  grid-template-rows: repeat(4, 1fr);
+  height: 100%;
+}
+
+.numpad-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.numpad-key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-base);
+  font-size: var(--fs-amount);
+  font-weight: var(--fw-medium);
+  color: var(--color-black);
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.numpad-key:active  { background: rgba(0,0,0,0.06); }
+.numpad-key.empty   { pointer-events: none; }
+.numpad.disabled    { opacity: 0.2; pointer-events: none; }
+
+/* ── PinDots ── */
+.pin-dots {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  align-items: center;
+}
+
+.pin-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--color-black);
+  transition: background 0.1s, border-color 0.1s;
+}
+
+.pin-dot.filled { background: var(--color-black); }
+.pin-dot.error  { border-color: var(--color-error); background: var(--color-error); }
+
+/* ── Option row (Recovery) ── */
+.option-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 100%;
+  padding: 0 12px;
+  border: 1.5px solid var(--color-gray);
+  border-radius: 12px;
+}
+
+.option-row.selected { border-color: var(--color-primary); }
+.option-row.disabled { opacity: 0.4; }
+
+.option-radio {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--color-gray);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.option-radio.selected { border-color: var(--color-primary); }
+
+.option-radio.selected::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
