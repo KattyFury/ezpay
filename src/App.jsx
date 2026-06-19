@@ -9,11 +9,16 @@ import HomeSend from './screens/HomeSend'
 import HomeReceive from './screens/HomeReceive'
 import Swap from './screens/Swap'
 import MenuScreen from './screens/MenuScreen'
+import PasteAddress from './screens/PasteAddress'
+import SendAmount from './screens/SendAmount'
+import SendConfirm from './screens/SendConfirm'
+import SendReceipt from './screens/SendReceipt'
 
 const SCREENS = {
   Login, CreatePin, Recovery,
   EnterPin, PinLocked,
   HomeSend, HomeReceive, Swap, MenuScreen,
+  PasteAddress, SendAmount, SendConfirm, SendReceipt,
 }
 
 export default function App() {

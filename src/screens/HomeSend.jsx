@@ -1,4 +1,5 @@
 import NavBar from '../components/NavBar'
+import { useNav } from '../nav'
 import { MOCK_VND, TOKENS, fmtVND } from '../data'
 import { IconContacts, IconScan, IconPaste } from '../icons'
 
@@ -21,6 +22,7 @@ function TokenRow({ token }) {
 }
 
 export default function HomeSend() {
+  const { navigate } = useNav()
   return (
     <div className="screen">
       {/* Rows 1–2: balance */}
@@ -56,7 +58,7 @@ export default function HomeSend() {
           <IconScan size={26} />
           <span>Quét QR</span>
         </button>
-        <button className="action-card">
+        <button className="action-card" onClick={() => navigate('PasteAddress')}>
           <IconPaste size={20} />
           <span>Dán địa chỉ</span>
         </button>

@@ -15,7 +15,7 @@ function LockIcon() {
 const MAX_ATTEMPTS = 4
 
 export default function EnterPin() {
-  const { navigate } = useNav()
+  const { navigate, params } = useNav()
   const [input, setInput] = useState('')
   const [error, setError] = useState(false)
 
@@ -40,7 +40,9 @@ export default function EnterPin() {
     const saved = localStorage.getItem('ez_pin')
     if (next === saved) {
       localStorage.removeItem('ez_attempts')
-      setTimeout(() => navigate('HomeSend'), 150)
+      const dest = params?.onSuccess || 'HomeSend'
+      const destParams = params?.onSuccessParams || {}
+      setTimeout(() => navigate(dest, destParams), 150)
     } else {
       const attempts = parseInt(localStorage.getItem('ez_attempts') || '0') + 1
       localStorage.setItem('ez_attempts', String(attempts))

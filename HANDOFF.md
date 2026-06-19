@@ -1,6 +1,6 @@
 # HANDOFF — ezpay (ezwallet)
 
-**Cập nhật:** 2026-06-16  
+**Cập nhật:** 2026-06-19  
 **Repo:** https://github.com/KattyFury/ezpay  
 **Local:** `D:\Claude\Build_on_Arc\ezpay`  
 **Dev:** `npm run dev` → http://localhost:5173
@@ -109,7 +109,13 @@ ezpay/
   - MenuScreen: balance + Nạp/Rút + 4 menu items
   - `src/data.js` mock data · `src/icons.jsx` shared SVGs
   - **Stub chưa kết nối**: action buttons (Danh bạ/Quét QR/Dán địa chỉ), Swap OK, menu items nav
-- [ ] **Phase 4** — Luồng Gửi (Nhập số tiền + memo → Xác nhận → Biên lai)
+- [x] **Phase 4** — Luồng Gửi ✅
+  - `src/screens/PasteAddress.jsx` — nhập/dán địa chỉ ví, validate 0x40, clipboard API
+  - `src/screens/SendAmount.jsx` — numpad VND, recipient box, memo field, kiểm tra số dư
+  - `src/screens/SendConfirm.jsx` — recap đầy đủ (VND + USDC mock rate), warning badge, nút đỏ "Xác nhận · PIN"
+  - `src/screens/SendReceipt.jsx` — biên lai thành công, timestamp vi-VN
+  - `EnterPin.jsx` — nâng cấp hỗ trợ `params.onSuccess` + `params.onSuccessParams` (không chỉ về HomeSend)
+  - `HomeSend.jsx` — "Dán địa chỉ" đã wire → PasteAddress; Danh bạ/Quét QR vẫn stub
 - [ ] **Phase 5** — Custom QR (Tạo → Hiển thị → QR đã lưu)
 - [ ] **Phase 6** — Danh bạ + Lịch sử giao dịch
 - [ ] **Phase 7** — Settings (Ngôn ngữ, Bảo mật, Nạp, Rút disabled, About)
@@ -125,6 +131,10 @@ ezpay/
 - 2026-06-16: Xanh dương #185FA5 trong spec cũ → bỏ, thay bằng #16A34A cho tất cả button chính
 - 2026-06-17: qrcode.react thêm vào dependencies cho QR display trong HomeReceive
 - 2026-06-17: Tất cả wallet data Phase 2–3 dùng mock (MOCK_VND, MOCK_ADDR trong src/data.js) — chưa kết nối Circle API
+- 2026-06-19: Thêm `--color-muted: #999999` — dùng cho mọi text phụ; `--color-gray: #CCCCCC` giữ nguyên chỉ cho border/background
+- 2026-06-19: Button: font 13px / weight 500 / height 7.5dvh (scale theo màn hình, không cứng pixel)
+- 2026-06-19: Login — bỏ nút SĐT, email button row 9 width 75%, slogan "Cách đơn giản nhất để dùng stablecoin", terms modal 75% width
+- 2026-06-19: Phase 4 Luồng Gửi hoàn thành — PasteAddress → SendAmount → SendConfirm → EnterPin → SendReceipt
 
 ---
 
