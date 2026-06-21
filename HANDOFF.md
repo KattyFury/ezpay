@@ -11,7 +11,7 @@
 
 - **Frontend:** React + Vite → Cloudflare Pages
 - **Backend:** Cloudflare Workers (JS) — gọi Circle API server-side
-- **Wallet:** Circle Developer Controlled Wallet
+- **Wallet:** Circle **User** Controlled Wallet (user giữ key — không phải Developer Controlled)
 - **Auth:** Email OTP (SĐT disabled — "sắp ra mắt")
 - **Chain:** Arc Testnet · Chain ID `5042002` · RPC `https://rpc.testnet.arc.network`
 - **USDC:** `0x3600000000000000000000000000000000000000` (native gas token)
@@ -64,7 +64,7 @@
 ## UI Rules
 
 - Hiển thị **VND** — USDC ẩn hoàn toàn (chỉ hiện màn confirm giao dịch)
-- **Memo** bắt buộc hỗ trợ khi chuyển khoản (encode vào `data` field của tx)
+- **Memo** bắt buộc hỗ trợ khi chuyển khoản — dùng **Arc Transaction Memos** (attach ở call level, không encode vào `data` field, emit Memo event onchain cho indexing · docs: docs.arc.io/arc/concepts/transaction-memos)
 - PIN: 4 số · khóa sau 4 lần sai (30 phút) · đổi PIN → tài khoản khả dụng sau 12h
 - Nav bar 4 tab: **Đổi tiền · Gửi · Nhận · Menu**
 - Thông báo in-app: vùng 6–7, tối đa 2, có nút X; nếu không có → tip dashed
@@ -135,6 +135,8 @@ ezpay/
 - 2026-06-19: Button: font 13px / weight 500 / height 7.5dvh (scale theo màn hình, không cứng pixel)
 - 2026-06-19: Login — bỏ nút SĐT, email button row 9 width 75%, slogan "Cách đơn giản nhất để dùng stablecoin", terms modal 75% width
 - 2026-06-19: Phase 4 Luồng Gửi hoàn thành — PasteAddress → SendAmount → SendConfirm → EnterPin → SendReceipt
+- 2026-06-21: Đổi wallet model → Circle User Controlled Wallet (trước ghi sai là Developer Controlled)
+- 2026-06-21: Memo strategy → Arc Transaction Memos thay vì encode vào data field thô
 
 ---
 
