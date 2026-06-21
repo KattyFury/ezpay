@@ -1,6 +1,6 @@
 # HANDOFF — ezpay (ezwallet)
 
-**Cập nhật:** 2026-06-19  
+**Cập nhật:** 2026-06-21  
 **Repo:** https://github.com/KattyFury/ezpay  
 **Local:** `D:\Claude\Build_on_Arc\ezpay`  
 **Dev:** `npm run dev` → http://localhost:5173
@@ -14,7 +14,12 @@
 - **Wallet:** Circle **User** Controlled Wallet (user giữ key — không phải Developer Controlled)
 - **Auth:** Email OTP (SĐT disabled — "sắp ra mắt")
 - **Chain:** Arc Testnet · Chain ID `5042002` · RPC `https://rpc.testnet.arc.network`
-- **USDC:** `0x3600000000000000000000000000000000000000` (native gas token)
+- **USDC:** `0x3600000000000000000000000000000000000000` — ERC-20 interface 6 decimals, native 18 decimals, cùng 1 balance
+- **Memo contract:** `0x5294E9927c3306DcBaDb03fe70b92e01cCede505` — Arc Transaction Memos
+- **System emitter:** `0xfffffffffffffffffffffffffffffffffffffffe` — index toàn bộ USDC movements
+- **Gas:** ~$0.01/tx (~250 VND) · ERC-20 transfer ~65k gas · Memo tx ~100k gas
+- **Finality:** instant (pending → final, không cần confirm)
+- **Circle skill:** `use-user-controlled-wallets` (Email OTP, embedded wallet, no seed phrase)
 - **Secrets:** `.env` local + Cloudflare Dashboard. KHÔNG hardcode.
 
 ---
@@ -137,6 +142,7 @@ ezpay/
 - 2026-06-19: Phase 4 Luồng Gửi hoàn thành — PasteAddress → SendAmount → SendConfirm → EnterPin → SendReceipt
 - 2026-06-21: Đổi wallet model → Circle User Controlled Wallet (trước ghi sai là Developer Controlled)
 - 2026-06-21: Memo strategy → Arc Transaction Memos thay vì encode vào data field thô
+- 2026-06-21: Đọc full 83 files Arc docs — cập nhật tech stack đầy đủ, fee display, decimal handling, indexing strategy
 
 ---
 
