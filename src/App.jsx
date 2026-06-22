@@ -13,12 +13,14 @@ import PasteAddress from './screens/PasteAddress'
 import SendAmount from './screens/SendAmount'
 import SendConfirm from './screens/SendConfirm'
 import SendReceipt from './screens/SendReceipt'
+import EnterEmail from './screens/EnterEmail'
 
 const SCREENS = {
   Login, CreatePin, Recovery,
   EnterPin, PinLocked,
   HomeSend, HomeReceive, Swap, MenuScreen,
   PasteAddress, SendAmount, SendConfirm, SendReceipt,
+  EnterEmail,
 }
 
 export default function App() {

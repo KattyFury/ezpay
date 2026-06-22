@@ -39,7 +39,7 @@ export default function Login() {
         <button
           className="btn btn-primary"
           style={{ width: '75%' }}
-          onClick={() => navigate('CreatePin')}
+          onClick={() => navigate('EnterEmail')}
         >
           Đăng nhập với Email
         </button>
