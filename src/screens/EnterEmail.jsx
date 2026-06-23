@@ -38,8 +38,7 @@ export default function EnterEmail() {
 
   return (
     <div className="screen">
-      <div className="row-1 center send-title">
-        <button className="back-btn" onClick={() => navigate('Login')}>‹</button>
+      <div className="row-1 center send-title" style={{ justifyContent: 'center' }}>
         <span>Đăng nhập</span>
       </div>
 
@@ -53,12 +52,15 @@ export default function EnterEmail() {
           onChange={e => { setEmail(e.target.value); setError(''); }}
           onKeyDown={e => e.key === 'Enter' && handleSubmit()}
           autoFocus
-          style={{ height: 44 }}
+          style={{ height: 44, fontSize: 'var(--fs-body)' }}
         />
         {error && <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-error)' }}>{error}</span>}
       </div>
 
-      <div className="row-10 row10-single">
+      <div className="row-9 row10-dual">
+        <button className="btn btn-secondary" onClick={() => navigate('Login')}>
+          Quay lại
+        </button>
         <button
           className="btn btn-primary"
           disabled={!valid || loading}
