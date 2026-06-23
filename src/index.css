@@ -96,7 +96,7 @@ body {
   align-items: center;
   justify-content: center;
   font-family: var(--font-base);
-  font-size: 13px;
+  font-size: var(--fs-body);
   font-weight: var(--fw-medium);
   border-radius: 12px;
   border: none;
