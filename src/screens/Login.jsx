@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import logoLong from '../../logo-long.png'
+import mailWhite from '../../mail-white.png'
 import { useNav } from '../nav'
 
 function TermsModal({ onClose }) {
@@ -41,6 +42,7 @@ export default function Login() {
           style={{ width: '75%' }}
           onClick={() => navigate('EnterEmail')}
         >
+          <img src={mailWhite} alt="" style={{ width: 18, height: 18, marginRight: 8, verticalAlign: 'middle' }} />
           Đăng nhập với Email
         </button>
       </div>
