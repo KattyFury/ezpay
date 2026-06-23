@@ -1,9 +1,9 @@
-# HANDOFF — ezpay (ezwallet)
+# HANDOFF — EZwallet
 
-**Cập nhật:** 2026-06-21  
+**Cập nhật:** 2026-06-23  
 **Repo:** https://github.com/KattyFury/ezwallet  
-**Local:** `D:\Claude\Build_on_Arc\ezpay`  
-**Dev:** `npm run dev` → http://localhost:5173
+**Local:** `D:\Claude\Build_on_Arc\ezwallet`  
+**Live:** https://ezwallet.pages.dev (Cloudflare Pages, auto-deploy từ GitHub)
 
 ---
 
@@ -146,10 +146,27 @@ ezpay/
 - 2026-06-19: Phase 4 Luồng Gửi hoàn thành — PasteAddress → SendAmount → SendConfirm → EnterPin → SendReceipt
 - 2026-06-21: Đổi wallet model → Circle User Controlled Wallet (trước ghi sai là Developer Controlled)
 - 2026-06-21: Memo strategy → Arc Transaction Memos thay vì encode vào data field thô
-- 2026-06-21: Đọc full 83 files Arc docs — cập nhật tech stack đầy đủ, fee display, decimal handling, indexing strategy
+- 2026-06-21: Đọc full 83 files Arc docs — cập nhật tech stack đầy đổ, fee display, decimal handling, indexing strategy
+- 2026-06-22: Đổi tên project ezpay → EZwallet (GitHub + package.json + folder)
+- 2026-06-22: Deploy lên Cloudflare Pages (ezwallet.pages.dev) — auto-deploy từ GitHub main
+- 2026-06-22: Tích hợp Circle User Controlled Wallet — `functions/api/session.js`, `functions/api/wallet.js`, `src/circle.js`, màn `EnterEmail.jsx`
+- 2026-06-22: Login → EnterEmail → Circle SDK (email OTP + PIN + security questions) → HomeSend
+- 2026-06-22: App Kit installed: `@circle-fin/app-kit`, `@circle-fin/adapter-viem-v2`, `viem`, `@circle-fin/w3s-pw-web-sdk`
+- 2026-06-22: Add `vite-plugin-node-polyfills` — Circle SDK dùng Node built-ins (util, stream)
+- 2026-06-22: PWA manifest — Add to Home Screen trên mobile
+- 2026-06-23: Font scale mới: min 15px (label), max 45px (amount) — thay hệ thống cũ 7–22px quá nhỏ cho mobile
+
+---
+
+## Trạng thái hiện tại (2026-06-23)
+
+**Live:** https://ezwallet.pages.dev  
+**Auth flow hoạt động:** Login → nhập email → Circle SDK (OTP + PIN + security questions) → ví tạo xong  
+**Data:** vẫn mock (MOCK_VND, MOCK_ADDR) — chưa pull balance/tx thật từ Circle  
+**Tiếp theo:** review UI trên mobile → gom sửa → push
 
 ---
 
 ## Failed Approaches
 
-_(chưa có)_
+- 2026-06-22: Thử set `VITE_CIRCLE_APP_ID` qua Wrangler secret → không inject vào bundle (Vite cần build-time env) → hardcode App ID trực tiếp (App ID không phải secret)
