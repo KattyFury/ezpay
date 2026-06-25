@@ -36,7 +36,7 @@ export default function HomeSend() {
         </span>
       </div>
 
-      <div className="row-3-6" style={{ display: 'flex', flexDirection: 'column', overflowY: 'auto', gap: 4 }}>
+      <div className="row-3-6" style={{ display: 'grid', gridTemplateRows: `repeat(${Math.max(tokens.length, 1)}, 1fr)`, overflowY: 'auto' }}>
         {loading ? (
           <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-muted)', fontSize: 'var(--fs-label)' }}>Đang tải...</div>
         ) : tokens.length === 0 ? (
