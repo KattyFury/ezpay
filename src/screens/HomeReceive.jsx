@@ -5,8 +5,10 @@ import NavBar from '../components/NavBar'
 import { useNav } from '../nav'
 import { fmtVND } from '../data'
 import { getTokenBalances } from '../chain'
-import { IconShare, IconScan, IconQRSaved } from '../icons'
+import { IconScan } from '../icons'
 import copyIcon from '../../icon/copy.png'
+import shareIcon from '../../icon/share.png'
+import downloadIcon from '../../icon/download.png'
 
 export default function HomeReceive() {
   const { navigate } = useNav()
@@ -60,7 +62,7 @@ export default function HomeReceive() {
 
       <div className="row-9 action-grid">
         <button className="action-card" onClick={handleShare}>
-          <IconShare size={20} />
+          <img src={shareIcon} alt="" style={{ width: 20, height: 20 }} />
           <span>{copied ? 'Đã copy!' : 'Chia sẻ'}</span>
         </button>
         <button className="action-card primary" onClick={() => navigate('CreateQR')}>
@@ -68,7 +70,7 @@ export default function HomeReceive() {
           <span>Custom QR</span>
         </button>
         <button className="action-card" onClick={() => navigate('SavedQRList')}>
-          <IconQRSaved size={20} />
+          <img src={downloadIcon} alt="" style={{ width: 20, height: 20 }} />
           <span>QR đã lưu</span>
         </button>
       </div>
