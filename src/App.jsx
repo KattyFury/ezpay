@@ -21,6 +21,9 @@ import Contacts from './screens/Contacts'
 import QRScanner from './screens/QRScanner'
 import ComingSoon from './screens/ComingSoon'
 import TxHistory from './screens/TxHistory'
+import Language from './screens/Language'
+import Security from './screens/Security'
+import About from './screens/About'
 
 const SCREENS = {
   Login, CreatePin, Recovery,
@@ -30,9 +33,9 @@ const SCREENS = {
   EnterEmail, CreateQR, ShowQR, SavedQRList,
   Contacts, QRScanner,
   TxHistory,
-  Language: ComingSoon,
-  Security: ComingSoon,
-  About: ComingSoon,
+  Language,
+  Security,
+  About,
 }
 
 export default function App() {

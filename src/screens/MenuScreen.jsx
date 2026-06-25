@@ -50,16 +50,7 @@ export default function MenuScreen() {
           </button>
         </div>
       ))}
-
-      {/* Row 8: logout */}
-      <div className="row-8 center">
-        <button style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}
-          onClick={() => { localStorage.clear(); window.location.reload() }}>
-          Đăng xuất
-        </button>
-      </div>
-
-      <NavBar active="MenuScreen" />
+<NavBar active="MenuScreen" />
     </div>
   )
 }
