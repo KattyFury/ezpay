@@ -114,12 +114,6 @@ export default function Swap() {
     <div className="screen">
       {picker && <TokenPicker exclude={picker === 'from' ? toSym : fromSym} onSelect={sym => selectToken(picker, sym)} onClose={() => setPicker(null)} />}
 
-      {/* Row 1: tabs */}
-      <div className="row-1 full-bleed" style={{ display: 'flex', borderBottom: '1px solid var(--color-gray)' }}>
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--fs-label)', fontWeight: 700, color: 'var(--color-black)' }}>Market</div>
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>Limit</div>
-      </div>
-
       {/* Rows 2-6: centered content */}
       <div className="row-2-6" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 8 }}>
 
