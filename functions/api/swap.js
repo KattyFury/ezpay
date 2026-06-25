@@ -12,9 +12,11 @@ const TOKEN_ADDR = {
 const JSON_HEADERS = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
 
 export async function onRequestPost(ctx) {
+  try {
   const apiKey = ctx.env.API_KEY || ctx.env.CIRCLE_API_KEY
   const kitKey = ctx.env.KIT_KEY
-  const { action, userToken, walletId, walletAddress, tokenIn, tokenOut, amountIn } = await ctx.request.json()
+  const body = await ctx.request.json()
+  const { action, userToken, walletId, walletAddress, tokenIn, tokenOut, amountIn } = body
 
   const fromAddr = TOKEN_ADDR[tokenIn]
   const toAddr   = TOKEN_ADDR[tokenOut]
@@ -77,6 +79,9 @@ export async function onRequestPost(ctx) {
   }
 
   return new Response(JSON.stringify({ error: 'unknown action' }), { status: 400, headers: JSON_HEADERS })
+  } catch (e) {
+    return new Response(JSON.stringify({ error: 'unhandled', message: e.message, stack: e.stack?.slice(0, 300) }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } })
+  }
 }
 
 export async function onRequestOptions() {
