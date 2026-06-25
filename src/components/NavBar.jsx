@@ -10,7 +10,7 @@ const TABS = [
 export default function NavBar({ active }) {
   const { navigate } = useNav()
   return (
-    <nav className="navbar">
+    <nav className="navbar full-bleed">
       {TABS.map(t => (
         <button
           key={t.id}
