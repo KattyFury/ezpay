@@ -277,21 +277,29 @@ ezpay/
 - **Login layout**: 3 nút (Email clickable, Google + Facebook DISABLED opacity 0.4), inner-block 210px cố định → icon thẳng cột + text cùng vị trí. Nút cuối center vạch 9/10, gap 2dvh, stack bottom-up.
 - **EnterEmail**: input KHÓA vị trí (absolute center row-5), suggestions + domains hiện absolute bên dưới không đẩy input. Email history icon = hint.png.
 
-**Trạng thái CORE (2026-06-25):**
+**Trạng thái CORE (2026-06-25 session 5):**
 - ✅ Email login → tạo ví → HomeSend (chạy tốt)
 - ✅ Balance đọc thật từ Arc RPC qua viem (USDC/EURC/cirBTC)
 - ✅ Swap estimate (auto khi gõ, hiện số quy đổi)
+- ✅ Swap execute — ĐÃ FIX + verify local OK (trả 2 challengeIds: approve + swap)
+- ✅ Send — cùng fix fee, sẽ chạy
 - ✅ TxHistory từ ArcScan, Language/Security/About/Contacts/QRScanner
-- ⏳ Swap execute — chưa test deployed (W3S PIN signing)
-- ⏳ Send — code xong, chưa test deployed
 - ❌ Google + Facebook login — DISABLED, chờ Circle team (verify-token iframe hang)
 
+**SWAP EXECUTE — ĐÃ FIX (2026-06-25 session 5, Opus) — ROOT CAUSE:**
+- Circle Stablecoin Kit `/v1/stablecoinKits/swap` trả về `transaction.executionParams.instructions[]` (mảng 2 bước: approve + swap), KHÔNG phải `transaction.target/callData`
+- Mỗi instruction có `{ target, data, ... }` → tạo 1 contractExecution challenge riêng → execute tuần tự qua W3S SDK (user ký PIN 2 lần)
+- **LỖI 500 GỐC**: dùng sai format fee. REST API `/user/transactions/contractExecution` cần `feeLevel: 'MEDIUM'` (FLAT field), KHÔNG phải `fee: { type: 'level', config: { feeLevel: 'MEDIUM' } }` (đó là format của Node SDK). Circle reject: "gasPrice/gasLimit may not be empty when FeeLevel not set".
+- Đã sửa cả swap.js, send.js, dev-server.js. Verify local: `{"challengeIds":[...2 ids...]}` OK.
+- Frontend Swap.jsx: loop execute từng challengeId, status "Xác nhận bước 1/2...", "2/2..."
+
 **Tiếp theo:**
-1. Test Swap execute trên deployed (nhập số → auto-estimate → Xác nhận giao dịch → W3S PIN popup → on-chain)
-2. Test Send trên deployed (PasteAddress → SendAmount → SendConfirm → W3S PIN)
-3. Fix manifest icon `design/app-icon.png` (báo invalid image — check lại file PNG)
-4. Build Reset PIN + Account Recovery (docs: `updateUserPin()` / `restoreUserPin()` → challengeId → W3S SDK)
+1. Test Swap execute trên DEPLOYED (đã verify OK local → ký PIN 2 lần approve+swap, xem có lên on-chain không)
+2. Test Send trên deployed (cùng fix fee — PasteAddress → SendAmount → SendConfirm → W3S PIN)
+3. Fix manifest icon `design/app-icon.png` (invalid image — check lại file PNG)
+4. Build Reset PIN + Account Recovery (`updateUserPin()` / `restoreUserPin()` → challengeId → W3S SDK)
 5. Khi Circle phản hồi bug → enable lại Google/Facebook (đổi `disabled: true → false` trong Login.jsx)
+- Swap screen đã bỏ Market/Limit tabs ở row 1 (chỉ còn Market mặc định)
 
 ---
 
