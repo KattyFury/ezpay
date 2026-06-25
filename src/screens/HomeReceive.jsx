@@ -1,4 +1,5 @@
-﻿import { useState, useEffect } from 'react'
+﻿import hintIcon from '../../icon/hint.png'
+import { useState, useEffect } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import NavBar from '../components/NavBar'
 import { useNav } from '../nav'
@@ -53,7 +54,7 @@ export default function HomeReceive() {
       </div>
 
       <div className="row-6-7" style={{ padding: '6px 0' }}>
-        <div className="tip-box">Cho người gửi quét QR này để nhận tiền</div>
+        <div className="tip-box"><img src={hintIcon} alt='' style={{ width: 16, height: 16, marginRight: 6, opacity: 0.6 }} />Cho người gửi quét QR này để nhận tiền</div>
       </div>
 
       <div className="row-9 action-grid">

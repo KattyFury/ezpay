@@ -1,5 +1,6 @@
 ﻿import { useState, useEffect } from 'react'
 import NavBar from '../components/NavBar'
+import hintIcon from '../../icon/hint.png'
 import { useNav } from '../nav'
 import { fmtVND } from '../data'
 import { getTokenBalances, fmtAmount } from '../chain'
@@ -54,10 +55,10 @@ export default function HomeSend() {
       <div className="row-6-7" style={{ padding: '6px 0' }}>
         {!loading && (tokens.find(t => t.symbol === 'USDC')?.amount ?? 0) <= 1 ? (
           <div className="tip-box" style={{ borderColor: 'var(--color-warning)', color: 'var(--color-warning)' }}>
-            ⚠ Hết USDC — cần USDC để thanh toán phí giao dịch. Vào <b>Đổi tiền</b> để swap.
+            <img src={hintIcon} alt='' style={{ width: 16, height: 16, marginRight: 6 }} />Hết USDC — cần USDC để thanh toán phí giao dịch. Vào <b>Đổi tiền</b> để swap.
           </div>
         ) : (
-          <div className="tip-box">Chọn danh bạ, quét QR, hoặc dán địa chỉ để gửi tiền</div>
+          <div className="tip-box"><img src={hintIcon} alt='' style={{ width: 16, height: 16, marginRight: 6, opacity: 0.6 }} />Chọn danh bạ, quét QR, hoặc dán địa chỉ để gửi tiền</div>
         )}
       </div>
 

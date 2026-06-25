@@ -2,7 +2,8 @@
 import { fmtVND } from '../data'
 import { getTokenBalances } from '../chain'
 import { useState, useEffect } from 'react'
-import { IconHistory, IconLanguage, IconSecurity, IconInfo, IconChevron } from '../icons'
+import { IconHistory, IconLanguage, IconSecurity, IconInfo } from '../icons'
+import hintIcon from '../../icon/hint.png'
 import { useNav } from '../nav'
 
 const ITEMS = [
@@ -46,7 +47,7 @@ export default function MenuScreen() {
           <button className="menu-item" style={{ width: '100%' }} onClick={() => navigate(id, { title: label })}>
             <Icon size={20} />
             <span style={{ flex: 1, fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>{label}</span>
-            <IconChevron size={16} />
+            <img src={hintIcon} alt='' style={{ width: 18, height: 18, opacity: 0.5 }} />
           </button>
         </div>
       ))}
