@@ -17,6 +17,8 @@ import EnterEmail from './screens/EnterEmail'
 import CreateQR from './screens/CreateQR'
 import ShowQR from './screens/ShowQR'
 import SavedQRList from './screens/SavedQRList'
+import Contacts from './screens/Contacts'
+import QRScanner from './screens/QRScanner'
 
 const SCREENS = {
   Login, CreatePin, Recovery,
@@ -24,6 +26,7 @@ const SCREENS = {
   HomeSend, HomeReceive, Swap, MenuScreen,
   PasteAddress, SendAmount, SendConfirm, SendReceipt,
   EnterEmail, CreateQR, ShowQR, SavedQRList,
+  Contacts, QRScanner,
 }
 
 export default function App() {

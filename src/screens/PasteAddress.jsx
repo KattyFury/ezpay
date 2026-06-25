@@ -18,36 +18,29 @@ export default function PasteAddress() {
 
   return (
     <div className="screen">
-      {/* Row 1: title */}
       <div className="row-1 center" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)' }}>
         Dán địa chỉ
       </div>
 
-      {/* Row 5: input */}
-      <div className="row-5 col" style={{ justifyContent: 'center', gap: 8 }}>
+      <div className="row-2-8" style={{ gap: 12, width: '100%' }}>
         <textarea
           className={`address-input${showError ? ' error' : ''}`}
           placeholder="0x..."
           value={address}
           onChange={e => { setAddress(e.target.value); setDirty(true) }}
           rows={3}
-          style={{ fontSize: 'var(--fs-body)', resize: 'none' }}
+          style={{ fontSize: 'var(--fs-body)', resize: 'none', width: '100%' }}
         />
         {showError && (
-          <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-error)' }}>
+          <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-error)', alignSelf: 'flex-start' }}>
             Địa chỉ không hợp lệ — bắt đầu bằng 0x, 42 ký tự
           </span>
         )}
-      </div>
-
-      {/* Row 6: clipboard button */}
-      <div className="row-6 center">
-        <button className="btn btn-secondary" style={{ width: '66.67%' }} onClick={handlePaste}>
+        <button className="btn btn-secondary" style={{ width: '100%' }} onClick={handlePaste}>
           Dán từ clipboard
         </button>
       </div>
 
-      {/* Row 9: buttons */}
       <div className="row-9 row10-dual">
         <button className="btn btn-secondary" onClick={() => navigate('HomeSend')}>Quay lại</button>
         <button className="btn btn-primary" disabled={!valid}

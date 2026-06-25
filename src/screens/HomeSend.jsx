@@ -68,8 +68,8 @@ export default function HomeSend() {
       </div>
 
       <div className="row-9 action-grid">
-        <button className="action-card"><IconContacts size={20} /><span>Danh bạ</span></button>
-        <button className="action-card primary"><IconScan size={26} /><span>Quét QR</span></button>
+        <button className="action-card" onClick={() => navigate('Contacts')}><IconContacts size={20} /><span>Danh bạ</span></button>
+        <button className="action-card primary" onClick={() => navigate('QRScanner')}><IconScan size={26} /><span>Quét QR</span></button>
         <button className="action-card" onClick={() => navigate('PasteAddress')}><IconPaste size={20} /><span>Dán địa chỉ</span></button>
       </div>
 
