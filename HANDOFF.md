@@ -210,16 +210,28 @@ ezpay/
 - HomeReceive: QR 200px, 3 nút (Chia sẻ/Custom QR/QR đã lưu), Web Share API + clipboard fallback
 - Swap execute: App Kit capture adapter → Circle `/user/transactions/contractExecution` → W3S SDK challenge
 
-**Vấn đề chưa giải quyết:**
-- Swap execute: capture adapter (`createViemAdapterFromPrivateKey` + overrides) chưa test đầy đủ — cần test trên deployed
-- Menu items (TxHistory, Language, Security, About) navigate đến screen chưa tồn tại → văng ra ngoài (fallback về Login)
-- Circle SDK (W3S popup) chỉ chạy trên ezwallet.pages.dev, không chạy localhost
+**Cập nhật lớn (2026-06-25 session 2):**
+- **Swap**: gọi thẳng Circle Stablecoin Kit API (`/v1/stablecoinKits/quote` + `/v1/stablecoinKits/swap`), chain ID `Arc_Testnet` (quan trọng — không phải `ARC-TESTNET`). KIT_KEY server-side trong Cloudflare env var.
+- **Send thật**: `functions/api/send.js` → ERC-20 `transfer(address,uint256)` → Circle contractExecution challenge → W3S SDK PIN
+- **Google Social Login**: Circle W3S SDK `performLogin('google')`, Client ID: `51031114717-f9chve1ge9bbo8j3kspj82qrga40342n.apps.googleusercontent.com`
+- **Asset structure**: `icon/` (left/right/up/down/trade/email/google 100×100 line icons), `design/` (logo/PFP/app-icon)
+- **Icon usage**: Numpad backspace → left.png, NavBar Swap/Gửi/Nhận → trade/up/down, Login → email/google
+- **UI**: TxHistory (ArcScan API), Language/Security/About/ComingSoon screens, Contacts, QRScanner
+- **Email suggestions**: lưu history localStorage `ez_email_history` (tối đa 5), hiện khi vào màn login
+- **Buttons**: `row10-single`/`row10-dual` span rows 9-10, centered. Height 6dvh.
+- **Swap estimate bug root cause found**: chain ID sai. Fix deployed nhưng cần test.
+
+**Pending:**
+- Test Swap execute (PIN signing) trên deployed `ezwallet.pages.dev`
+- Test Send trên deployed
+- `icon/right.png` cho menu chevron + hints chưa áp dụng
+- TX history: chỉ ERC-20, chưa native USDC movements
+- Send: chỉ gửi USDC, chưa chọn token khác
 
 **Tiếp theo:**
-1. Fix Menu items → stub screens hoặc implement
-2. Test Swap execute trên deployed
-3. Build luồng Send thật (kit.send() từ frontend hoặc Worker)
-4. UI polish
+1. Test Swap + Send trên deployed
+2. Apply `icon/right.png` cho menu + hints
+3. UI polish tổng thể (spacing, typography)
 
 ---
 
