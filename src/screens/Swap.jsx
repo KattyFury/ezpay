@@ -55,6 +55,31 @@ function TokenCard({ side, symbol, amount, est, showQuick, onQuick, onToggle }) 
   )
 }
 
+function TokenPicker({ current, exclude, onSelect, onClose }) {
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 200, display: 'flex', alignItems: 'flex-end' }}
+      onClick={onClose}>
+      <div style={{ background: '#fff', width: '100%', maxWidth: 430, margin: '0 auto', borderRadius: '16px 16px 0 0', padding: 20 }}
+        onClick={e => e.stopPropagation()}>
+        <div style={{ fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-bold)', marginBottom: 16 }}>Chọn token</div>
+        {SWAP_TOKENS.filter(t => t !== exclude).map(sym => (
+          <button key={sym} onClick={() => { onSelect(sym); onClose() }}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 12, width: '100%',
+              padding: '12px 0', border: 'none', background: 'none', cursor: 'pointer',
+              borderBottom: '1px solid var(--color-gray)', fontFamily: 'inherit',
+            }}>
+            <div style={{ width: 36, height: 36, borderRadius: '50%', background: COLORS[sym], display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: '#fff' }}>
+              {sym.slice(0, 2)}
+            </div>
+            <span style={{ fontSize: 'var(--fs-item)', fontWeight: 'var(--fw-medium)' }}>{sym === current ? `${sym} ✓` : sym}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function Swap() {
   const [fromIdx, setFromIdx] = useState(0)
   const [toIdx, setToIdx] = useState(1)
@@ -64,6 +89,7 @@ export default function Swap() {
   const [error, setError] = useState('')
   const [status, setStatus] = useState('')
   const [balances, setBalances] = useState({})
+  const [picker, setPicker] = useState(null) // 'from' | 'to' | null
 
   const fromSym = SWAP_TOKENS[fromIdx]
   const toSym = SWAP_TOKENS[toIdx]
@@ -77,6 +103,18 @@ export default function Swap() {
       setBalances(map)
     })
   }, [])
+
+  function selectToken(side, sym) {
+    const idx = SWAP_TOKENS.indexOf(sym)
+    if (side === 'from') {
+      if (idx === toIdx) setToIdx(fromIdx) // swap if same
+      setFromIdx(idx)
+    } else {
+      if (idx === fromIdx) setFromIdx(toIdx)
+      setToIdx(idx)
+    }
+    setInput(''); setEstimate(null)
+  }
 
   function handleKey(key) {
     setEstimate(null)
@@ -130,6 +168,14 @@ export default function Swap() {
 
   return (
     <div className="screen">
+      {picker && (
+        <TokenPicker
+          current={picker === 'from' ? fromSym : toSym}
+          exclude={picker === 'from' ? toSym : fromSym}
+          onSelect={sym => selectToken(picker, sym)}
+          onClose={() => setPicker(null)}
+        />
+      )}
       <div className="row-1" style={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid var(--color-gray)' }}>
         <button style={{ flex: 1, height: '100%', border: 'none', background: 'none', fontFamily: 'inherit', fontSize: 'var(--fs-label)', fontWeight: 700, color: 'var(--color-primary)', borderBottom: '2px solid var(--color-primary)' }}>Market</button>
         <button style={{ flex: 1, height: '100%', border: 'none', background: 'none', fontFamily: 'inherit', fontSize: 'var(--fs-label)', color: 'var(--color-muted)', opacity: 0.4, cursor: 'not-allowed' }}>Limit</button>
@@ -141,7 +187,7 @@ export default function Swap() {
           const pct = v === 'Max' ? 1 : parseFloat(v) / 100
           setInput(String((bal * pct).toFixed(6).replace(/\.?0+$/, '')))
           setEstimate(null)
-        }} onToggle={() => {}} />
+        }} onToggle={() => setPicker('from')} />
       </div>
 
       <div className="row-3" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -149,7 +195,7 @@ export default function Swap() {
       </div>
 
       <div className="row-4" style={{ padding: '4px 0 8px' }}>
-        <TokenCard side="Đến" symbol={toSym} est={estAmt ? `~${parseFloat(estAmt).toFixed(4)}` : '~'} showQuick={false} onToggle={() => {}} />
+        <TokenCard side="Đến" symbol={toSym} est={estAmt ? `~${parseFloat(estAmt).toFixed(4)}` : '~'} showQuick={false} onToggle={() => setPicker('to')} />
       </div>
 
       <div className="row-5" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>
