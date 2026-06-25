@@ -264,11 +264,34 @@ ezpay/
 - Reset PIN, Recover account chưa build
 - Manifest icon `design/app-icon.png` báo "invalid image" (cosmetic) — cần check lại file
 
+**Cập nhật (2026-06-25 session 4 — UI + swap estimate):**
+- **Swap estimate FIX**: response structure đúng là `res.estimate.quote.estimatedAmount` (không phải `estimatedOutput`). Fee = `quote.route.steps[0].estimate.gasCostUSD`. Đã parse đúng → 20 USDC → 15 EURC hiển thị OK. **Execute vẫn chưa test trên deployed.**
+- **Asset/icon mở rộng**: tất cả trong `icon/`: back, down, up, left, right, trade, menu, email, google, facebook, hint (bóng đèn), copy, qr, danhba, share, download
+- **Icon usage hiện tại**:
+  - NavBar: trade/up/down/menu — opacity 0.4 (xám) khi inactive, 1 (đen) khi active
+  - HomeSend actions: danhba.png (Danh bạ), qr.png (Quét QR), IconPaste (Dán địa chỉ) — action-grid height 6dvh
+  - HomeReceive: share.png (Chia sẻ), IconScan (Custom QR), download.png (QR đã lưu), copy.png (copy địa chỉ)
+  - Numpad backspace: left.png
+  - Login: email.png, google.png, facebook.png
+  - tip-box: hint.png; menu chevron: right.png; back button: back.png
+- **Login layout**: 3 nút (Email clickable, Google + Facebook DISABLED opacity 0.4), inner-block 210px cố định → icon thẳng cột + text cùng vị trí. Nút cuối center vạch 9/10, gap 2dvh, stack bottom-up.
+- **EnterEmail**: input KHÓA vị trí (absolute center row-5), suggestions + domains hiện absolute bên dưới không đẩy input. Email history icon = hint.png.
+
+**Trạng thái CORE (2026-06-25):**
+- ✅ Email login → tạo ví → HomeSend (chạy tốt)
+- ✅ Balance đọc thật từ Arc RPC qua viem (USDC/EURC/cirBTC)
+- ✅ Swap estimate (auto khi gõ, hiện số quy đổi)
+- ✅ TxHistory từ ArcScan, Language/Security/About/Contacts/QRScanner
+- ⏳ Swap execute — chưa test deployed (W3S PIN signing)
+- ⏳ Send — code xong, chưa test deployed
+- ❌ Google + Facebook login — DISABLED, chờ Circle team (verify-token iframe hang)
+
 **Tiếp theo:**
-1. Test Swap (estimate + execute) trên deployed — flow: nhập số → auto-estimate → Xác nhận → W3S PIN
-2. Test Send trên deployed
-3. Fix manifest icon
-4. Build Reset PIN + Account Recovery (docs đã đọc, dùng `updateUserPin()` / `restoreUserPin()`)
+1. Test Swap execute trên deployed (nhập số → auto-estimate → Xác nhận giao dịch → W3S PIN popup → on-chain)
+2. Test Send trên deployed (PasteAddress → SendAmount → SendConfirm → W3S PIN)
+3. Fix manifest icon `design/app-icon.png` (báo invalid image — check lại file PNG)
+4. Build Reset PIN + Account Recovery (docs: `updateUserPin()` / `restoreUserPin()` → challengeId → W3S SDK)
+5. Khi Circle phản hồi bug → enable lại Google/Facebook (đổi `disabled: true → false` trong Login.jsx)
 
 ---
 
