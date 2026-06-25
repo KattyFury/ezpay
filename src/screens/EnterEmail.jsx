@@ -19,6 +19,9 @@ export default function EnterEmail() {
     if (!valid || loading) return
     setLoading(true); setError('')
     try {
+      // Xóa wallet info cũ trước khi login
+      localStorage.removeItem('ez_wallet_addr')
+      localStorage.removeItem('ez_wallet_id')
       const { userToken, encryptionKey } = await createSession(email.trim())
       localStorage.setItem('ez_user_token', userToken)
       localStorage.setItem('ez_encryption_key', encryptionKey)
