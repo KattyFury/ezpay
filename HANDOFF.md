@@ -248,16 +248,27 @@ ezpay/
 - Recover account: security questions → `restoreUserPin()` → challengeId
 - Remove user: không có API, chỉ stop issuing tokens + xóa local record
 
+**Google Social Login — KẾT LUẬN (2026-06-25 session 3, Opus):**
+- 2 bug client-side đã fix: (1) button gọi `performLogin('Google')` — 1 tham số provider (trước truyền nhầm deviceToken làm provider → 155140), (2) bỏ debug log lỗi `freshToken` undefined
+- Flow giờ chạy được: click → redirect Google OK → Google trả `access_token`+`id_token` về hash OK → SDK mở iframe `pw-auth.circle.com/social/verify-token`
+- **KẸT Ở ĐÂY**: iframe verify-token load nhưng KHÔNG post kết quả về SDK → `onLoginComplete` không fire / hoặc trả 155140. Đây là backend Circle / iframe communication — không debug được qua console.
+- **QUYẾT ĐỊNH**: Disable cả Google + Facebook (nút mờ opacity 0.4, không clickable, không text "sắp ra mắt"). Email login chạy ngon = đủ MVP. Đã gửi bug report cho Circle team, chờ phản hồi.
+- Khi Circle phản hồi: enable lại bằng cách đổi `disabled: true` → `false` trong array buttons ở `src/screens/Login.jsx`
+
+**Bug report đã gửi Circle (tóm tắt):** Google social login hang ở verify-token. Works: social/token, performLogin redirect, Google trả token. Fails: iframe `pw-auth.circle.com/social/verify-token` không post back. Câu hỏi: deviceToken cần refresh không (~30s redirect)? Config gì thêm cho iframe post về Cloudflare Pages origin? Google login có support User-Controlled Wallet trên Arc Testnet không? Khi nào backend trả 155140 ở bước verify?
+
 **Pending:**
-- Google Social Login callback chưa hoạt động — cần debug SDK init flow
-- Swap execute chưa test trên deployed
-- Send: chỉ USDC, chưa chọn token
+- Google + Facebook login: ĐANG DISABLE, chờ Circle team
+- Swap execute chưa test trên deployed (estimate đã fix chain ID `Arc_Testnet`)
+- Send: chỉ USDC, chưa chọn token khác
 - Reset PIN, Recover account chưa build
+- Manifest icon `design/app-icon.png` báo "invalid image" (cosmetic) — cần check lại file
 
 **Tiếp theo:**
-1. Debug Google login: log SDK configs sau init, xem callback có fire không khi không gọi performLogin
-2. Test Swap/Send trên deployed sau khi Google login OK
-3. Build Reset PIN + Account Recovery screens
+1. Test Swap (estimate + execute) trên deployed — flow: nhập số → auto-estimate → Xác nhận → W3S PIN
+2. Test Send trên deployed
+3. Fix manifest icon
+4. Build Reset PIN + Account Recovery (docs đã đọc, dùng `updateUserPin()` / `restoreUserPin()`)
 
 ---
 
@@ -267,3 +278,7 @@ ezpay/
 - 2026-06-25: Thử `wrangler pages dev` trên Windows → lỗi "write EOF" (bug wrangler Windows) → dùng `dev-server.js` (Node HTTP) + Vite proxy thay thế
 - 2026-06-25: Thử gọi Circle REST API `/user/wallets` để lấy wallet address → trả về `Resource not found`. **ĐÃ GIẢI QUYẾT 2026-06-25 (Opus):** endpoint `/user/wallets` KHÔNG tồn tại trong Circle W3S API. Đúng phải là `GET /v1/w3s/wallets` với header `X-User-Token`. Test end-to-end: session OK → getAddress trả `{address: null}` sạch cho user mới (không còn lỗi). User có ví sẽ trả address thật.
 - 2026-06-25: Circle SDK (W3S popup) không chạy trên localhost → crypto polyfill thiếu dù đã thêm `vite-plugin-node-polyfills`
+- 2026-06-25: Swap qua App Kit SDK trên Cloudflare Workers → không chạy (Node runtime). Thử `nodejs_compat` flag → vẫn lỗi. → Gọi thẳng Circle Stablecoin Kit API (`/v1/stablecoinKits/quote` + `/swap`) từ Worker, App Kit chỉ là wrapper của API này nên kết quả y hệt.
+- 2026-06-25: Swap dùng chain ID `ARC-TESTNET` cho Stablecoin Kit API → "Invalid input tokenInChain". Đúng phải là `Arc_Testnet` (W3S API dùng `ARC-TESTNET`, Stablecoin Kit API dùng `Arc_Testnet` — 2 format khác nhau!).
+- 2026-06-25: Google `performLogin(deviceToken, deviceEncryptionKey)` theo WebFetch summary → sai, gây 155140. SDK source thật: `performLogin(provider)` 1 tham số. **Bài học: đọc SDK source/docs gốc, không tin WebFetch summary.**
+- 2026-06-25: Google login verify-token iframe không post back → disable tạm, chờ Circle team.
