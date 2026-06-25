@@ -1,3 +1,4 @@
+﻿import backIcon from '../../icon/back.png'
 import { useNav } from '../nav'
 import { QRCodeSVG } from 'qrcode.react'
 import { MOCK_ADDR, fmtVND } from '../data'
@@ -21,7 +22,7 @@ export default function ShowQR() {
   return (
     <div className="screen">
       <div className="row-1 center send-title">
-        <button className="back-btn" onClick={() => navigate('CreateQR', { amount })}>‹</button>
+        <button className="back-btn" onClick={() => navigate('CreateQR', { amount })}><img src={backIcon} alt='‹' style={{ width: 18, height: 18 }} /></button>
         <span>Custom QR</span>
       </div>
 

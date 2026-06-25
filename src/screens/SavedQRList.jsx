@@ -1,3 +1,4 @@
+﻿import backIcon from '../../icon/back.png'
 import { useState } from 'react'
 import { useNav } from '../nav'
 import { QRCodeSVG } from 'qrcode.react'
@@ -20,7 +21,7 @@ export default function SavedQRList() {
   return (
     <div className="screen">
       <div className="row-1 center send-title">
-        <button className="back-btn" onClick={() => navigate('HomeReceive')}>‹</button>
+        <button className="back-btn" onClick={() => navigate('HomeReceive')}><img src={backIcon} alt='‹' style={{ width: 18, height: 18 }} /></button>
         <span>QR đã lưu</span>
       </div>
 

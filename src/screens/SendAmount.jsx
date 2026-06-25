@@ -1,4 +1,5 @@
-﻿import { useState } from 'react'
+﻿import backIcon from '../../icon/back.png'
+import { useState } from 'react'
 import { useNav } from '../nav'
 import Numpad from '../components/Numpad'
 import { fmtVND, MOCK_VND } from '../data'
@@ -28,7 +29,7 @@ export default function SendAmount() {
   return (
     <div className="screen">
       <div className="row-1 center send-title">
-        <button className="back-btn" onClick={() => navigate('HomeSend')}>‹</button>
+        <button className="back-btn" onClick={() => navigate('HomeSend')}><img src={backIcon} alt='‹' style={{ width: 18, height: 18 }} /></button>
         <span>Gửi tiền</span>
       </div>
 
