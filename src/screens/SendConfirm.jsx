@@ -1,4 +1,4 @@
-import { useNav } from '../nav'
+﻿import { useNav } from '../nav'
 import { fmtVND } from '../data'
 
 const USDC_RATE = 25000

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useNav } from '../nav'
 
 function loadContacts() {
@@ -83,7 +83,7 @@ export default function Contacts() {
         )}
       </div>
 
-      <div className="row-9 row10-dual">
+      <div className="row-10 row10-dual">
         <button className="btn btn-secondary" onClick={() => navigate('HomeSend')}>Quay lại</button>
         <button className="btn btn-primary" onClick={() => setAdding(true)}>+ Thêm</button>
       </div>

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useNav } from '../nav'
 import { createSession, getSDK, initializeWallet, executeChallenge, getWalletAddress } from '../circle'
 
@@ -74,7 +74,7 @@ export default function EnterEmail() {
       </div>
 
       {/* Row 9: buttons */}
-      <div className="row-9 row10-dual">
+      <div className="row-10 row10-dual">
         <button className="btn btn-secondary" onClick={() => navigate('Login')}>Quay lại</button>
         <button className="btn btn-primary" disabled={!valid || loading} onClick={handleSubmit}>
           {loading ? 'Đang xử lý...' : 'Tiếp tục'}

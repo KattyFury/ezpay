@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useNav } from '../nav'
 
 function isValid(addr) { return /^0x[0-9a-fA-F]{40}$/.test(addr.trim()) }
@@ -41,7 +41,7 @@ export default function PasteAddress() {
         </button>
       </div>
 
-      <div className="row-9 row10-dual">
+      <div className="row-10 row10-dual">
         <button className="btn btn-secondary" onClick={() => navigate('HomeSend')}>Quay lại</button>
         <button className="btn btn-primary" disabled={!valid}
           onClick={() => navigate('SendAmount', { address: trimmed, name: null })}>

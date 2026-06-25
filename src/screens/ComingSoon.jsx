@@ -1,4 +1,4 @@
-import { useNav } from '../nav'
+﻿import { useNav } from '../nav'
 
 export default function ComingSoon({ title = 'Tính năng này' }) {
   const { navigate, params } = useNav()
@@ -18,7 +18,7 @@ export default function ComingSoon({ title = 'Tính năng này' }) {
         </span>
       </div>
 
-      <div className="row-9 row10-single">
+      <div className="row-10 row10-single">
         <button className="btn btn-secondary" onClick={() => navigate('MenuScreen')}>Quay lại</button>
       </div>
     </div>

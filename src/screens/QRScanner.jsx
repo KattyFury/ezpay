@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import { useNav } from '../nav'
 
 function isValid(addr) { return /^0x[0-9a-fA-F]{40}$/.test(addr.trim()) }
@@ -85,7 +85,7 @@ export default function QRScanner() {
         )}
       </div>
 
-      <div className="row-9 row10-single">
+      <div className="row-10 row10-single">
         <button className="btn btn-secondary" onClick={() => navigate('HomeSend')}>Quay lại</button>
       </div>
     </div>
