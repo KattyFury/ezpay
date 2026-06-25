@@ -286,7 +286,15 @@ ezpay/
 - ✅ TxHistory từ ArcScan, Language/Security/About/Contacts/QRScanner
 - ❌ Google + Facebook login — DISABLED, chờ Circle team (verify-token iframe hang)
 
-**SWAP EXECUTE — ĐÃ FIX (2026-06-25 session 5, Opus) — ROOT CAUSE:**
+**SWAP EXECUTE — KẾT LUẬN CUỐI (2026-06-25 session 6, Opus):**
+- **App Kit / Swap Kit KHÔNG có adapter cho User-Controlled Wallet.** Các adapter: viem (private key/browser wallet), ethers, solana, circle-wallets (developer-controlled, cần entitySecret). Ví của dự án là User-Controlled MPC (ký PIN) → không khớp adapter nào.
+- Verify on-chain: swap execute qua manual instructions[] = FAILED (ESTIMATION_ERROR + INSUFFICIENT_TOKEN). Estimate qua quote API thì OK.
+- Estimate prices trên testnet bị méo (20 EURC → 1012 USDC) vì pool mất cân bằng — docs Circle cảnh báo "Arc Testnet swap liquidity unstable".
+- **QUYẾT ĐỊNH**: disable nút Swap execute ("Swap (sắp ra mắt)"), giữ estimate hiển thị tỷ giá. Send/Transfer đã chạy thật (COMPLETE on-chain) = đủ MVP.
+- **CÂU HỎI CHO CIRCLE**: User-Controlled Wallet (ký PIN qua W3S SDK) swap đúng cách như thế nào? App Kit Swap Kit không có adapter user-controlled — có phải swap chỉ support developer-controlled, hay có flow riêng (vd: tạo contractExecution với signed executor bundle) cho user-controlled?
+- Nếu Circle xác nhận chỉ dev-controlled mới swap được → cân nhắc: giữ user-controlled + bỏ swap, HOẶC đổi sang dev-controlled (mất non-custodial).
+
+**SWAP EXECUTE — phân tích cũ (session 5) — ROOT CAUSE fee format:**
 - Circle Stablecoin Kit `/v1/stablecoinKits/swap` trả về `transaction.executionParams.instructions[]` (mảng 2 bước: approve + swap), KHÔNG phải `transaction.target/callData`
 - Mỗi instruction có `{ target, data, ... }` → tạo 1 contractExecution challenge riêng → execute tuần tự qua W3S SDK (user ký PIN 2 lần)
 - **LỖI 500 GỐC**: dùng sai format fee. REST API `/user/transactions/contractExecution` cần `feeLevel: 'MEDIUM'` (FLAT field), KHÔNG phải `fee: { type: 'level', config: { feeLevel: 'MEDIUM' } }` (đó là format của Node SDK). Circle reject: "gasPrice/gasLimit may not be empty when FeeLevel not set".
