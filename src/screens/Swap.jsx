@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+﻿import { useState, useEffect, useRef } from 'react'
 import NavBar from '../components/NavBar'
 import Numpad from '../components/Numpad'
 import { estimateSwap, executeSwap, getSDK, executeChallenge } from '../circle'
@@ -121,11 +121,11 @@ export default function Swap() {
             <button onClick={() => setPicker('from')} style={{ display: 'flex', alignItems: 'center', gap: 10, border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', padding: 0 }}>
               <div style={{ width: 36, height: 36, borderRadius: '50%', background: COLORS[fromSym], display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: '#fff' }}>{fromSym.slice(0, 2)}</div>
               <div>
-                <div style={{ fontSize: 'var(--fs-body)', fontWeight: 700 }}>{fromSym} ▾</div>
+                <div style={{ fontSize: 21, fontWeight: 700 }}>{fromSym} ▾</div>
                 <div style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>{(balances[fromSym] || 0).toFixed(2)}</div>
               </div>
             </button>
-            <div style={{ fontSize: 28, fontWeight: 700, color: input ? 'var(--color-black)' : 'var(--color-gray)' }}>{input || '0'}</div>
+            <div style={{ fontSize: 31, fontWeight: 700, color: input ? 'var(--color-black)' : 'var(--color-gray)' }}>{input || '0'}</div>
           </div>
           <div style={{ display: 'flex', gap: 6 }}>
             {['25%', '50%', '75%', 'Max'].map(v => (
@@ -145,15 +145,15 @@ export default function Swap() {
           <button onClick={() => setPicker('to')} style={{ display: 'flex', alignItems: 'center', gap: 10, border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', padding: 0 }}>
             <div style={{ width: 36, height: 36, borderRadius: '50%', background: COLORS[toSym], display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: '#fff' }}>{toSym.slice(0, 2)}</div>
             <div>
-              <div style={{ fontSize: 'var(--fs-body)', fontWeight: 700 }}>{toSym} ▾</div>
+              <div style={{ fontSize: 21, fontWeight: 700 }}>{toSym} ▾</div>
               <div style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>{(balances[toSym] || 0).toFixed(2)}</div>
             </div>
           </button>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: 28, fontWeight: 700, color: estAmt ? 'var(--color-black)' : 'var(--color-gray)' }}>
+            <div style={{ fontSize: 31, fontWeight: 700, color: estAmt ? 'var(--color-black)' : 'var(--color-gray)' }}>
               {loading ? '...' : estAmt ? `~${parseFloat(estAmt).toFixed(4)}` : '0'}
             </div>
-            {fee && <div style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>phí: {fee}</div>}
+            {fee && <div style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>phí mạng: {fee.split(' + ').find(f => f.includes('USDC')) || fee}</div>}
           </div>
         </div>
 

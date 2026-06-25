@@ -72,12 +72,12 @@ export default function Login() {
     <div className="screen">
       <div className="row-1-5 center col" style={{ gap: 12 }}>
         <img src={logoLong} alt="ezwallet" style={{ width: '50%' }} />
-        <span style={{ fontSize: 'var(--fs-body)', color: 'var(--color-muted)' }}>
-          Tạo ví bằng email, gửi nhận tiền một cách dễ dàng
+        <span style={{ fontSize: 'var(--fs-body)', color: 'var(--color-muted)', textAlign: 'center' }}>
+          Tạo ví bằng email, gửi nhận tiền<br />một cách dễ dàng
         </span>
       </div>
 
-      <div className="row-9 center col" style={{ gap: 12 }}>
+      <div className="row-9 center col" style={{ gap: '2.5dvh' }}>
         {[
           { icon: emailIcon, label: 'Đăng nhập với Email', primary: true, onClick: () => navigate('EnterEmail') },
           { icon: googleIcon, label: 'Đăng nhập với Google', primary: false, onClick: handleGoogleLogin },
