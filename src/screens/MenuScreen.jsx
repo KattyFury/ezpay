@@ -1,5 +1,7 @@
-import NavBar from '../components/NavBar'
-import { MOCK_VND, fmtVND } from '../data'
+﻿import NavBar from '../components/NavBar'
+import { fmtVND } from '../data'
+import { getTokenBalances } from '../chain'
+import { useState, useEffect } from 'react'
 import { IconHistory, IconLanguage, IconSecurity, IconInfo, IconChevron } from '../icons'
 import { useNav } from '../nav'
 
@@ -12,19 +14,24 @@ const ITEMS = [
 
 export default function MenuScreen() {
   const { navigate } = useNav()
+  const [totalVND, setTotalVND] = useState(0)
+  useEffect(() => {
+    const addr = localStorage.getItem('ez_wallet_addr')
+    if (addr) getTokenBalances(addr).then(ts => setTotalVND(ts.reduce((s, t) => s + t.vnd, 0)))
+  }, [])
 
   return (
     <div className="screen">
       {/* Row 1: Số dư khả dụng */}
       <div className="row-1 col" style={{ justifyContent: 'center', borderBottom: '1px solid var(--color-gray)' }}>
         <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>Số dư khả dụng</span>
-        <span style={{ fontSize: 'var(--fs-amount)', fontWeight: 'var(--fw-bold)', lineHeight: 1.1 }}>{fmtVND(MOCK_VND)}</span>
+        <span style={{ fontSize: 'var(--fs-amount)', fontWeight: 'var(--fw-bold)', lineHeight: 1.1 }}>{fmtVND(totalVND)}</span>
       </div>
 
       {/* Row 2: Số dư thực tế */}
       <div className="row-2 center">
         <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>
-          Số dư thực tế: {fmtVND(MOCK_VND)}
+          Số dư thực tế: {fmtVND(totalVND)}
         </span>
       </div>
 

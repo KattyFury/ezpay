@@ -30,13 +30,19 @@ export async function initializeWallet(userToken) {
 }
 
 export async function getWalletAddress(userToken) {
-  const res = await fetch('/api/wallet', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'getAddress', userToken }),
-  })
-  const data = await res.json()
-  return data.address || null
+  try {
+    const res = await fetch('/api/wallet', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'getAddress', userToken }),
+    })
+    const data = await res.json()
+    console.log('[getWalletAddress]', data)
+    return data.address || null
+  } catch (e) {
+    console.error('[getWalletAddress error]', e)
+    return null
+  }
 }
 
 export function executeChallenge(sdk, userToken, encryptionKey, challengeId) {
