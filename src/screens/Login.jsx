@@ -2,67 +2,65 @@
 import emailIcon from '../../icon/email.png'
 import googleIcon from '../../icon/google.png'
 import { useNav } from '../nav'
-import { getSDK, createSocialToken, initializeWallet, executeChallenge, getWalletAddress, GOOGLE_CLIENT_ID } from '../circle'
+import { W3SSdk } from '@circle-fin/w3s-pw-web-sdk'
+import { createSocialToken, initializeWallet, executeChallenge, getWalletAddress, GOOGLE_CLIENT_ID } from '../circle'
+
+const APP_ID = '518fec6a-4680-5175-9de6-0810fb3dfd04'
 
 export default function Login() {
   const { navigate } = useNav()
 
   async function handleGoogleLogin() {
     try {
-      const sdk = getSDK()
+      const deviceId = crypto.randomUUID()
 
-      // Lấy deviceId từ SDK
-      const deviceId = sdk.getDeviceId ? sdk.getDeviceId() : crypto.randomUUID()
-
-      // Lấy device token từ Circle
+      // Lấy device token từ Circle backend
       const { deviceToken, deviceEncryptionKey } = await createSocialToken(deviceId)
 
-      // Khởi tạo SDK với Google config
-      sdk.init({
-        appSettings: { appId: '518fec6a-4680-5175-9de6-0810fb3dfd04' },
-        loginConfigs: {
-          deviceToken,
-          deviceEncryptionKey,
-          google: {
-            clientId: GOOGLE_CLIENT_ID,
-            redirectUri: window.location.origin,
+      // Tạo SDK MỚI với loginConfigs trong constructor — đúng theo Circle docs
+      const googleSdk = new W3SSdk(
+        {
+          appSettings: { appId: APP_ID },
+          loginConfigs: {
+            deviceToken,
+            deviceEncryptionKey,
+            google: {
+              clientId: GOOGLE_CLIENT_ID,
+              redirectUri: window.location.origin,
+              selectAccountPrompt: true,
+            },
           },
         },
-      }, async (err, result) => {
-        if (err || !result?.userToken) return
-        const { userToken, encryptionKey } = result
+        async (err, result) => {
+          if (err) { console.error('Google login callback error:', err); return }
+          if (!result?.userToken) return
+          const { userToken, encryptionKey } = result
 
-        localStorage.setItem('ez_user_token', userToken)
-        localStorage.setItem('ez_encryption_key', encryptionKey)
-        localStorage.removeItem('ez_wallet_addr')
-        localStorage.removeItem('ez_wallet_id')
+          localStorage.setItem('ez_user_token', userToken)
+          localStorage.setItem('ez_encryption_key', encryptionKey)
+          localStorage.removeItem('ez_wallet_addr')
+          localStorage.removeItem('ez_wallet_id')
 
-        // Khởi tạo ví
-        const walletData = await initializeWallet(userToken)
-        const challengeId = walletData?.data?.challengeId
-        if (challengeId) await executeChallenge(sdk, userToken, encryptionKey, challengeId)
+          const walletData = await initializeWallet(userToken)
+          const challengeId = walletData?.data?.challengeId
+          if (challengeId) await executeChallenge(googleSdk, userToken, encryptionKey, challengeId)
 
-        // Lấy fresh token
-        const freshResp = await fetch('/api/session', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'socialToken', deviceId }),
-        })
-        // Lấy wallet address
-        let walletInfo = null
-        for (let i = 0; i < 3; i++) {
-          walletInfo = await getWalletAddress(userToken)
-          if (walletInfo?.address) break
-          await new Promise(r => setTimeout(r, 2000))
+          const freshSession = await createSocialToken(deviceId).catch(() => null)
+          const freshToken = freshSession ? freshSession.userToken || userToken : userToken
+
+          let walletInfo = null
+          for (let i = 0; i < 3; i++) {
+            walletInfo = await getWalletAddress(userToken)
+            if (walletInfo?.address) break
+            await new Promise(r => setTimeout(r, 2000))
+          }
+          if (walletInfo?.address) localStorage.setItem('ez_wallet_addr', walletInfo.address)
+          if (walletInfo?.walletId) localStorage.setItem('ez_wallet_id', walletInfo.walletId)
+          navigate('HomeSend')
         }
-        if (walletInfo?.address) localStorage.setItem('ez_wallet_addr', walletInfo.address)
-        if (walletInfo?.walletId) localStorage.setItem('ez_wallet_id', walletInfo.walletId)
+      )
 
-        navigate('HomeSend')
-      })
-
-      // Trigger Google OAuth
-      sdk.performLogin('google')
+      googleSdk.performLogin('google')
     } catch (e) {
       console.error('Google login error:', e)
     }
