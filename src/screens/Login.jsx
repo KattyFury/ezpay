@@ -131,7 +131,7 @@ export default function Login() {
         </span>
       </div>
 
-      <div style={{ gridRow: '9 / 11', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '2dvh' }}>
+      <div style={{ gridRow: '6 / 11', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', gap: '2dvh', paddingBottom: '7dvh' }}>
         {[
           { icon: emailIcon, label: 'Đăng nhập với Email', primary: true, onClick: () => navigate('EnterEmail'), disabled: false },
           { icon: googleIcon, label: 'Đăng nhập với Google', primary: false, onClick: handleGoogleLogin, disabled: true },
@@ -142,7 +142,7 @@ export default function Login() {
             disabled={disabled}
             onClick={disabled ? undefined : onClick}>
             <img src={icon} alt="" style={{ width: 18, height: 18 }} />
-            <span>{label}{disabled ? ' (sắp ra mắt)' : ''}</span>
+            <span>{label}</span>
           </button>
         ))}
       </div>
