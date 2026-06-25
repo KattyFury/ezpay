@@ -41,7 +41,7 @@ export async function onRequestPost(ctx) {
     contractAddress: tokenInfo.address,
     abiFunctionSignature: TRANSFER_SIG,
     abiParameters: [toAddress, amountRaw],
-    fee: { type: 'level', config: { feeLevel: 'MEDIUM' } },
+    feeLevel: 'MEDIUM',
   }, apiKey, userToken)
 
   const challengeId = txResp?.data?.challengeId

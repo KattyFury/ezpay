@@ -75,7 +75,7 @@ export async function onRequestPost(ctx) {
           walletId,
           contractAddress: instr.target,
           callData: instr.data,
-          fee: { type: 'level', config: { feeLevel: 'MEDIUM' } },
+          feeLevel: 'MEDIUM',
         }),
       })
       const txData = await txRes.json()
