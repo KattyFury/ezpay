@@ -170,8 +170,9 @@ export default function Swap() {
 
       {/* Rows 7-9: confirm button + numpad */}
       <div className="row-7-9" style={{ display: 'flex', flexDirection: 'column' }}>
-        <button className="btn btn-primary" style={{ width: '66.67%', alignSelf: 'center', height: 44, flexShrink: 0 }} disabled={!canSwap} onClick={handleSwap}>
-          {loading ? 'Đang xử lý...' : 'Xác nhận giao dịch'}
+        <button className="btn btn-primary" style={{ width: '66.67%', alignSelf: 'center', height: 44, flexShrink: 0, opacity: 0.4 }} disabled
+          title="Swap đang hoàn thiện">
+          {loading ? 'Đang xử lý...' : 'Swap (sắp ra mắt)'}
         </button>
         <div style={{ flex: 1, minHeight: 0 }}>
           <Numpad onKey={handleKey} showComma />
