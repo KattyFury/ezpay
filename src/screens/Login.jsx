@@ -21,20 +21,12 @@ export default function Login() {
     if (!deviceToken || !deviceEncryptionKey) return
 
     setRestoring(true)
-    // Lấy token mới vì token cũ có thể hết hạn sau redirect
-    let freshToken = deviceToken
-    let freshEncKey = deviceEncryptionKey
-    try {
-      const fresh = await createSocialToken(deviceId)
-      freshToken = fresh.deviceToken
-      freshEncKey = fresh.deviceEncryptionKey
-    } catch {}
-
+    // Dùng đúng deviceToken gốc — Circle cần match token với session đã bắt đầu
     const googleSdk = new W3SSdk(
       {
         appSettings: { appId: APP_ID },
         loginConfigs: {
-          deviceToken: freshToken, deviceEncryptionKey: freshEncKey,
+          deviceToken, deviceEncryptionKey,
           google: { clientId: GOOGLE_CLIENT_ID, redirectUri: window.location.origin, selectAccountPrompt: true },
         },
       },
