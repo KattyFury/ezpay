@@ -54,8 +54,7 @@ export default function Login() {
         navigate('HomeSend')
       }
     )
-    // Trigger SDK để xử lý OAuth callback
-    googleSdk.performLogin(deviceToken, deviceEncryptionKey)
+    // SDK tự xử lý OAuth callback từ URL hash — không cần gọi performLogin lại
   }, [])
 
   async function handleGoogleLogin() {
