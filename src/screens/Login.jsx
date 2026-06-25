@@ -138,11 +138,11 @@ export default function Login() {
           { icon: facebookIcon, label: 'Đăng nhập với Facebook', primary: false, onClick: () => {}, disabled: true },
         ].map(({ icon, label, primary, onClick, disabled }) => (
           <button key={label} className={`btn ${primary ? 'btn-primary' : 'btn-secondary'}`}
-            style={{ width: '75%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, opacity: disabled ? 0.4 : 1, cursor: disabled ? 'not-allowed' : 'pointer' }}
+            style={{ width: '75%', display: 'grid', gridTemplateColumns: '18px auto', columnGap: 10, justifyContent: 'center', alignItems: 'center', opacity: disabled ? 0.4 : 1, cursor: disabled ? 'not-allowed' : 'pointer' }}
             disabled={disabled}
             onClick={disabled ? undefined : onClick}>
             <img src={icon} alt="" style={{ width: 18, height: 18 }} />
-            <span>{label}</span>
+            <span style={{ textAlign: 'left' }}>{label}</span>
           </button>
         ))}
       </div>

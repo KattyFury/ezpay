@@ -2,12 +2,13 @@ import { useNav } from '../nav'
 import tradeIcon from '../../icon/trade.png'
 import upIcon from '../../icon/up.png'
 import downIcon from '../../icon/down.png'
+import menuIcon from '../../icon/menu.png'
 
 const TABS = [
   { id: 'Swap',        label: 'Đổi tiền', icon: tradeIcon },
   { id: 'HomeSend',    label: 'Gửi',      icon: upIcon },
   { id: 'HomeReceive', label: 'Nhận',     icon: downIcon },
-  { id: 'MenuScreen',  label: 'Menu',     icon: null },
+  { id: 'MenuScreen',  label: 'Menu',     icon: menuIcon },
 ]
 
 export default function NavBar({ active }) {

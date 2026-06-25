@@ -74,7 +74,8 @@ export default function EnterEmail() {
         Đăng nhập
       </div>
 
-      <div className="row-5 col" style={{ justifyContent: 'center', gap: 8 }}>
+      <div className="row-5" style={{ position: 'relative' }}>
+        {/* Input khóa vị trí giữa row-5 */}
         <input
           type="email"
           className="address-input"
@@ -83,12 +84,12 @@ export default function EnterEmail() {
           onChange={e => { setEmail(e.target.value); setError('') }}
           onKeyDown={e => e.key === 'Enter' && handleSubmit()}
           autoFocus
-          style={{ height: 52, fontSize: 'var(--fs-body)' }}
+          style={{ position: 'absolute', top: '50%', left: 0, right: 0, transform: 'translateY(-50%)', height: 52, fontSize: 'var(--fs-body)' }}
         />
 
-        {/* Email history suggestions */}
+        {/* Suggestions hiện absolute bên dưới input — không đẩy input */}
         {suggestions.length > 0 && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <div style={{ position: 'absolute', top: 'calc(50% + 32px)', left: 0, right: 0, display: 'flex', flexDirection: 'column', gap: 4, marginTop: 8 }}>
             {suggestions.map(s => (
               <button key={s} onClick={() => { setEmail(s); setError('') }}
                 style={{
@@ -106,7 +107,7 @@ export default function EnterEmail() {
 
         {/* Domain suggestions khi gõ phần trước @ */}
         {showDomains && suggestions.length === 0 && (
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ position: 'absolute', top: 'calc(50% + 32px)', left: 0, right: 0, display: 'flex', gap: 8, marginTop: 8 }}>
             {DOMAINS.map(d => (
               <button key={d} onClick={() => applyDomain(d)}
                 style={{
@@ -119,7 +120,7 @@ export default function EnterEmail() {
           </div>
         )}
 
-        {error && <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-error)' }}>{error}</span>}
+        {error && <span style={{ position: 'absolute', top: 'calc(50% + 32px)', left: 0, marginTop: 8, fontSize: 'var(--fs-label)', color: 'var(--color-error)' }}>{error}</span>}
       </div>
 
       <div className="row-10 row10-dual">
