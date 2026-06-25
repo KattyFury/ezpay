@@ -30,12 +30,6 @@ export default function HomeSend() {
         </span>
       </div>
 
-      <div className="row-2 center">
-        <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>
-          Số dư thực tế: {loading ? '...' : fmtVND(totalVND)}
-        </span>
-      </div>
-
       <div className="row-3-6" style={{ display: 'grid', gridTemplateRows: `repeat(${Math.max(tokens.length, 1)}, 1fr)`, overflowY: 'auto' }}>
         {loading ? (
           <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-muted)', fontSize: 'var(--fs-label)' }}>Đang tải...</div>

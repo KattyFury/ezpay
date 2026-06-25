@@ -40,10 +40,6 @@ export default function HomeReceive() {
         <span style={{ fontSize: 'var(--fs-amount)', fontWeight: 'var(--fw-bold)', lineHeight: 1.1 }}>{fmtVND(totalVND)}</span>
       </div>
 
-      <div className="row-2 center">
-        <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>Số dư thực tế: {fmtVND(totalVND)}</span>
-      </div>
-
       <div className="row-3-6 center col" style={{ gap: 12 }}>
         <QRCodeSVG value={walletAddr || '0x'} size={200} level="M" />
         <button onClick={copyAddr} style={{

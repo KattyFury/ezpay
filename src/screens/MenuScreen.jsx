@@ -29,12 +29,6 @@ export default function MenuScreen() {
       </div>
 
       {/* Row 2: Số dư thực tế */}
-      <div className="row-2 center">
-        <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>
-          Số dư thực tế: {fmtVND(totalVND)}
-        </span>
-      </div>
-
       {/* Row 3: Nạp / Rút */}
       <div className="row-3" style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
         <button className="btn btn-primary" style={{ flex: 1 }}
