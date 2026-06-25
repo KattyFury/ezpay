@@ -1,4 +1,4 @@
-// KIT_KEY ở server-side, gọi Circle Stablecoin Kit API
+﻿// KIT_KEY ở server-side, gọi Circle Stablecoin Kit API
 // App Kit SDK = wrapper của các API này, gọi thẳng = cùng kết quả
 const CIRCLE_API = 'https://api.circle.com'
 const W3S_API   = 'https://api.circle.com/v1/w3s'
@@ -23,8 +23,8 @@ export async function onRequestPost(ctx) {
     if (!kitKey) return new Response(JSON.stringify({ error: 'KIT_KEY not configured' }), { status: 500, headers: JSON_HEADERS })
     if (!fromAddr || !toAddr) return new Response(JSON.stringify({ error: 'unknown token' }), { status: 400, headers: JSON_HEADERS })
     const params = new URLSearchParams({
-      tokenInAddress: fromAddr, tokenInChain: 'ARC-TESTNET',
-      tokenOutAddress: toAddr,  tokenOutChain: 'ARC-TESTNET',
+      tokenInAddress: fromAddr, tokenInChain: 'Arc_Testnet',
+      tokenOutAddress: toAddr,  tokenOutChain: 'Arc_Testnet',
       fromAddress: walletAddress || '0x0000000000000000000000000000000000000001',
       amount: String(amountIn), slippageBps: '300',
     })
@@ -44,8 +44,8 @@ export async function onRequestPost(ctx) {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${kitKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        tokenInAddress: fromAddr, tokenInChain: 'ARC-TESTNET',
-        tokenOutAddress: toAddr,  tokenOutChain: 'ARC-TESTNET',
+        tokenInAddress: fromAddr, tokenInChain: 'Arc_Testnet',
+        tokenOutAddress: toAddr,  tokenOutChain: 'Arc_Testnet',
         fromAddress: walletAddress, toAddress: walletAddress,
         amount: String(amountIn), slippageBps: 300,
       }),
