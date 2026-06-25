@@ -6,7 +6,6 @@ async function circleReq(method, path, body, apiKey, userToken) {
     'Content-Type': 'application/json',
   };
   if (userToken) headers['X-User-Token'] = userToken;
-
   const res = await fetch(`${CIRCLE_API}${path}`, {
     method,
     headers,
@@ -15,11 +14,21 @@ async function circleReq(method, path, body, apiKey, userToken) {
   return res.json();
 }
 
+const JSON_HEADERS = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' };
+
+// Lấy ví trên Arc Testnet (fallback ví đầu tiên nếu không tìm thấy)
+function pickArcWallet(wallets) {
+  const list = wallets?.data?.wallets || [];
+  return list.find(w => w.blockchain === 'ARC-TESTNET') || list[0] || null;
+}
+
 export async function onRequestPost(ctx) {
-  const apiKey = ctx.env.CIRCLE_API_KEY;
+  const apiKey = ctx.env.API_KEY || ctx.env.CIRCLE_API_KEY;
   const { action, userToken } = await ctx.request.json();
 
-  if (!userToken) return new Response(JSON.stringify({ error: 'userToken required' }), { status: 400 });
+  if (!userToken) {
+    return new Response(JSON.stringify({ error: 'userToken required' }), { status: 400, headers: JSON_HEADERS });
+  }
 
   if (action === 'initialize') {
     const data = await circleReq('POST', '/user/initialize', {
@@ -27,32 +36,20 @@ export async function onRequestPost(ctx) {
       accountType: 'EOA',
       blockchains: ['ARC-TESTNET'],
     }, apiKey, userToken);
-    return new Response(JSON.stringify(data), {
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-    });
+    return new Response(JSON.stringify(data), { headers: JSON_HEADERS });
   }
 
   if (action === 'getAddress') {
-    const wallets = await circleReq('GET', '/user/wallets', undefined, apiKey, userToken);
-    const address = wallets?.data?.wallets?.[0]?.address || null;
-    return new Response(JSON.stringify({ address }), {
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-    });
+    // Đúng endpoint: GET /v1/w3s/wallets (X-User-Token), KHÔNG phải /user/wallets
+    const wallets = await circleReq('GET', '/wallets', undefined, apiKey, userToken);
+    const wallet = pickArcWallet(wallets);
+    return new Response(JSON.stringify({
+      address: wallet?.address || null,
+      blockchain: wallet?.blockchain || null,
+    }), { headers: JSON_HEADERS });
   }
 
-  if (action === 'balance') {
-    const wallets = await circleReq('GET', '/user/wallets', undefined, apiKey, userToken);
-    const walletId = wallets?.data?.wallets?.[0]?.id;
-    if (!walletId) return new Response(JSON.stringify({ balances: [] }), {
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-    });
-    const balData = await circleReq('GET', `/user/wallets/${walletId}/balances`, undefined, apiKey, userToken);
-    return new Response(JSON.stringify({ balances: balData?.data?.tokenBalances || [] }), {
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-    });
-  }
-
-  return new Response(JSON.stringify({ error: 'unknown action' }), { status: 400 });
+  return new Response(JSON.stringify({ error: 'unknown action' }), { status: 400, headers: JSON_HEADERS });
 }
 
 export async function onRequestOptions() {

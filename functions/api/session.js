@@ -13,7 +13,7 @@ async function circlePost(path, body, apiKey) {
 }
 
 export async function onRequestPost(ctx) {
-  const apiKey = ctx.env.CIRCLE_API_KEY;
+  const apiKey = ctx.env.API_KEY || ctx.env.CIRCLE_API_KEY;
   const { email } = await ctx.request.json();
 
   if (!email) {
