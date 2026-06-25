@@ -1,9 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import NavBar from '../components/NavBar'
 import Numpad from '../components/Numpad'
-import { TOKENS } from '../data'
-import { estimateSwap, executeSwap, getSDK } from '../circle'
-import { executeChallenge } from '../circle'
+import { estimateSwap, executeSwap, getSDK, executeChallenge } from '../circle'
+import { getTokenBalances } from '../chain'
 
 const SWAP_TOKENS = ['USDC', 'EURC', 'cirBTC']
 const COLORS = { USDC: '#2775CA', EURC: '#1A56DB', cirBTC: '#F7931A' }
@@ -64,9 +63,20 @@ export default function Swap() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [status, setStatus] = useState('')
+  const [balances, setBalances] = useState({})
 
   const fromSym = SWAP_TOKENS[fromIdx]
   const toSym = SWAP_TOKENS[toIdx]
+
+  useEffect(() => {
+    const addr = localStorage.getItem('ez_wallet_addr')
+    if (!addr) return
+    getTokenBalances(addr).then(tokens => {
+      const map = {}
+      tokens.forEach(t => { map[t.symbol] = t.amount })
+      setBalances(map)
+    })
+  }, [])
 
   function handleKey(key) {
     setEstimate(null)
@@ -126,7 +136,12 @@ export default function Swap() {
       </div>
 
       <div className="row-2" style={{ padding: '8px 0 4px' }}>
-        <TokenCard side="Từ" symbol={fromSym} amount={input} showQuick onQuick={v => {}} onToggle={() => {}} />
+        <TokenCard side="Từ" symbol={fromSym} amount={input} showQuick onQuick={v => {
+          const bal = balances[fromSym] || 0
+          const pct = v === 'Max' ? 1 : parseFloat(v) / 100
+          setInput(String((bal * pct).toFixed(6).replace(/\.?0+$/, '')))
+          setEstimate(null)
+        }} onToggle={() => {}} />
       </div>
 
       <div className="row-3" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
