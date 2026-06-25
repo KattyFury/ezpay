@@ -83,10 +83,12 @@ export default function Login() {
           { icon: googleIcon, label: 'Đăng nhập với Google', primary: false, onClick: handleGoogleLogin },
         ].map(({ icon, label, primary, onClick }) => (
           <button key={label} className={`btn ${primary ? 'btn-primary' : 'btn-secondary'}`}
-            style={{ width: '75%', display: 'grid', gridTemplateColumns: '24px 1fr', alignItems: 'center', gap: 8 }}
+            style={{ width: '75%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}
             onClick={onClick}>
-            <img src={icon} alt="" style={{ height: 20, width: 'auto', justifySelf: 'center', objectFit: 'contain' }} />
-            <span style={{ textAlign: 'left' }}>{label}</span>
+            <div style={{ width: 22, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <img src={icon} alt="" style={{ maxWidth: 22, maxHeight: 22, objectFit: 'contain' }} />
+            </div>
+            <span>{label}</span>
           </button>
         ))}
       </div>
