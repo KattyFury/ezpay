@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import NavBar from '../components/NavBar'
 import Numpad from '../components/Numpad'
-import { TOKENS, fmtVND } from '../data'
+import { TOKENS } from '../data'
+import { estimateSwap, executeSwap, getSDK } from '../circle'
+import { executeChallenge } from '../circle'
 
+const SWAP_TOKENS = ['USDC', 'EURC', 'cirBTC']
 const COLORS = { USDC: '#2775CA', EURC: '#1A56DB', cirBTC: '#F7931A' }
 
-function TokenCard({ side, token, amount, est, balance, onToggle, showQuick, onQuick }) {
+function TokenCard({ side, symbol, amount, est, showQuick, onQuick, onToggle }) {
   return (
     <div style={{
       border: '1.5px solid var(--color-gray)', borderRadius: 14,
@@ -16,14 +19,14 @@ function TokenCard({ side, token, amount, est, balance, onToggle, showQuick, onQ
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <div style={{
             width: 28, height: 28, borderRadius: '50%',
-            background: COLORS[token.symbol] || '#999',
+            background: COLORS[symbol] || '#999',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: 10, fontWeight: 700, color: '#fff',
-          }}>{token.symbol.slice(0, 2)}</div>
+          }}>{symbol.slice(0, 2)}</div>
           <div>
             <div style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>{side}</div>
             <button onClick={onToggle} style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'var(--fs-item)', fontWeight: 'var(--fw-medium)', padding: 0 }}>
-              {token.symbol} ▾
+              {symbol} ▾
             </button>
           </div>
         </div>
@@ -33,9 +36,8 @@ function TokenCard({ side, token, amount, est, balance, onToggle, showQuick, onQ
               {amount || '0'}
             </div>
           ) : (
-            <div>
-              <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--color-muted)' }}>{est || '~0'}</div>
-              <div style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>Số dư: {balance}</div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--color-muted)' }}>
+              {est || '~'}
             </div>
           )}
         </div>
@@ -55,15 +57,19 @@ function TokenCard({ side, token, amount, est, balance, onToggle, showQuick, onQ
 }
 
 export default function Swap() {
-  const [tab, setTab] = useState('Market')
   const [fromIdx, setFromIdx] = useState(0)
   const [toIdx, setToIdx] = useState(1)
   const [input, setInput] = useState('')
+  const [estimate, setEstimate] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [status, setStatus] = useState('')
 
-  const from = TOKENS[fromIdx]
-  const to = TOKENS[toIdx]
+  const fromSym = SWAP_TOKENS[fromIdx]
+  const toSym = SWAP_TOKENS[toIdx]
 
   function handleKey(key) {
+    setEstimate(null)
     if (key === 'BACK') { setInput(p => p.slice(0, -1)); return }
     if (key === ',' && input.includes(',')) return
     if (input.length >= 10) return
@@ -71,64 +77,88 @@ export default function Swap() {
   }
 
   function swapDir() {
-    setFromIdx(toIdx); setToIdx(fromIdx); setInput('')
+    const tmp = fromIdx; setFromIdx(toIdx); setToIdx(tmp); setInput(''); setEstimate(null)
   }
 
-  function handleQuick(v) {
-    const bal = from.amount
-    if (v === '50%') setInput(String((bal * 0.5).toFixed(2)))
-    if (v === '75%') setInput(String((bal * 0.75).toFixed(2)))
-    if (v === 'Max') setInput(String(bal))
+  async function handleEstimate() {
+    if (!input || parseFloat(input.replace(',', '.')) <= 0) return
+    setLoading(true); setError('')
+    try {
+      const walletAddress = localStorage.getItem('ez_wallet_addr')
+      const res = await estimateSwap({ walletAddress, tokenIn: fromSym, tokenOut: toSym, amountIn: input.replace(',', '.') })
+      if (res.error) throw new Error(res.error)
+      setEstimate(res.estimate)
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setLoading(false)
+    }
   }
+
+  async function handleSwap() {
+    setLoading(true); setError(''); setStatus('Đang chuẩn bị...')
+    try {
+      const walletAddress = localStorage.getItem('ez_wallet_addr')
+      const walletId = localStorage.getItem('ez_wallet_id')
+      const res = await executeSwap({ walletId, walletAddress, tokenIn: fromSym, tokenOut: toSym, amountIn: input.replace(',', '.') })
+      if (res.error) throw new Error(res.error)
+      setStatus('Xác nhận PIN...')
+      const userToken = localStorage.getItem('ez_user_token')
+      const encryptionKey = localStorage.getItem('ez_encryption_key')
+      await executeChallenge(getSDK(), userToken, encryptionKey, res.challengeId)
+      setStatus('Swap thành công!')
+      setInput(''); setEstimate(null)
+    } catch (e) {
+      setError(e.message); setStatus('')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const estAmt = estimate?.estimatedOutput?.amount
+  const canSwap = !!input && parseFloat(input.replace(',', '.')) > 0
 
   return (
     <div className="screen">
-      {/* Row 1: tabs */}
-      <div className="row-1" style={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid var(--color-gray)', gap: 0 }}>
-        {['Market', 'Limit'].map(t => (
-          <button key={t} onClick={() => setTab(t)}
-            style={{
-              flex: 1, height: '100%', border: 'none', background: 'none', cursor: t === 'Limit' ? 'not-allowed' : 'pointer',
-              fontFamily: 'inherit', fontSize: 'var(--fs-label)', fontWeight: tab === t ? 700 : 400,
-              color: tab === t ? 'var(--color-primary)' : 'var(--color-muted)',
-              borderBottom: tab === t ? '2px solid var(--color-primary)' : '2px solid transparent',
-              opacity: t === 'Limit' ? 0.4 : 1,
-            }}>
-            {t}
-          </button>
-        ))}
+      <div className="row-1" style={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid var(--color-gray)' }}>
+        <button style={{ flex: 1, height: '100%', border: 'none', background: 'none', fontFamily: 'inherit', fontSize: 'var(--fs-label)', fontWeight: 700, color: 'var(--color-primary)', borderBottom: '2px solid var(--color-primary)' }}>Market</button>
+        <button style={{ flex: 1, height: '100%', border: 'none', background: 'none', fontFamily: 'inherit', fontSize: 'var(--fs-label)', color: 'var(--color-muted)', opacity: 0.4, cursor: 'not-allowed' }}>Limit</button>
       </div>
 
-      {/* Rows 2-3: FROM card */}
       <div className="row-2" style={{ padding: '8px 0 4px' }}>
-        <TokenCard side="Từ" token={from} amount={input} showQuick onQuick={handleQuick} onToggle={() => {}} />
+        <TokenCard side="Từ" symbol={fromSym} amount={input} showQuick onQuick={v => {}} onToggle={() => {}} />
       </div>
 
-      {/* Row 3-4: swap button */}
-      <div className="row-3" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
-        <button onClick={swapDir} style={{
-          width: 36, height: 36, borderRadius: '50%',
-          border: '1.5px solid var(--color-gray)', background: 'var(--color-white)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 18,
-        }}>⇅</button>
+      <div className="row-3" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <button onClick={swapDir} style={{ width: 36, height: 36, borderRadius: '50%', border: '1.5px solid var(--color-gray)', background: 'var(--color-white)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 18 }}>⇅</button>
       </div>
 
-      {/* Rows 4-5: TO card */}
       <div className="row-4" style={{ padding: '4px 0 8px' }}>
-        <TokenCard side="Đến" token={to} est={input ? `~${input}` : '~0'} balance={`${to.amount} ${to.symbol}`} showQuick={false} onToggle={() => {}} />
+        <TokenCard side="Đến" symbol={toSym} est={estAmt ? `~${parseFloat(estAmt).toFixed(4)}` : '~'} showQuick={false} onToggle={() => {}} />
       </div>
 
-      {/* Row 5: Fee info */}
-      <div className="row-5 center" style={{ justifyContent: 'space-between', fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>
-        <span>Phí</span><span>~0 USDC</span>
+      <div className="row-5" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>
+        {estimate ? (
+          <>
+            <span>Phí: {estimate.fees?.map(f => `${f.amount} ${f.token}`).join(' + ')}</span>
+            <span>Min: {parseFloat(estimate.stopLimit?.amount || 0).toFixed(4)} {toSym}</span>
+          </>
+        ) : <span>{error && <span style={{ color: 'var(--color-error)' }}>{error}</span>}</span>}
+        {status && <span style={{ color: 'var(--color-primary)' }}>{status}</span>}
       </div>
 
-      {/* Row 6: OK button */}
       <div className="row-6 center">
-        <button className="btn btn-primary" style={{ width: '100%' }} disabled={!input}>OK</button>
+        {!estimate ? (
+          <button className="btn btn-primary" style={{ width: '100%' }} disabled={!canSwap || loading} onClick={handleEstimate}>
+            {loading ? 'Đang ước tính...' : 'Xem tỷ giá'}
+          </button>
+        ) : (
+          <button className="btn btn-primary" style={{ width: '100%' }} disabled={loading} onClick={handleSwap}>
+            {loading ? 'Đang xử lý...' : `Swap ${input} ${fromSym} → ~${parseFloat(estAmt).toFixed(4)} ${toSym}`}
+          </button>
+        )}
       </div>
 
-      {/* Rows 7-9: numpad */}
       <div className="row-7-9">
         <Numpad onKey={handleKey} showComma />
       </div>

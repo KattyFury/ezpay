@@ -38,11 +38,31 @@ export async function getWalletAddress(userToken) {
     })
     const data = await res.json()
     console.log('[getWalletAddress]', data)
-    return data.address || null
+    return data || null
   } catch (e) {
     console.error('[getWalletAddress error]', e)
     return null
   }
+}
+
+export async function estimateSwap({ walletAddress, tokenIn, tokenOut, amountIn }) {
+  const userToken = localStorage.getItem('ez_user_token')
+  const res = await fetch('/api/swap', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'estimate', userToken, walletAddress, tokenIn, tokenOut, amountIn }),
+  })
+  return res.json()
+}
+
+export async function executeSwap({ walletId, walletAddress, tokenIn, tokenOut, amountIn }) {
+  const userToken = localStorage.getItem('ez_user_token')
+  const res = await fetch('/api/swap', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'execute', userToken, walletId, walletAddress, tokenIn, tokenOut, amountIn }),
+  })
+  return res.json()
 }
 
 export function executeChallenge(sdk, userToken, encryptionKey, challengeId) {

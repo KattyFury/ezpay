@@ -45,6 +45,7 @@ export async function onRequestPost(ctx) {
     const wallet = pickArcWallet(wallets);
     return new Response(JSON.stringify({
       address: wallet?.address || null,
+      walletId: wallet?.id || null,
       blockchain: wallet?.blockchain || null,
     }), { headers: JSON_HEADERS });
   }

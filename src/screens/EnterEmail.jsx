@@ -27,8 +27,9 @@ export default function EnterEmail() {
       const walletData = await initializeWallet(userToken)
       const challengeId = walletData?.data?.challengeId
       if (challengeId) await executeChallenge(sdk, userToken, encryptionKey, challengeId)
-      const addr = await getWalletAddress(userToken)
-      if (addr) localStorage.setItem('ez_wallet_addr', addr)
+      const walletInfo = await getWalletAddress(userToken)
+      if (walletInfo?.address) localStorage.setItem('ez_wallet_addr', walletInfo.address)
+      if (walletInfo?.walletId) localStorage.setItem('ez_wallet_id', walletInfo.walletId)
       navigate('HomeSend')
     } catch (e) {
       setError(e.message || 'Có lỗi xảy ra')
