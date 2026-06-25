@@ -35,7 +35,7 @@ export default function HomeSend() {
           <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-muted)', fontSize: 'var(--fs-label)' }}>Đang tải...</div>
         ) : tokens.length === 0 ? (
           <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-muted)', fontSize: 'var(--fs-label)' }}>
-            {localStorage.getItem('ez_wallet_addr') ? 'Chưa có token' : 'Vui lòng đăng nhập lại'}
+            {localStorage.getItem('ez_wallet_addr') ? 'Chưa có token' : 'Ví chưa được tạo — nạp USDC để kích hoạt'}
           </div>
         ) : tokens.map(t => (
           <div key={t.symbol} className="token-item">

@@ -30,7 +30,13 @@ export default function EnterEmail() {
       const walletData = await initializeWallet(userToken)
       const challengeId = walletData?.data?.challengeId
       if (challengeId) await executeChallenge(sdk, userToken, encryptionKey, challengeId)
-      const walletInfo = await getWalletAddress(userToken)
+      // Retry getWalletAddress vài lần vì wallet có thể cần thời gian để provision
+      let walletInfo = null
+      for (let i = 0; i < 3; i++) {
+        walletInfo = await getWalletAddress(userToken)
+        if (walletInfo?.address) break
+        await new Promise(r => setTimeout(r, 2000))
+      }
       if (walletInfo?.address) localStorage.setItem('ez_wallet_addr', walletInfo.address)
       if (walletInfo?.walletId) localStorage.setItem('ez_wallet_id', walletInfo.walletId)
       navigate('HomeSend')
