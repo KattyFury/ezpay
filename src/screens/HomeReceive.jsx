@@ -6,6 +6,7 @@ import { useNav } from '../nav'
 import { fmtVND } from '../data'
 import { getTokenBalances } from '../chain'
 import { IconShare, IconScan, IconQRSaved } from '../icons'
+import copyIcon from '../../icon/copy.png'
 
 export default function HomeReceive() {
   const { navigate } = useNav()
@@ -49,7 +50,7 @@ export default function HomeReceive() {
           padding: '6px 14px', background: 'none', cursor: 'pointer',
         }}>
           <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-black)' }}>{shortAddr}</span>
-          <span style={{ fontSize: 14 }}>{copied ? '✓' : '📋'}</span>
+          {copied ? <span style={{ fontSize: 14 }}>✓</span> : <img src={copyIcon} alt="copy" style={{ width: 15, height: 15 }} />}
         </button>
       </div>
 

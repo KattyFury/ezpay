@@ -21,7 +21,7 @@ export default function NavBar({ active }) {
           className={`navbar-btn${active === t.id ? ' active' : ''}`}
           onClick={() => navigate(t.id)}
         >
-          {t.icon && <img src={t.icon} alt="" style={{ width: 18, height: 18, marginBottom: 2 }} />}
+          {t.icon && <img src={t.icon} alt="" style={{ width: 18, height: 18, marginBottom: 2, opacity: active === t.id ? 1 : 0.4 }} />}
           {t.label}
         </button>
       ))}

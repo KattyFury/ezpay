@@ -1,10 +1,12 @@
 ﻿import { useState, useEffect } from 'react'
 import NavBar from '../components/NavBar'
 import hintIcon from '../../icon/hint.png'
+import danhbaIcon from '../../icon/danhba.png'
+import qrIcon from '../../icon/qr.png'
 import { useNav } from '../nav'
 import { fmtVND } from '../data'
 import { getTokenBalances, fmtAmount } from '../chain'
-import { IconContacts, IconScan, IconPaste } from '../icons'
+import { IconPaste } from '../icons'
 
 export default function HomeSend() {
   const { navigate } = useNav()
@@ -63,8 +65,8 @@ export default function HomeSend() {
       </div>
 
       <div className="row-9 action-grid">
-        <button className="action-card" onClick={() => navigate('Contacts')}><IconContacts size={20} /><span>Danh bạ</span></button>
-        <button className="action-card primary" onClick={() => navigate('QRScanner')}><IconScan size={26} /><span>Quét QR</span></button>
+        <button className="action-card" onClick={() => navigate('Contacts')}><img src={danhbaIcon} alt="" style={{ width: 20, height: 20 }} /><span>Danh bạ</span></button>
+        <button className="action-card primary" onClick={() => navigate('QRScanner')}><img src={qrIcon} alt="" style={{ width: 24, height: 24 }} /><span>Quét QR</span></button>
         <button className="action-card" onClick={() => navigate('PasteAddress')}><IconPaste size={20} /><span>Dán địa chỉ</span></button>
       </div>
 
