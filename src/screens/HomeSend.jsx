@@ -27,11 +27,12 @@ export default function HomeSend() {
 
   return (
     <div className="screen">
-      <div className="row-1 col full-bleed" style={{ justifyContent: 'center', borderBottom: '1px solid var(--color-gray)' }}>
-        <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>Số dư khả dụng</span>
-        <span style={{ fontSize: 'var(--fs-amount)', fontWeight: 'var(--fw-bold)', lineHeight: 1.1 }}>
-          {loading ? '...' : fmtVND(totalVND)}
+      <div className="row-1 center full-bleed" style={{ borderBottom: '1px solid var(--color-gray)', gap: 4 }}>
+        <span style={{ fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>Số dư</span>
+        <span style={{ fontSize: 'var(--fs-item)', fontWeight: 'var(--fw-bold)' }}>
+          {loading ? '...' : totalVND.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
         </span>
+        <span style={{ fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>VND</span>
       </div>
 
       <div className="row-2-5" style={{ display: 'grid', gridTemplateRows: `repeat(${Math.max(tokens.length, 1)}, 1fr)`, overflowY: 'auto' }}>
