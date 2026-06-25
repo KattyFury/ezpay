@@ -30,10 +30,17 @@ export default function EnterEmail() {
       const walletData = await initializeWallet(userToken)
       const challengeId = walletData?.data?.challengeId
       if (challengeId) await executeChallenge(sdk, userToken, encryptionKey, challengeId)
-      // Retry getWalletAddress vài lần vì wallet có thể cần thời gian để provision
+
+      // Lấy token mới sau challenge vì token cũ có thể đã hết hạn
+      const freshSession = await createSession(email.trim())
+      const freshToken = freshSession.userToken
+      localStorage.setItem('ez_user_token', freshToken)
+      localStorage.setItem('ez_encryption_key', freshSession.encryptionKey)
+
+      // Retry getWalletAddress với token mới
       let walletInfo = null
       for (let i = 0; i < 3; i++) {
-        walletInfo = await getWalletAddress(userToken)
+        walletInfo = await getWalletAddress(freshToken)
         if (walletInfo?.address) break
         await new Promise(r => setTimeout(r, 2000))
       }
