@@ -57,7 +57,7 @@ export default function HomeSend() {
       </div>
 
       <div className="row-7-8" style={{ padding: '6px 0' }}>
-        {!loading && tokens.find(t => t.symbol === 'USDC')?.amount === 0 ? (
+        {!loading && (tokens.find(t => t.symbol === 'USDC')?.amount ?? 0) <= 1 ? (
           <div className="tip-box" style={{ borderColor: 'var(--color-warning)', color: 'var(--color-warning)' }}>
             ⚠ Hết USDC — cần USDC để thanh toán phí giao dịch. Vào <b>Đổi tiền</b> để swap.
           </div>
