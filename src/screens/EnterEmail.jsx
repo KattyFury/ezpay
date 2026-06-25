@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import hintIcon from '../../icon/hint.png'
 import { useNav } from '../nav'
 import { createSession, getSDK, initializeWallet, executeChallenge, getWalletAddress } from '../circle'
 
@@ -97,7 +98,7 @@ export default function EnterEmail() {
                   fontSize: 'var(--fs-label)', fontFamily: 'inherit', color: 'var(--color-black)',
                   opacity: 0.8,
                 }}>
-                🕐 {s}
+                <img src={hintIcon} alt='' style={{ width: 15, height: 15, marginRight: 6, verticalAlign: 'middle' }} />{s}
               </button>
             ))}
           </div>
