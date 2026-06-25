@@ -1,8 +1,18 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import { useNav } from '../nav'
 import { createSession, getSDK, initializeWallet, executeChallenge, getWalletAddress } from '../circle'
 
 const DOMAINS = ['@gmail.com', '@yahoo.com', '@outlook.com']
+
+function getEmailHistory() {
+  try { return JSON.parse(localStorage.getItem('ez_email_history') || '[]') } catch { return [] }
+}
+
+function saveEmailHistory(email) {
+  const hist = getEmailHistory().filter(e => e !== email)
+  hist.unshift(email)
+  localStorage.setItem('ez_email_history', JSON.stringify(hist.slice(0, 5)))
+}
 
 export default function EnterEmail() {
   const { navigate } = useNav()
@@ -12,6 +22,10 @@ export default function EnterEmail() {
 
   const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
   const showDomains = email.length > 0 && !email.includes('@')
+  const history = getEmailHistory()
+  const suggestions = email.length === 0
+    ? history
+    : history.filter(e => e.toLowerCase().startsWith(email.toLowerCase()) && e !== email)
 
   function applyDomain(d) { setEmail(e => e + d); setError('') }
 
@@ -19,7 +33,6 @@ export default function EnterEmail() {
     if (!valid || loading) return
     setLoading(true); setError('')
     try {
-      // Xóa wallet info cũ trước khi login
       localStorage.removeItem('ez_wallet_addr')
       localStorage.removeItem('ez_wallet_id')
       const { userToken, encryptionKey } = await createSession(email.trim())
@@ -31,13 +44,11 @@ export default function EnterEmail() {
       const challengeId = walletData?.data?.challengeId
       if (challengeId) await executeChallenge(sdk, userToken, encryptionKey, challengeId)
 
-      // Lấy token mới sau challenge vì token cũ có thể đã hết hạn
       const freshSession = await createSession(email.trim())
       const freshToken = freshSession.userToken
       localStorage.setItem('ez_user_token', freshToken)
       localStorage.setItem('ez_encryption_key', freshSession.encryptionKey)
 
-      // Retry getWalletAddress với token mới
       let walletInfo = null
       for (let i = 0; i < 3; i++) {
         walletInfo = await getWalletAddress(freshToken)
@@ -46,6 +57,8 @@ export default function EnterEmail() {
       }
       if (walletInfo?.address) localStorage.setItem('ez_wallet_addr', walletInfo.address)
       if (walletInfo?.walletId) localStorage.setItem('ez_wallet_id', walletInfo.walletId)
+
+      saveEmailHistory(email.trim())
       navigate('HomeSend')
     } catch (e) {
       setError(e.message || 'Có lỗi xảy ra')
@@ -56,13 +69,11 @@ export default function EnterEmail() {
 
   return (
     <div className="screen">
-      {/* Row 1: title */}
       <div className="row-1 center" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)' }}>
         Đăng nhập
       </div>
 
-      {/* Row 5: input + domain suggestions */}
-      <div className="row-5 col" style={{ justifyContent: 'center', gap: 10 }}>
+      <div className="row-5 col" style={{ justifyContent: 'center', gap: 8 }}>
         <input
           type="email"
           className="address-input"
@@ -73,7 +84,26 @@ export default function EnterEmail() {
           autoFocus
           style={{ height: 52, fontSize: 'var(--fs-body)' }}
         />
-        {showDomains && (
+
+        {/* Email history suggestions */}
+        {suggestions.length > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {suggestions.map(s => (
+              <button key={s} onClick={() => { setEmail(s); setError('') }}
+                style={{
+                  textAlign: 'left', padding: '10px 14px',
+                  border: '1px solid var(--color-gray)', borderRadius: 10,
+                  background: 'var(--color-white)', cursor: 'pointer',
+                  fontSize: 'var(--fs-body)', fontFamily: 'inherit', color: 'var(--color-black)',
+                }}>
+                {s}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Domain suggestions khi gõ phần trước @ */}
+        {showDomains && suggestions.length === 0 && (
           <div style={{ display: 'flex', gap: 8 }}>
             {DOMAINS.map(d => (
               <button key={d} onClick={() => applyDomain(d)}
@@ -86,10 +116,10 @@ export default function EnterEmail() {
             ))}
           </div>
         )}
+
         {error && <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-error)' }}>{error}</span>}
       </div>
 
-      {/* Row 9: buttons */}
       <div className="row-10 row10-dual">
         <button className="btn btn-secondary" onClick={() => navigate('Login')}>Quay lại</button>
         <button className="btn btn-primary" disabled={!valid || loading} onClick={handleSubmit}>
