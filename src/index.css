@@ -140,10 +140,11 @@ body {
 .row10-dual {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 12px;
   padding: 8px 0;
 }
-.row10-dual .btn { flex: 1; }
+.row10-dual .btn { width: 44%; }
 
 /* ── Numpad ── */
 .numpad {
