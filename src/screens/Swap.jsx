@@ -181,7 +181,7 @@ export default function Swap() {
         <button style={{ flex: 1, height: '100%', border: 'none', background: 'none', fontFamily: 'inherit', fontSize: 'var(--fs-label)', color: 'var(--color-muted)', opacity: 0.4, cursor: 'not-allowed' }}>Limit</button>
       </div>
 
-      <div className="row-2" style={{ padding: '8px 0 4px' }}>
+      <div className="row-2" style={{ height: '100%' }}>
         <TokenCard side="Từ" symbol={fromSym} amount={input} showQuick onQuick={v => {
           const bal = balances[fromSym] || 0
           const pct = v === 'Max' ? 1 : parseFloat(v) / 100
@@ -190,11 +190,11 @@ export default function Swap() {
         }} onToggle={() => setPicker('from')} />
       </div>
 
-      <div className="row-3" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="row-3 center">
         <button onClick={swapDir} style={{ width: 36, height: 36, borderRadius: '50%', border: '1.5px solid var(--color-gray)', background: 'var(--color-white)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 18 }}>⇅</button>
       </div>
 
-      <div className="row-4" style={{ padding: '4px 0 8px' }}>
+      <div className="row-4" style={{ height: '100%' }}>
         <TokenCard side="Đến" symbol={toSym} est={estAmt ? `~${parseFloat(estAmt).toFixed(4)}` : '~'} showQuick={false} onToggle={() => setPicker('to')} />
       </div>
 
