@@ -108,58 +108,62 @@ export default function Swap() {
 
       {/* Row 1: tabs */}
       <div className="row-1 full-bleed" style={{ display: 'flex', borderBottom: '1px solid var(--color-gray)' }}>
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '2px solid var(--color-primary)', color: 'var(--color-primary)', fontSize: 'var(--fs-label)', fontWeight: 700 }}>Market</div>
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--fs-label)', color: 'var(--color-muted)', opacity: 0.4 }}>Limit</div>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--fs-label)', fontWeight: 700, color: 'var(--color-black)' }}>Market</div>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>Limit</div>
       </div>
 
-      {/* Rows 2-3: FROM card */}
-      <div className="row-2-3" style={{ border: '1.5px solid var(--color-gray)', borderRadius: 14, background: '#fff', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '10px 14px' }}>
-        {/* Token selector + quick select */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <button onClick={() => setPicker('from')} style={{ display: 'flex', alignItems: 'center', gap: 8, border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', padding: 0 }}>
-            <div style={{ width: 28, height: 28, borderRadius: '50%', background: COLORS[fromSym], display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: '#fff' }}>{fromSym.slice(0, 2)}</div>
-            <div style={{ textAlign: 'left' }}>
-              <div style={{ fontSize: 'var(--fs-item)', fontWeight: 700 }}>{fromSym} ▾</div>
-              <div style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>{(balances[fromSym] || 0).toFixed(2)}</div>
-            </div>
-          </button>
-          <div style={{ display: 'flex', gap: 5 }}>
+      {/* Rows 2-6: centered content */}
+      <div className="row-2-6" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 8 }}>
+
+        {/* FROM card */}
+        <div style={{ border: '1.5px solid var(--color-gray)', borderRadius: 14, background: '#fff', display: 'flex', flexDirection: 'column', gap: 10, padding: '14px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <button onClick={() => setPicker('from')} style={{ display: 'flex', alignItems: 'center', gap: 10, border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', padding: 0 }}>
+              <div style={{ width: 36, height: 36, borderRadius: '50%', background: COLORS[fromSym], display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: '#fff' }}>{fromSym.slice(0, 2)}</div>
+              <div>
+                <div style={{ fontSize: 'var(--fs-body)', fontWeight: 700 }}>{fromSym} ▾</div>
+                <div style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>{(balances[fromSym] || 0).toFixed(2)}</div>
+              </div>
+            </button>
+            <div style={{ fontSize: 28, fontWeight: 700, color: input ? 'var(--color-black)' : 'var(--color-gray)' }}>{input || '0'}</div>
+          </div>
+          <div style={{ display: 'flex', gap: 6 }}>
             {['25%', '50%', '75%', 'Max'].map(v => (
               <button key={v} onClick={() => { const bal = balances[fromSym] || 0; const pct = v === 'Max' ? 1 : parseFloat(v) / 100; setInput(String((bal * pct).toFixed(6).replace(/\.?0+$/, ''))) }}
-                style={{ padding: '2px 6px', border: '1px solid var(--color-gray)', borderRadius: 6, background: 'none', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit' }}>{v}</button>
+                style={{ flex: 1, padding: '4px 0', border: '1px solid var(--color-gray)', borderRadius: 8, background: 'none', cursor: 'pointer', fontSize: 'var(--fs-label)', fontFamily: 'inherit' }}>{v}</button>
             ))}
           </div>
         </div>
-        {/* Big amount */}
-        <div style={{ fontSize: 32, fontWeight: 700, textAlign: 'center', color: input ? 'var(--color-black)' : 'var(--color-gray)', lineHeight: 1.2 }}>
-          {input || '0'}
-        </div>
-      </div>
 
-      {/* Row 4: swap button + TO card header */}
-      <div className="row-4" style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
-        <button onClick={swapDir} style={{ position: 'absolute', top: -16, left: '50%', transform: 'translateX(-50%)', width: 32, height: 32, borderRadius: '50%', border: '1.5px solid var(--color-gray)', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 16, zIndex: 1 }}>⇅</button>
-        <div style={{ border: '1.5px solid var(--color-gray)', borderRadius: 14, background: '#fff', padding: '10px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '100%', boxSizing: 'border-box' }}>
-          <button onClick={() => setPicker('to')} style={{ display: 'flex', alignItems: 'center', gap: 8, border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', padding: 0 }}>
-            <div style={{ width: 28, height: 28, borderRadius: '50%', background: COLORS[toSym], display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: '#fff' }}>{toSym.slice(0, 2)}</div>
-            <div style={{ textAlign: 'left' }}>
-              <div style={{ fontSize: 'var(--fs-item)', fontWeight: 700 }}>{toSym} ▾</div>
+        {/* ⇅ swap button */}
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <button onClick={swapDir} style={{ width: 44, height: 44, borderRadius: '50%', border: '1.5px solid var(--color-gray)', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 22 }}>⇅</button>
+        </div>
+
+        {/* TO card */}
+        <div style={{ border: '1.5px solid var(--color-gray)', borderRadius: 14, background: '#fff', padding: '14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <button onClick={() => setPicker('to')} style={{ display: 'flex', alignItems: 'center', gap: 10, border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', padding: 0 }}>
+            <div style={{ width: 36, height: 36, borderRadius: '50%', background: COLORS[toSym], display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: '#fff' }}>{toSym.slice(0, 2)}</div>
+            <div>
+              <div style={{ fontSize: 'var(--fs-body)', fontWeight: 700 }}>{toSym} ▾</div>
               <div style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>{(balances[toSym] || 0).toFixed(2)}</div>
             </div>
           </button>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: 20, fontWeight: 700, color: estAmt ? 'var(--color-black)' : 'var(--color-gray)' }}>
+            <div style={{ fontSize: 28, fontWeight: 700, color: estAmt ? 'var(--color-black)' : 'var(--color-gray)' }}>
               {loading ? '...' : estAmt ? `~${parseFloat(estAmt).toFixed(4)}` : '0'}
             </div>
             {fee && <div style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>phí: {fee}</div>}
           </div>
         </div>
-      </div>
 
-      {/* Rows 5-6: error/status */}
-      <div className="row-5-6 center" style={{ flexDirection: 'column', gap: 4 }}>
-        {error && <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-error)' }}>{error}</span>}
-        {status && <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-primary)' }}>{status}</span>}
+        {/* Error/status */}
+        {(error || status) && (
+          <div style={{ textAlign: 'center', fontSize: 'var(--fs-label)' }}>
+            {error && <span style={{ color: 'var(--color-error)' }}>{error}</span>}
+            {status && <span style={{ color: 'var(--color-primary)' }}>{status}</span>}
+          </div>
+        )}
       </div>
 
       {/* Rows 7-9: confirm button + numpad */}
