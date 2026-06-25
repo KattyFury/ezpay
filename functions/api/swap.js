@@ -22,17 +22,22 @@ export async function onRequestPost(ctx) {
   if (action === 'estimate') {
     if (!kitKey) return new Response(JSON.stringify({ error: 'KIT_KEY not configured' }), { status: 500, headers: JSON_HEADERS })
     if (!fromAddr || !toAddr) return new Response(JSON.stringify({ error: 'unknown token' }), { status: 400, headers: JSON_HEADERS })
-    const params = new URLSearchParams({
-      tokenInAddress: fromAddr, tokenInChain: 'Arc_Testnet',
-      tokenOutAddress: toAddr,  tokenOutChain: 'Arc_Testnet',
-      fromAddress: walletAddress || '0x0000000000000000000000000000000000000001',
-      amount: String(amountIn), slippageBps: '300',
-    })
-    const res = await fetch(`${CIRCLE_API}/v1/stablecoinKits/quote?${params}`, {
-      headers: { 'Authorization': `Bearer ${kitKey}` },
-    })
-    const data = await res.json()
-    return new Response(JSON.stringify({ estimate: data?.data || data }), { headers: JSON_HEADERS })
+    try {
+      const params = new URLSearchParams({
+        tokenInAddress: fromAddr, tokenInChain: 'Arc_Testnet',
+        tokenOutAddress: toAddr,  tokenOutChain: 'Arc_Testnet',
+        fromAddress: walletAddress || '0x0000000000000000000000000000000000000001',
+        amount: String(amountIn), slippageBps: '300',
+      })
+      const res = await fetch(`${CIRCLE_API}/v1/stablecoinKits/quote?${params}`, {
+        headers: { 'Authorization': `Bearer ${kitKey}` },
+      })
+      const data = await res.json()
+      if (!res.ok) return new Response(JSON.stringify({ error: `Circle API ${res.status}`, detail: data }), { status: 500, headers: JSON_HEADERS })
+      return new Response(JSON.stringify({ estimate: data?.data || data }), { headers: JSON_HEADERS })
+    } catch (e) {
+      return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: JSON_HEADERS })
+    }
   }
 
   if (action === 'execute') {
