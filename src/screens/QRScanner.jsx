@@ -4,7 +4,6 @@ import { useNav } from '../nav'
 function isValid(addr) { return /^0x[0-9a-fA-F]{40}$/.test(addr.trim()) }
 
 function parseQR(text) {
-  // Support: raw 0x address, or ezwallet:0x...?amount=...
   const raw = text.trim()
   if (isValid(raw)) return { address: raw, amount: null }
   const m = raw.match(/ezwallet:(0x[0-9a-fA-F]{40})(?:\?amount=(\d+))?/)
@@ -15,41 +14,53 @@ function parseQR(text) {
 export default function QRScanner() {
   const { navigate } = useNav()
   const videoRef = useRef(null)
+  const loopRef = useRef(null)
   const [error, setError] = useState('')
-  const [scanning, setScanning] = useState(false)
+  const [hint, setHint] = useState('Hướng camera vào mã QR')
 
   useEffect(() => {
     let stream = null
+    let detector = null
+    let active = true
+
     async function start() {
       try {
+        if (!window.BarcodeDetector) { setError('Trình duyệt không hỗ trợ quét QR — dán địa chỉ thủ công.'); return }
+        detector = new window.BarcodeDetector({ formats: ['qr_code'] })
         stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-        if (videoRef.current) videoRef.current.srcObject = stream
-        setScanning(true)
+        if (!videoRef.current) return
+        videoRef.current.srcObject = stream
+
+        async function scan() {
+          if (!active || !videoRef.current) return
+          try {
+            const codes = await detector.detect(videoRef.current)
+            if (codes.length) {
+              const parsed = parseQR(codes[0].rawValue)
+              if (parsed) {
+                active = false
+                navigate('SendAmount', { address: parsed.address, name: null, amount: parsed.amount })
+                return
+              } else {
+                setHint('QR không hợp lệ, thử lại')
+              }
+            }
+          } catch {}
+          loopRef.current = setTimeout(scan, 300)
+        }
+        scan()
       } catch {
         setError('Không truy cập được camera — dán địa chỉ thủ công.')
       }
     }
-    start()
-    return () => { if (stream) stream.getTracks().forEach(t => t.stop()) }
-  }, [])
 
-  async function handleCapture() {
-    if (!videoRef.current) return
-    const canvas = document.createElement('canvas')
-    canvas.width = videoRef.current.videoWidth
-    canvas.height = videoRef.current.videoHeight
-    canvas.getContext('2d').drawImage(videoRef.current, 0, 0)
-    try {
-      const { BarcodeDetector } = window
-      if (!BarcodeDetector) { setError('Trình duyệt không hỗ trợ quét QR — dán địa chỉ thủ công.'); return }
-      const detector = new BarcodeDetector({ formats: ['qr_code'] })
-      const codes = await detector.detect(canvas)
-      if (!codes.length) { setError('Không tìm thấy QR — thử lại.'); return }
-      const parsed = parseQR(codes[0].rawValue)
-      if (!parsed) { setError('QR không hợp lệ.'); return }
-      navigate('SendAmount', { address: parsed.address, name: null, amount: parsed.amount })
-    } catch { setError('Lỗi khi quét — thử lại.') }
-  }
+    start()
+    return () => {
+      active = false
+      clearTimeout(loopRef.current)
+      if (stream) stream.getTracks().forEach(t => t.stop())
+    }
+  }, [])
 
   return (
     <div className="screen">
@@ -57,9 +68,9 @@ export default function QRScanner() {
         Quét QR
       </div>
 
-      <div className="row-2-8" style={{ width: '100%', gap: 12 }}>
+      <div className="row-2-8" style={{ width: '100%', gap: 16 }}>
         {error ? (
-          <div style={{ textAlign: 'center', gap: 16, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
             <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-error)' }}>{error}</span>
             <button className="btn btn-secondary" style={{ width: '66.67%' }} onClick={() => navigate('PasteAddress')}>
               Dán địa chỉ
@@ -68,12 +79,8 @@ export default function QRScanner() {
         ) : (
           <>
             <video ref={videoRef} autoPlay playsInline muted
-              style={{ width: '100%', maxHeight: 300, borderRadius: 12, background: '#000', objectFit: 'cover' }} />
-            {scanning && (
-              <button className="btn btn-primary" style={{ width: '100%' }} onClick={handleCapture}>
-                Chụp & quét
-              </button>
-            )}
+              style={{ width: '100%', maxHeight: 280, borderRadius: 12, background: '#000', objectFit: 'cover' }} />
+            <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)', textAlign: 'center' }}>{hint}</span>
           </>
         )}
       </div>
