@@ -111,7 +111,7 @@ body {
   border: none;
   cursor: pointer;
   padding: 0 16px;
-  height: 7.5dvh;
+  height: 5dvh;
   transition: opacity 0.15s;
 }
 

@@ -1,108 +1,102 @@
-import { AppKit } from '@circle-fin/app-kit';
-import { ViemAdapter } from '@circle-fin/adapter-viem-v2';
-import { createPublicClient, http } from 'viem';
+// Gọi thẳng Circle Stablecoin Kit API — không dùng App Kit SDK (không chạy được trên Workers)
+const CIRCLE_API = 'https://api.circle.com'
+const W3S_API   = 'https://api.circle.com/v1/w3s'
 
-const CIRCLE_API = 'https://api.circle.com/v1/w3s';
+const TOKEN_ADDR = {
+  USDC:   '0x3600000000000000000000000000000000000000',
+  EURC:   '0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a',
+  cirBTC: '0xf0c4a4ce82a5746abaad9425360ab04fbba432bf',
+}
 
-const arcTestnet = {
-  id: 5042002,
-  name: 'Arc Testnet',
-  nativeCurrency: { name: 'USDC', symbol: 'USDC', decimals: 18 },
-  rpcUrls: { default: { http: ['https://rpc.testnet.arc.network'] } },
-};
+const JSON_HEADERS = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
 
-const JSON_HEADERS = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' };
-
-async function circleReq(method, path, body, apiKey, userToken) {
-  const headers = { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' };
-  if (userToken) headers['X-User-Token'] = userToken;
-  const res = await fetch(`${CIRCLE_API}${path}`, {
+async function w3sReq(method, path, body, apiKey, userToken) {
+  const headers = { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' }
+  if (userToken) headers['X-User-Token'] = userToken
+  const res = await fetch(`${W3S_API}${path}`, {
     method, headers, body: body ? JSON.stringify(body) : undefined,
-  });
-  return res.json();
+  })
+  return res.json()
 }
 
 export async function onRequestPost(ctx) {
-  const apiKey = ctx.env.API_KEY || ctx.env.CIRCLE_API_KEY;
-  const kitKey = ctx.env.KIT_KEY;
-  const { action, userToken, walletId, walletAddress, tokenIn, tokenOut, amountIn } = await ctx.request.json();
+  const apiKey  = ctx.env.API_KEY || ctx.env.CIRCLE_API_KEY
+  const kitKey  = ctx.env.KIT_KEY
+  const { action, userToken, walletId, walletAddress, tokenIn, tokenOut, amountIn } = await ctx.request.json()
 
-  if (!userToken) return new Response(JSON.stringify({ error: 'userToken required' }), { status: 400, headers: JSON_HEADERS });
+  if (!tokenIn || !tokenOut || !amountIn) {
+    return new Response(JSON.stringify({ error: 'missing params' }), { status: 400, headers: JSON_HEADERS })
+  }
+
+  const fromAddr = TOKEN_ADDR[tokenIn]
+  const toAddr   = TOKEN_ADDR[tokenOut]
+  if (!fromAddr || !toAddr) {
+    return new Response(JSON.stringify({ error: 'unknown token' }), { status: 400, headers: JSON_HEADERS })
+  }
 
   if (action === 'estimate') {
-    try {
-      const kit = new AppKit();
-      const publicClient = createPublicClient({ chain: arcTestnet, transport: http() });
-      const adapter = new ViemAdapter({
-        getPublicClient: () => publicClient,
-        getWalletClient: () => ({ account: { address: walletAddress }, chain: arcTestnet }),
-      });
-      const estimate = await kit.estimateSwap({
-        from: { adapter, chain: 'Arc_Testnet', address: walletAddress },
-        tokenIn, tokenOut, amountIn,
-        config: { kitKey, slippageBps: 300 },
-      });
-      return new Response(JSON.stringify({ estimate }), { headers: JSON_HEADERS });
-    } catch (e) {
-      return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: JSON_HEADERS });
-    }
+    // GET quote from Circle Stablecoin Kit
+    const params = new URLSearchParams({
+      tokenInAddress: fromAddr,
+      tokenInChain: 'ARC-TESTNET',
+      tokenOutAddress: toAddr,
+      tokenOutChain: 'ARC-TESTNET',
+      fromAddress: walletAddress,
+      amount: String(amountIn),
+      slippageBps: '300',
+    })
+    const res = await fetch(`${CIRCLE_API}/v1/stablecoinKits/quote?${params}`, {
+      headers: { 'Authorization': `Bearer ${kitKey}` },
+    })
+    const data = await res.json()
+    return new Response(JSON.stringify({ estimate: data?.data || data }), { headers: JSON_HEADERS })
   }
 
   if (action === 'execute') {
-    try {
-      const kit = new AppKit();
-      const publicClient = createPublicClient({ chain: arcTestnet, transport: http() });
-      let capturedTx = null;
-
-      // Custom wallet client that captures calldata instead of signing
-      const captureClient = {
-        account: { address: walletAddress },
-        chain: arcTestnet,
-        sendTransaction: async (params) => { capturedTx = params; throw new Error('CAPTURE_DONE'); },
-        writeContract: async (params) => { capturedTx = params; throw new Error('CAPTURE_DONE'); },
-        signTypedData: async () => '0x',
-        signMessage: async () => '0x',
-        getChainId: async () => arcTestnet.id,
-      };
-
-      const adapter = new ViemAdapter({
-        getPublicClient: () => publicClient,
-        getWalletClient: () => captureClient,
-      });
-
-      try {
-        await kit.swap({
-          from: { adapter, chain: 'Arc_Testnet', address: walletAddress },
-          tokenIn, tokenOut, amountIn,
-          config: { kitKey, slippageBps: 300 },
-        });
-      } catch (e) {
-        if (!capturedTx) throw e;
-      }
-
-      if (!capturedTx) return new Response(JSON.stringify({ error: 'Could not capture swap tx' }), { status: 500, headers: JSON_HEADERS });
-
-      // Create user contractExecution challenge
-      const to = capturedTx.to || capturedTx.address;
-      const data = capturedTx.data || capturedTx.callData;
-      const txResp = await circleReq('POST', '/user/transactions/contractExecution', {
-        idempotencyKey: crypto.randomUUID(),
-        walletId,
-        contractAddress: to,
-        callData: data,
-        fee: { type: 'level', config: { feeLevel: 'MEDIUM' } },
-      }, apiKey, userToken);
-
-      const challengeId = txResp?.data?.challengeId;
-      if (!challengeId) return new Response(JSON.stringify({ error: 'No challengeId', detail: txResp }), { status: 500, headers: JSON_HEADERS });
-      return new Response(JSON.stringify({ challengeId }), { headers: JSON_HEADERS });
-
-    } catch (e) {
-      return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: JSON_HEADERS });
+    if (!userToken || !walletId || !walletAddress) {
+      return new Response(JSON.stringify({ error: 'missing auth params' }), { status: 400, headers: JSON_HEADERS })
     }
+
+    // Step 1: POST swap to get transaction calldata
+    const swapRes = await fetch(`${CIRCLE_API}/v1/stablecoinKits/swap`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${kitKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tokenInAddress: fromAddr,
+        tokenInChain: 'ARC-TESTNET',
+        tokenOutAddress: toAddr,
+        tokenOutChain: 'ARC-TESTNET',
+        fromAddress: walletAddress,
+        toAddress: walletAddress,
+        amount: String(amountIn),
+        slippageBps: 300,
+      }),
+    })
+    const swapData = await swapRes.json()
+    console.log('swap response:', JSON.stringify(swapData))
+
+    const tx = swapData?.data?.transaction
+    if (!tx?.target || !tx?.callData) {
+      return new Response(JSON.stringify({ error: 'no transaction data', detail: swapData }), { status: 500, headers: JSON_HEADERS })
+    }
+
+    // Step 2: Create user contractExecution challenge
+    const txResp = await w3sReq('POST', '/user/transactions/contractExecution', {
+      idempotencyKey: crypto.randomUUID(),
+      walletId,
+      contractAddress: tx.target,
+      callData: tx.callData,
+      fee: { type: 'level', config: { feeLevel: 'MEDIUM' } },
+    }, apiKey, userToken)
+
+    const challengeId = txResp?.data?.challengeId
+    if (!challengeId) {
+      return new Response(JSON.stringify({ error: 'no challengeId', detail: txResp }), { status: 500, headers: JSON_HEADERS })
+    }
+    return new Response(JSON.stringify({ challengeId }), { headers: JSON_HEADERS })
   }
 
-  return new Response(JSON.stringify({ error: 'unknown action' }), { status: 400, headers: JSON_HEADERS });
+  return new Response(JSON.stringify({ error: 'unknown action' }), { status: 400, headers: JSON_HEADERS })
 }
 
 export async function onRequestOptions() {
@@ -112,5 +106,5 @@ export async function onRequestOptions() {
       'Access-Control-Allow-Methods': 'POST',
       'Access-Control-Allow-Headers': 'Content-Type',
     },
-  });
+  })
 }
