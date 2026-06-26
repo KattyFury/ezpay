@@ -111,8 +111,9 @@ export default function EnterEmail() {
             {DOMAINS.map(d => (
               <button key={d} onClick={() => applyDomain(d)}
                 style={{
-                  flex: 1, height: 34, border: '1px solid var(--color-gray)', borderRadius: 8,
-                  background: 'none', cursor: 'pointer', fontSize: 'var(--fs-label)', fontFamily: 'inherit',
+                  padding: '6px 12px', border: 'none', borderRadius: 10,
+                  background: 'var(--color-gray)', cursor: 'pointer',
+                  fontSize: 'var(--fs-label)', fontFamily: 'inherit', color: 'var(--color-black)', opacity: 0.8,
                 }}>
                 {d}
               </button>
