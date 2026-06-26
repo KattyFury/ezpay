@@ -22,23 +22,24 @@ export default function PasteAddress() {
         Dán địa chỉ
       </div>
 
-      <div className="row-2-8" style={{ gap: 12, width: '100%' }}>
-        <textarea
-          className={`address-input${showError ? ' error' : ''}`}
-          placeholder="0x..."
-          value={address}
-          onChange={e => { setAddress(e.target.value); setDirty(true) }}
-          rows={3}
-          style={{ fontSize: 'var(--fs-body)', resize: 'none', width: '100%' }}
-        />
+      <div className="row-3" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <input
+            className={`address-input${showError ? ' error' : ''}`}
+            placeholder="0x..."
+            value={address}
+            onChange={e => { setAddress(e.target.value); setDirty(true) }}
+            style={{ flex: 1, height: 48, fontSize: 'var(--fs-body)' }}
+          />
+          <button className="btn btn-secondary" style={{ width: 'auto', padding: '0 20px', height: 48 }} onClick={handlePaste}>
+            Dán
+          </button>
+        </div>
         {showError && (
-          <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-error)', alignSelf: 'flex-start' }}>
+          <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-error)' }}>
             Địa chỉ không hợp lệ — bắt đầu bằng 0x, 42 ký tự
           </span>
         )}
-        <button className="btn btn-secondary" style={{ width: '100%' }} onClick={handlePaste}>
-          Dán từ clipboard
-        </button>
       </div>
 
       <div className="row-10 row10-dual">

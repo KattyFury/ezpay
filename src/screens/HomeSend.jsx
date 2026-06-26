@@ -74,11 +74,11 @@ export default function HomeSend() {
           <div className="tip-box" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 4, textAlign: 'left', padding: '10px 14px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
               <img src={hintIcon} alt='' style={{ width: 16, height: 16 }} />
-              <b>Cách gửi tiền:</b>
+              <span style={{ fontWeight: 'var(--fw-medium)' }}>Cách gửi tiền:</span>
             </div>
-            <div><b>Danh bạ</b> — lưu địa chỉ ví quen thuộc để gửi nhanh</div>
-            <div><b>Quét QR</b> — quét mã người nhận để chuyển tiền tiện lợi</div>
-            <div><b>Dán để gửi</b> — dán địa chỉ ví người khác đưa cho bạn</div>
+            <div><span style={{ fontWeight: 'var(--fw-medium)' }}>Danh bạ</span> — lưu địa chỉ ví quen thuộc để gửi nhanh</div>
+            <div><span style={{ fontWeight: 'var(--fw-medium)' }}>Quét QR</span> — quét mã người nhận để chuyển tiền tiện lợi</div>
+            <div><span style={{ fontWeight: 'var(--fw-medium)' }}>Dán để gửi</span> — dán địa chỉ ví người khác đưa cho bạn</div>
           </div>
         )}
       </div>
