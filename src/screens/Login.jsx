@@ -140,7 +140,7 @@ export default function Login() {
             disabled={disabled}
             onClick={disabled ? undefined : onClick}>
             {/* inner-block width cố định theo nút dài nhất (Facebook) → icon + text thẳng cột */}
-            <span style={{ display: 'grid', gridTemplateColumns: '18px 1fr', columnGap: 10, alignItems: 'center', width: 210, textAlign: 'left' }}>
+            <span style={{ display: 'grid', gridTemplateColumns: '18px auto', columnGap: 10, alignItems: 'center', width: 195, textAlign: 'left' }}>
               <img src={icon} alt="" style={{ width: 18, height: 18 }} />
               <span>{label}</span>
             </span>
