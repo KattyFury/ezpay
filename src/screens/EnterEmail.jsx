@@ -74,7 +74,7 @@ export default function EnterEmail() {
         Đăng nhập
       </div>
 
-      <div className="row-5" style={{ position: 'relative' }}>
+      <div className="row-3" style={{ position: 'relative' }}>
         {/* Input khóa vị trí giữa row-5 */}
         <input
           type="email"
