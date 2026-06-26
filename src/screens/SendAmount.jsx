@@ -31,32 +31,27 @@ export default function SendAmount() {
         Gửi tiền
       </div>
 
-      <div className="row-2-5 col" style={{ justifyContent: 'center', gap: 10 }}>
-        <div className="recipient-box">
-          <div className="recipient-avatar">
-            {(name || address || '?').slice(0, 2).toUpperCase()}
-          </div>
-          <div className="col" style={{ gap: 2 }}>
-            {name && (
-              <span style={{ fontSize: 'var(--fs-item)', fontWeight: 'var(--fw-medium)' }}>{name}</span>
-            )}
-            <span style={{ fontSize: name ? 'var(--fs-sub)' : 'var(--fs-item)', fontWeight: 'var(--fw-medium)', color: name ? 'var(--color-gray)' : 'var(--color-black)' }}>
-              {shortenAddr(address)}
-            </span>
-          </div>
-        </div>
+      <div className="row-2 center" style={{ gap: 6 }}>
+        <span style={{ fontSize: 'var(--fs-body)', color: 'var(--color-muted)' }}>Gửi cho:</span>
+        <span style={{ fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>
+          {name || shortenAddr(address)}
+        </span>
+      </div>
 
-        <div className="amount-display" style={{ color: overBalance ? 'var(--color-error)' : 'var(--color-black)' }}>
-          {digits ? fmtVND(amount) : <span style={{ color: 'var(--color-gray)' }}>0 ₫</span>}
+      <div className="row-3-4 center col" style={{ gap: 6 }}>
+        <div style={{ fontSize: 40, fontWeight: 'var(--fw-bold)', lineHeight: 1, textAlign: 'center', color: overBalance ? 'var(--color-error)' : digits ? 'var(--color-black)' : 'var(--color-gray)' }}>
+          {digits ? fmtVND(amount) : '0 ₫'}
         </div>
         {overBalance && (
           <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-error)', textAlign: 'center' }}>
             Số dư không đủ (khả dụng: {fmtVND(MOCK_VND)})
           </span>
         )}
+      </div>
 
-        <div className="memo-row">
-          <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-gray)', flexShrink: 0 }}>
+      <div className="row-5 center">
+        <div className="memo-row" style={{ width: '100%' }}>
+          <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)', flexShrink: 0 }}>
             Nội dung:
           </span>
           <input
@@ -73,9 +68,9 @@ export default function SendAmount() {
         <Numpad onKey={handleKey} showComma={false} />
       </div>
 
-      <div className="row-10 row10-dual">
-        <button className="btn btn-secondary" onClick={() => navigate('HomeSend')}>Quay lại</button>
-        <button className="btn btn-primary" disabled={!canContinue}
+      <div className="row-10" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+        <button className="btn btn-secondary" style={{ width: '44%' }} onClick={() => navigate('HomeSend')}>Quay lại</button>
+        <button className="btn btn-primary" style={{ width: '44%' }} disabled={!canContinue}
           onClick={() => navigate('SendConfirm', { address, name, amount, memo })}
         >
           Tiếp tục
