@@ -44,7 +44,7 @@ export default function HomeReceive() {
           border: '1px solid var(--color-gray)', borderRadius: 8,
           padding: '6px 14px', background: 'none', cursor: 'pointer',
         }}>
-          <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-content)' }}>{shortAddr}</span>
+          <span className="num" style={{ fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-bold)', color: 'var(--color-content)' }}>{shortAddr}</span>
           <Icon name={copied ? 'check' : 'copy'} size={16} color={copied ? 'var(--color-primary)' : 'var(--color-content)'} />
         </button>
       </div>

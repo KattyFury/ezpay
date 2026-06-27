@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNav } from '../nav'
+import Icon from '../components/Icon'
 import { getSDK, executeChallenge, resetPinChallenge } from '../circle'
 
 export default function Security() {
@@ -30,17 +31,10 @@ export default function Security() {
     navigator.clipboard.writeText(walletAddr)
     setCopied(true); setTimeout(() => setCopied(false), 1500)
   }
+  function logout() { localStorage.clear(); window.location.reload() }
 
-  function logout() {
-    localStorage.clear(); window.location.reload()
-  }
-
-  const ROW = {
-    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    padding: '14px 0', borderBottom: '1px solid var(--color-gray)',
-  }
-  const LABEL = { fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }
-  const VALUE = { fontSize: 'var(--fs-item)', fontWeight: 'var(--fw-medium)', textAlign: 'right', maxWidth: '60%', wordBreak: 'break-all' }
+  const LABEL = { flex: 1, fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }
+  const VALUE = { fontSize: 'var(--fs-label)', color: 'var(--color-muted)', maxWidth: '55%', textAlign: 'right', wordBreak: 'break-all' }
 
   return (
     <div className="screen">
@@ -49,42 +43,33 @@ export default function Security() {
       </div>
 
       <div className="row-2-9" style={{ gridRow: '2 / 9', justifyContent: 'flex-start', overflowY: 'auto' }}>
-        {/* Email */}
-        <div style={ROW}>
+        <div className="menu-item">
           <span style={LABEL}>Email đăng nhập</span>
           <span style={VALUE}>{email}</span>
         </div>
-
-        {/* Wallet address */}
-        <button onClick={copyAddr} style={{ ...ROW, width: '100%', border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', borderBottom: '1px solid var(--color-gray)' }}>
+        <button className="menu-item" onClick={copyAddr}>
           <span style={LABEL}>Địa chỉ ví</span>
-          <span style={{ ...VALUE, color: copied ? 'var(--color-primary)' : 'var(--color-content)' }}>{copied ? '✓ Đã sao chép' : shortAddr}</span>
+          <span style={{ ...VALUE, color: copied ? 'var(--color-primary)' : 'var(--color-muted)' }}>{copied ? 'Đã sao chép' : shortAddr}</span>
+          <Icon name="copy" size={16} color="var(--color-faint)" />
         </button>
-
-        {/* Change PIN */}
-        <button style={{ ...ROW, width: '100%', border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', borderBottom: '1px solid var(--color-gray)' }}
-          onClick={handleResetPin}>
+        <button className="menu-item" onClick={handleResetPin}>
           <span style={LABEL}>Đổi PIN</span>
-          <span style={{ fontSize: 'var(--fs-label)', color: pinStatus ? 'var(--color-primary)' : 'var(--color-muted)' }}>{pinStatus || '›'}</span>
+          {pinStatus
+            ? <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-primary)' }}>{pinStatus}</span>
+            : <Icon name="right2" size={15} color="var(--color-faint)" />}
         </button>
-
-        {/* Recovery method */}
-        <button style={{ ...ROW, width: '100%', border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', borderBottom: '1px solid var(--color-gray)' }}
-          onClick={() => navigate('ComingSoon', { title: 'Phương thức khôi phục' })}>
+        <button className="menu-item" onClick={() => navigate('ComingSoon', { title: 'Phương thức khôi phục' })}>
           <span style={LABEL}>Phương thức khôi phục</span>
-          <span style={{ fontSize: 16, color: 'var(--color-muted)' }}>›</span>
+          <Icon name="right2" size={15} color="var(--color-faint)" />
         </button>
-
-        {/* Logout */}
-        <button onClick={logout}
-          style={{ ...ROW, width: '100%', border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', borderBottom: 'none' }}>
-          <span style={{ fontSize: 'var(--fs-item)', color: 'var(--color-error)', fontWeight: 'var(--fw-medium)' }}>Đăng xuất</span>
-          <span style={{ fontSize: 16, color: 'var(--color-error)' }}>›</span>
+        <button className="menu-item" onClick={logout}>
+          <span style={{ ...LABEL, color: 'var(--color-error)' }}>Đăng xuất</span>
+          <Icon name="out" size={18} color="var(--color-error)" />
         </button>
       </div>
 
       <div className="row-10 row10-single">
-        <button className="btn btn-secondary" onClick={() => navigate('MenuScreen')}>Quay lại</button>
+        <button className="btn btn-primary" onClick={() => navigate('MenuScreen')}>Quay lại</button>
       </div>
     </div>
   )

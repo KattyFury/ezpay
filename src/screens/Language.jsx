@@ -3,11 +3,11 @@ import { useNav } from '../nav'
 import Icon from '../components/Icon'
 
 const LANGUAGES = [
-  { code: 'vi', label: 'Tiếng Việt' },
-  { code: 'en', label: 'English (Anh)' },
-  { code: 'es', label: 'Español (Tây Ban Nha)' },
-  { code: 'zh', label: '中文 (Trung)' },
-  { code: 'ja', label: '日本語 (Nhật)' },
+  { code: 'vi', short: 'Tiếng Việt',          label: 'Tiếng Việt' },
+  { code: 'en', short: 'Tiếng Anh',           label: 'English (Tiếng Anh)' },
+  { code: 'es', short: 'Tiếng Tây Ban Nha',   label: 'Español (Tiếng Tây Ban Nha)' },
+  { code: 'zh', short: 'Tiếng Trung',         label: '中文 (Tiếng Trung)' },
+  { code: 'ja', short: 'Tiếng Nhật',          label: '日本語 (Tiếng Nhật)' },
 ]
 
 // Ưu tiên stablecoin: nước có stablecoin thì hiện stablecoin (USDC/EURC) thay vì USD/EUR
@@ -25,7 +25,7 @@ export default function Language() {
   const [currency, setCurrency] = useState(() => localStorage.getItem('ez_currency') || 'VND')
   const [picker, setPicker] = useState(null) // 'lang' | 'currency' | null
 
-  const langLabel = LANGUAGES.find(l => l.code === lang)?.label || 'Tiếng Việt'
+  const langLabel = LANGUAGES.find(l => l.code === lang)?.short || 'Tiếng Việt'
   const curLabel = CURRENCIES.find(c => c.code === currency)?.code || 'VND'
 
   function pickLang(code) { setLang(code); localStorage.setItem('ez_lang', code); setPicker(null) }
@@ -34,8 +34,8 @@ export default function Language() {
   const Row = ({ label, value, onClick }) => (
     <button className="menu-item" style={{ width: '100%' }} onClick={onClick}>
       <span style={{ flex: 1, fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>{label}</span>
-      <span style={{ fontSize: 'var(--fs-item)', color: 'var(--color-muted)', marginRight: 6 }}>{value}</span>
-      <Icon name="right" size={18} color="var(--color-faint)" />
+      <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-content)', border: '1.5px solid var(--color-gray)', borderRadius: 8, padding: '4px 12px', marginRight: 8 }}>{value}</span>
+      <Icon name="right2" size={15} color="var(--color-faint)" />
     </button>
   )
 

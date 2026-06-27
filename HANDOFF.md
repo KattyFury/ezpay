@@ -109,8 +109,9 @@
 - **CreateQR:** **đồng bộ SendAmount** (số to + VND + numpad 2.5 + nút). **ShowQR:** QR giữa + tự lưu vào Kho QR + 2 nút h9-10 [Lưu vào kho ảnh] (tải PNG) / [Quay lại]. **SavedQRList (Kho QR):** lưới 3 cột (tối đa 9 ô h2-7, scroll), bấm → ShowQR.
 - **TxHistory:** hiện **tên danh bạ** nếu lưu; bấm dòng → **popup chi tiết** (loại/người/địa chỉ/số tiền/quy đổi/thời gian/memo nếu có/link ArcScan); nút lọc "Chỉ gửi"/"Chỉ nhận" (active xanh); "Quay lại" xanh.
 - **MenuScreen:** Rút (trắng, khóa, trái) / Nạp (xanh, phải); menu items icon SVG (clock/globe/shield/info).
-- **Language:** 2 dòng "Ngôn ngữ >" / "Tiền tệ >" → popup. Ngôn ngữ: Việt/Anh/TBN/Trung/Nhật. Tiền tệ: VND/USDC/EURC/CNY/JPY (ưu tiên stablecoin).
-- **Security/About:** nội dung gridRow 2/9 (tới hàng 8) + scroll, nút Quay lại h9-11 (hết đè).
+- **Sub-screen template ĐỒNG BỘ (Language/Security/About):** header screen-title h1; nội dung gridRow 2/9 dùng **hàng `.menu-item`** (label trái fs-body, value/chevron phải, divider rgba nhạt); nút **Quay lại = primary xanh** row10-single. Value hiển thị trong **box viền** (Language) hoặc text muted (Security/About). Chevron = **right2.svg** (▶ đặc). Đăng xuất = icon `out` đỏ.
+- **Language:** Ngôn ngữ (Việt/Anh/TBN/Trung/Nhật) + Tiền tệ (VND/USDC/EURC/CNY/JPY, ưu tiên stablecoin) → popup chọn.
+- **TxHistory:** NGOẠI LỆ — bottom có 3 nút (Chỉ gửi/Chỉ nhận/Quay lại) thay vì 1.
 - **Contacts:** list to (avatar 52, tên 20px); popup Thêm có avatar cropper (zoom/pan tròn); nút Gửi nhỏ hơn (phụ).
 - **QRScanner:** ô camera giữa h1-5 (bỏ khung 4 góc); quét bằng **jsQR** (iOS không có BarcodeDetector); h10 "Ảnh QR"/"Quay lại".
 
@@ -149,6 +150,13 @@
 - EURC trên CoinGecko = id `euro-coin`; USDC = `usd-coin`; cirBTC dùng `bitcoin`.
 
 ---
+
+## Cần rà đồng bộ (audit UI — chưa làm)
+
+- **Swap** vẫn giao diện cũ (đang disable): còn ký tự unicode `▾`/`⇅`, màu/cỡ chưa theo token, layout chưa giống SendAmount. Khi bật lại swap phải làm lại theo chuẩn.
+- **EnterPin / CreatePin / PinLocked / ForgotPin / Recovery / ComingSoon** — chưa rà đợt này, có thể lệch token/màu/nút.
+- **Bottom button không đồng nhất:** SendAmount/CreateQR dùng flex 2.5/1.5; TxHistory 3 nút; còn lại row10-single/dual. Cân nhắc 1 chuẩn.
+- Các màn còn ký tự `›`/`×` text (Contacts xóa ×, ...) — cân nhắc thay icon.
 
 ## Pending / TODO
 

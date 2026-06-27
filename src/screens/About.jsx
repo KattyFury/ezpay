@@ -1,4 +1,5 @@
 import { useNav } from '../nav'
+import Icon from '../components/Icon'
 
 const VERSION = '0.1.0'
 
@@ -6,14 +7,17 @@ const ITEMS = [
   { label: 'Ứng dụng', value: 'EZwallet' },
   { label: 'Phiên bản', value: VERSION },
   { label: 'Mạng', value: 'Arc Testnet' },
-  { label: 'Wallet', value: 'Circle User Controlled Wallet' },
+  { label: 'Ví', value: 'Circle Wallet' },
   { label: 'GitHub', value: 'KattyFury/ezwallet', link: 'https://github.com/KattyFury/ezwallet' },
-  { label: 'Điều khoản sử dụng', value: '→', link: 'https://www.circle.com/en/legal/privacy-policy' },
-  { label: 'Chính sách bảo mật', value: '→', link: 'https://www.circle.com/en/legal/privacy-policy' },
+  { label: 'Điều khoản sử dụng', link: 'https://www.circle.com/en/legal/privacy-policy' },
+  { label: 'Chính sách bảo mật', link: 'https://www.circle.com/en/legal/privacy-policy' },
 ]
 
 export default function About() {
   const { navigate } = useNav()
+
+  const LABEL = { flex: 1, fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }
+  const VALUE = { fontSize: 'var(--fs-label)', color: 'var(--color-muted)', maxWidth: '55%', textAlign: 'right', wordBreak: 'break-word' }
 
   return (
     <div className="screen">
@@ -23,21 +27,23 @@ export default function About() {
 
       <div className="row-2-9" style={{ gridRow: '2 / 9', justifyContent: 'flex-start', overflowY: 'auto' }}>
         {ITEMS.map(({ label, value, link }) => (
-          <div key={label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 0', borderBottom: '1px solid var(--color-gray)', width: '100%' }}>
-            <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>{label}</span>
-            {link ? (
-              <a href={link} target="_blank" rel="noopener" style={{ fontSize: 'var(--fs-item)', fontWeight: 'var(--fw-medium)', color: 'var(--color-content)', textDecoration: 'none', textAlign: 'right', maxWidth: '60%' }}>
-                {value}
-              </a>
-            ) : (
-              <span style={{ fontSize: 'var(--fs-item)', fontWeight: 'var(--fw-medium)', textAlign: 'right', maxWidth: '60%', color: 'var(--color-content)' }}>{value}</span>
-            )}
-          </div>
+          link ? (
+            <button key={label} className="menu-item" onClick={() => window.open(link, '_blank')}>
+              <span style={LABEL}>{label}</span>
+              {value && <span style={VALUE}>{value}</span>}
+              <Icon name="right2" size={15} color="var(--color-faint)" />
+            </button>
+          ) : (
+            <div key={label} className="menu-item">
+              <span style={LABEL}>{label}</span>
+              <span style={VALUE}>{value}</span>
+            </div>
+          )
         ))}
       </div>
 
       <div className="row-10 row10-single">
-        <button className="btn btn-secondary" onClick={() => navigate('MenuScreen')}>Quay lại</button>
+        <button className="btn btn-primary" onClick={() => navigate('MenuScreen')}>Quay lại</button>
       </div>
     </div>
   )
