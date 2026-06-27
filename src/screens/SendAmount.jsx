@@ -1,7 +1,8 @@
-﻿import { useState } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useNav } from '../nav'
 import Numpad from '../components/Numpad'
-import { fmtVND, MOCK_VND } from '../data'
+import { fmtVND } from '../data'
+import { getTokenInfo } from '../chain'
 
 function shortenAddr(addr) {
   return addr ? addr.slice(0, 6) + '…' + addr.slice(-4) : ''
@@ -12,10 +13,17 @@ export default function SendAmount() {
   const { address, name } = params
   const [digits, setDigits] = useState(() => params.amount ? String(params.amount) : '')
   const [memo, setMemo] = useState(params.memo || '')
+  const [availableVND, setAvailableVND] = useState(null) // null = đang tải số dư
+
+  useEffect(() => {
+    const addr = localStorage.getItem('ez_wallet_addr')
+    if (!addr) { setAvailableVND(0); return }
+    getTokenInfo(addr, 'USDC').then(i => setAvailableVND(i.vnd)).catch(() => setAvailableVND(0))
+  }, [])
 
   const amount = parseInt(digits || '0')
-  const overBalance = amount > MOCK_VND
-  const canContinue = amount > 0 && !overBalance
+  const overBalance = availableVND !== null && amount > availableVND
+  const canContinue = amount > 0 && !overBalance && availableVND !== null
 
   function handleKey(key) {
     if (key === 'BACK') { setDigits(d => d.slice(0, -1)); return }
@@ -44,7 +52,7 @@ export default function SendAmount() {
         </div>
         {overBalance && (
           <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-error)', textAlign: 'center' }}>
-            Số dư không đủ (khả dụng: {fmtVND(MOCK_VND)})
+            Số dư không đủ (khả dụng: {fmtVND(availableVND)})
           </span>
         )}
       </div>

@@ -70,3 +70,29 @@ export function fmtAmount(amount, decimals = 6) {
   if (amount < 0.000001) return amount.toExponential(2)
   return amount.toFixed(Math.min(4, decimals))
 }
+
+// Tỷ giá VND live (CoinGecko), fallback vndRate offline
+export async function getVndRate(symbol = 'USDC') {
+  const prices = await fetchPrices()
+  const token = TOKENS.find(t => t.symbol === symbol)
+  return prices[symbol] ?? token?.vndRate ?? 25000
+}
+
+// Số dư 1 token + tỷ giá (USDC = token dùng để gửi)
+export async function getTokenInfo(addr, symbol = 'USDC') {
+  const [balances, rate] = await Promise.all([getTokenBalances(addr), getVndRate(symbol)])
+  const t = balances.find(b => b.symbol === symbol)
+  return { balance: t?.amount ?? 0, vnd: t?.vnd ?? 0, rate }
+}
+
+// Phí gas thật: Arc tính gas bằng USDC (18 decimals nội bộ) → quy ra VND
+// gasUnits: ~65k cho transfer thường, ~110k cho transfer kèm memo
+export async function estimateFeeVnd(gasUnits = 65000) {
+  try {
+    const [gasPrice, rate] = await Promise.all([publicClient.getGasPrice(), getVndRate('USDC')])
+    const feeUsdc = Number(gasPrice * BigInt(gasUnits)) / 1e18
+    return feeUsdc * rate
+  } catch {
+    return 0
+  }
+}

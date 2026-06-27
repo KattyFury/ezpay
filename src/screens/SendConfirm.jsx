@@ -1,9 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNav } from '../nav'
 import { fmtVND } from '../data'
+import { getVndRate, estimateFeeVnd } from '../chain'
 import { getSDK, executeChallenge } from '../circle'
-
-const USDC_RATE = 25000
 
 function shortenAddr(addr) {
   return addr ? addr.slice(0, 6) + '…' + addr.slice(-4) : ''
@@ -12,9 +11,18 @@ function shortenAddr(addr) {
 export default function SendConfirm() {
   const { navigate, params } = useNav()
   const { address, name, amount, memo } = params
-  const usdcAmount = (amount / USDC_RATE).toFixed(4)
+  const [rate, setRate] = useState(25000)        // tỷ giá USDC→VND live
+  const [feeVnd, setFeeVnd] = useState(null)      // phí gas thật (null = đang tính)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    getVndRate('USDC').then(setRate).catch(() => {})
+    // memo đi qua Memo contract → tốn gas hơn (~110k) so với transfer thường (~65k)
+    estimateFeeVnd(memo && memo.trim() ? 110000 : 65000).then(setFeeVnd).catch(() => setFeeVnd(0))
+  }, [memo])
+
+  const usdcAmount = (amount / rate).toFixed(4)
 
   async function handleConfirm() {
     setLoading(true); setError('')
@@ -86,9 +94,9 @@ export default function SendConfirm() {
             </div>
           )}
           <div className="confirm-row">
-            <span className="confirm-label">Phí</span>
+            <span className="confirm-label">Phí mạng</span>
             <span className="confirm-value" style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>
-              ~0 VND (testnet)
+              {feeVnd === null ? 'Đang tính...' : feeVnd < 1 ? '< 1đ' : fmtVND(feeVnd)}
             </span>
           </div>
         </div>
