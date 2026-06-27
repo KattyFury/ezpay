@@ -1,6 +1,6 @@
 # HANDOFF — EZwallet
 
-**Cập nhật:** 2026-06-26
+**Cập nhật:** 2026-06-27
 **Repo:** https://github.com/KattyFury/ezwallet
 **Local:** `D:\Files\Claude_laptop\Build_on_Arc\ezwallet`
 **Live:** https://ezwallet.pages.dev (Cloudflare Pages, auto-deploy từ GitHub `main`)
@@ -17,14 +17,21 @@
 - **Wallet:** Circle **User-Controlled Wallet** (MPC, user ký bằng PIN qua W3S Web SDK `@circle-fin/w3s-pw-web-sdk`)
 - **Auth:** Email (Circle session) — Google/Facebook DISABLE (xem phần Blocked)
 - **Chain:** Arc Testnet · Chain ID `5042002` · RPC `https://rpc.testnet.arc.network` · Explorer `testnet.arcscan.app`
-- **Balance:** đọc thẳng on-chain bằng viem (`src/chain.js`), không qua Circle
+- **Balance/giá/phí:** đọc thẳng on-chain bằng viem (`src/chain.js`) + giá VND live CoinGecko. Helpers: `getTokenBalances`, `getVndRate(symbol)`, `getTokenInfo(addr,symbol)` (balance+rate), `estimateFeeVnd(gasUnits)`.
+- **QR:** `qrcode.react` (tạo) + `jsqr` (quét camera/ảnh, chạy iOS Safari)
 
 **Token addresses (Arc Testnet):**
-| Token | Address | Decimals | Giá VND |
+| Token | Address | Decimals | Giá VND (live CoinGecko, cache 60s, fallback offline) |
 |---|---|---|---|
-| USDC | `0x3600000000000000000000000000000000000000` | 6 | hardcode 25.000 |
-| EURC | `0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a` | 6 | hardcode 27.000 |
-| cirBTC | `0xf0c4a4ce82a5746abaad9425360ab04fbba432bf` | 8 | CoinGecko `bitcoin`, cache 60s |
+| USDC | `0x3600000000000000000000000000000000000000` | 6 | cgId `usd-coin` (fallback 25.000) |
+| EURC | `0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a` | 6 | cgId `euro-coin` (fallback 27.000) |
+| cirBTC | `0xf0c4a4ce82a5746abaad9425360ab04fbba432bf` | 8 | cgId `bitcoin` (fallback 2,6 tỷ) |
+
+**Arc contracts (Transaction Extensions, từ docs.arc.io):**
+| Contract | Address | Dùng |
+|---|---|---|
+| Memo | `0x5294E9927c3306DcBaDb03fe70b92e01cCede505` | `memo(address target,bytes data,bytes32 memoId,bytes memoData)` — bọc calldata, giữ msg.sender qua CallFrom, emit `Memo` event |
+| Multicall3From | `0x522fAf9A91c41c443c66765030741e4AaCe147D0` | batch nhiều call, giữ msg.sender (chưa dùng — để dành gửi nhiều người / gộp approve+swap) |
 
 **Secrets** (`.env.txt` — gitignored; cũng phải set trên Cloudflare Dashboard):
 - `API_KEY` — Circle API key
@@ -80,11 +87,13 @@
 - **EnterEmail:** tiêu đề "Đăng nhập với Email"; input absolute-center ở row-3; gợi ý email history + domain (`@gmail`/`@yahoo`/`@icloud`) cùng style box xám chữ đen.
 - **HomeSend:** Số dư căn trái "Số dư: X.XXX.XXX VND" (row 1-5 grid 5 hàng đều nhau) + list token (logo thật + tên + verified.png + VND); hint "Cách gửi tiền" (weight medium) ở hàng 7-8; actions hàng 9 (Danh bạ / Quét QR / Dán để gửi); nav hàng 10.
 - **Contacts (Danh bạ):** list không line xám; popup Thêm neo nửa trên có avatar tròn (xám + add-white) → chọn ảnh → **cropper zoom/pan tròn** → lưu PFP; nút Thêm icon 16px = cỡ chữ.
-- **QRScanner:** ô vuông camera giữa hàng 1-5 (khung 4 góc); hàng 10: "Ảnh QR" (trắng, trái — đọc QR từ thư viện) / "Quay lại" (xanh, phải).
+- **QRScanner:** ô vuông camera giữa hàng 1-5 (khung 4 góc); quét QR bằng **jsQR** (chạy iOS Safari — `BarcodeDetector` KHÔNG có trên iOS); hàng 10: "Ảnh QR" (trắng, trái — đọc QR từ thư viện qua jsQR) / "Quay lại" (xanh, phải).
 - **PasteAddress:** input nhỏ row-3 + nút "Dán" cùng hàng `[0x...][Dán]`.
-- **SendAmount:** h1 "Gửi tiền" / h2 "Gửi cho: tên|ví" / h3-4 số tiền 40px / h5 memo / numpad h7-9 / nút h10. (Số dư check còn dùng MOCK_VND — chưa nối số dư thật.)
-- **SendConfirm → SendReceipt:** recap VND+USDC, nút đỏ "Xác nhận · PIN".
-- Khác: HomeReceive (QR nhận), Swap, MenuScreen, TxHistory (ArcScan), Language/Security/About, CreateQR/ShowQR/SavedQRList, EnterPin/CreatePin/PinLocked/ForgotPin.
+- **SendAmount:** h1 "Gửi tiền" / h2 "Gửi cho: tên|ví" / h3-4 số tiền 40px / h5 memo / numpad h7-9 / nút h10. Số dư check = **USDC balance thật** (`getTokenInfo`).
+- **SendConfirm → SendReceipt:** recap VND+USDC dùng **tỷ giá live**; **phí gas thật** (eth_gasPrice × gas units → USDC → VND, thường "< 1đ"); nút đỏ "Xác nhận · PIN". Memo → gửi qua Memo contract.
+- **HomeReceive / MenuScreen:** cụm số dư **đồng bộ HomeSend** (căn trái "Số dư: X VND", không line xám). Share chỉ gửi **địa chỉ ví** (không kèm chữ).
+- **Custom QR (ShowQR) / SavedQRList:** mã hóa **địa chỉ ví thật** (`ez_wallet_addr`) — trước đây bug dùng `MOCK_ADDR`.
+- Khác: Swap, TxHistory (ArcScan), Language/Security/About, CreateQR, EnterPin/CreatePin/PinLocked/ForgotPin.
 
 ---
 
@@ -92,10 +101,13 @@
 
 **✅ Chạy thật:**
 - Email login → tạo ví → HomeSend
-- Balance đọc thật từ Arc RPC (viem)
-- **Send/Transfer** — `functions/api/send.js` ERC-20 `transfer(address,uint256)` → Circle contractExecution → W3S PIN. **Verified COMPLETE on-chain.**
+- Balance đọc thật từ Arc RPC (viem), **tỷ giá VND live** (CoinGecko)
+- **Send/Transfer** — `functions/api/send.js` ERC-20 `transfer(address,uint256)` → Circle contractExecution → W3S PIN. **Verified COMPLETE on-chain.** Số dư + tỷ giá + phí đều thật.
 - Swap **estimate** (hiển thị tỷ giá)
-- TxHistory, Contacts, QRScanner, Reset PIN
+- TxHistory, Contacts (avatar cropper), QRScanner (jsQR), Custom/Saved QR (địa chỉ thật), Reset PIN
+
+**⚠️ Đã build, CHƯA verify on-chain:**
+- **Memo on-chain (Arc Transaction Memos):** khi user nhập nội dung → `send.js` route qua Memo contract `memo(address,bytes,bytes32,bytes)` thay vì transfer thẳng (transferData encode thủ công, memoId random bytes32, memoData = UTF-8→hex). Cần test deployed: nếu Circle reject `bytes`/`bytes32` trong abiParameters thì chỉnh. Đường transfer-không-memo vẫn là đường đã verify.
 
 **❌ Blocked (đã disable trong UI, chờ Circle):**
 - **Swap execute:** App Kit/Swap Kit KHÔNG có adapter cho User-Controlled Wallet (chỉ có viem private-key / browser / circle-wallets dev-controlled). Manual instruction-replay fail on-chain. → Tab "Đổi tiền" trên nav bar đã disable; giữ estimate. Đã gửi bug report Circle.
@@ -111,14 +123,22 @@
 - Swap response: `transaction.executionParams.instructions[]` (mảng approve+swap), không phải `transaction.target/callData`. Estimate: `res.estimate.quote.estimatedAmount`.
 - W3S SDK `performLogin(provider)` — **1 tham số** (`'Google'`). Đừng tin WebFetch summary, đọc SDK source.
 - Circle SDK popup KHÔNG chạy trên localhost (thiếu crypto polyfill) → tạo ví test trên deployed. Balance qua viem chạy được local.
+- **iOS Safari KHÔNG có `BarcodeDetector`** → quét QR phải dùng lib JS (jsQR: vẽ frame video lên canvas → `jsQR(imageData.data,w,h)`).
+- **Layout "3/4 trái":** container flex `flex-direction: column` mà đặt `alignItems: 'flex-start'` sẽ **co child về content-width + dồn trái**. Muốn full width → để mặc định `stretch` (đừng set flex-start). Top-align thì dùng `justify-content: flex-start`.
+- **Arc gas tính bằng USDC** (18 decimals nội bộ). Phí = `eth_gasPrice × gasUnits / 1e18` USDC. Gas rất rẻ → hiển thị "< 1đ". Paymaster (gas hộ) **chưa hỗ trợ** lúc launch.
+- **Tra docs Arc bằng MCP `arc-docs`** (search_arc_docs / query_docs_filesystem) — ưu tiên hơn trí nhớ.
+- EURC trên CoinGecko = id `euro-coin`; USDC = `usd-coin`; cirBTC dùng `bitcoin`.
 
 ---
 
 ## Pending / TODO
 
-1. **Memo:** sẽ triển khai theo **docs Arc** (user sẽ gửi docs). Hiện memo chỉ pass qua UI, chưa lên chain. ⏸ chờ docs.
-2. Nối **số dư thật** vào SendAmount (đang dùng MOCK_VND).
-3. Send: mới chỉ USDC — chưa chọn token khác.
-4. Fix manifest icon `design/app-icon.png` ("invalid image", cosmetic).
-5. Account Recovery (Reset PIN đã có).
-6. Khi Circle phản hồi → bật lại Google/Facebook + Swap execute.
+1. **Test memo on-chain trên deployed** — verify Memo contract chạy với User-Controlled Wallet (xem phần "đã build chưa verify").
+2. **#4 Trạng thái giao dịch thật** — sau khi ký PIN, poll txHash → "✓ đã lên blockchain" (Arc finality <1s). Hiện receipt báo success ngay sau challenge.
+3. **#5 Batch (Multicall3From `0x522f...47D0`)** — gửi nhiều người 1 lần, hoặc gộp approve+swap 1 lần ký PIN.
+4. Send: mới chỉ USDC — chưa chọn token khác.
+5. Fix manifest icon `design/app-icon.png` ("invalid image", cosmetic).
+6. Account Recovery (Reset PIN đã có).
+7. Khi Circle phản hồi → bật lại Google/Facebook + Swap execute.
+
+> Đã xong session này: memo integration, tỷ giá VND live, số dư+phí thật ở SendAmount/SendConfirm, jsQR (iOS), fix MOCK_ADDR ở Custom/Saved QR, fix layout 3/4-trái, đồng bộ cụm số dư 3 màn, avatar cropper danh bạ, share chỉ địa chỉ.
