@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import NavBar from '../components/NavBar'
 import { useNav } from '../nav'
-import { fmtVND } from '../data'
 import { getTokenBalances } from '../chain'
 import { IconScan } from '../icons'
 import qrWhiteIcon from '../../icon/qr-white.png'
@@ -40,9 +39,12 @@ export default function HomeReceive() {
 
   return (
     <div className="screen">
-      <div className="row-1 col full-bleed" style={{ justifyContent: 'center', borderBottom: '1px solid var(--color-gray)' }}>
-        <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>Số dư khả dụng</span>
-        <span style={{ fontSize: 'var(--fs-amount)', fontWeight: 'var(--fw-bold)', lineHeight: 1.1 }}>{fmtVND(totalVND)}</span>
+      <div className="row-1" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 2px' }}>
+        <span style={{ fontSize: 20, color: 'var(--color-muted)' }}>Số dư:</span>
+        <span style={{ fontSize: 28, fontWeight: 'var(--fw-bold)', color: 'var(--color-black)', lineHeight: 1 }}>
+          {totalVND.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
+        </span>
+        <span style={{ fontSize: 20, color: 'var(--color-muted)' }}>VND</span>
       </div>
 
       <div className="row-2-5 center col" style={{ gap: 12 }}>
@@ -57,7 +59,7 @@ export default function HomeReceive() {
         </button>
       </div>
 
-      <div className="row-6-7" style={{ padding: '6px 0' }}>
+      <div className="row-7-8" style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '2dvh' }}>
         <div className="tip-box"><img src={hintIcon} alt='' style={{ width: 16, height: 16, marginRight: 6, opacity: 0.6 }} />Cho người gửi quét QR này để nhận tiền</div>
       </div>
 
