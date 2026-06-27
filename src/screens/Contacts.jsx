@@ -14,7 +14,7 @@ function isValid(addr) { return /^0x[0-9a-fA-F]{40}$/.test(addr.trim()) }
 
 function avatar(name) {
   const c = name?.trim()[0]?.toUpperCase() || '?'
-  const colors = ['#16A34A', '#2775CA', '#F7931A', '#1A56DB', '#DC2626']
+  const colors = ['var(--color-primary)', '#2775CA', '#F7931A', '#1A56DB', 'var(--color-error)']
   const i = name.charCodeAt(0) % colors.length
   return { letter: c, color: colors[i] }
 }

@@ -1,29 +1,38 @@
-﻿/* ── Design Tokens ── */
+﻿/* ══════════════════════════════════════════════════════════
+   🔒 DESIGN TOKENS — KHÓA (2026-06-27). Toàn app CHỈ dùng các
+   token dưới đây. KHÔNG hardcode px màu/size mới ngoài bộ này.
+   Font: 100% Roboto Condensed.
+   ══════════════════════════════════════════════════════════ */
 :root {
-  --color-primary:    #16A34A;
-  --color-white:      #FFFFFF;
-  --color-error:      #DC2626;
-  --color-warning:    #F59E0B;
+  /* ── MÀU CHỮ (4 tầng, phân cấp bằng độ đậm) ── */
+  --color-black:      #000000;   /* tiêu đề màn + chữ trên nút */
+  --color-content:    #333333;   /* nội dung chính */
+  --color-muted:      #808080;   /* nội dung phụ */
+  --color-faint:      #B3B3B3;   /* nội dung super phụ / placeholder */
 
-  /* ── Phân tầng chữ bằng MÀU (toàn bộ font Roboto Condensed) ── */
-  --color-black:      #000000;   /* BLACK — tiêu đề + nút */
-  --color-content:    #333333;   /* GRAY  — nội dung chính */
-  --color-muted:      #808080;   /* GRAY2 — nội dung phụ */
-  --color-faint:      #B3B3B3;   /* GRAY3 — nội dung super phụ */
-  --color-gray:       #CCCCCC;   /* border / nền (không phải màu chữ) */
+  /* ── MÀU CHỨC NĂNG ── */
+  --color-primary:      #16A34A; /* hành động chính, active */
+  --color-primary-soft: #DCFCE7; /* nền nhạt xanh (chọn / nhận) */
+  --color-error:        #DC2626; /* lỗi / gửi đi */
+  --color-warning:      #F59E0B; /* cảnh báo */
+  --color-warning-soft: #FEF3C7; /* nền nhạt cảnh báo */
+  --color-white:        #FFFFFF;
+  --color-gray:         #CCCCCC; /* CHỈ border / nền — KHÔNG dùng làm màu chữ */
 
+  /* ── FONT ── */
   --font-base:      'Roboto Condensed', sans-serif;
   --font-title:     'Roboto Condensed', sans-serif;
   --font-condensed: 'Roboto Condensed', sans-serif;
 
-  /* Typography scale — quy chuẩn app người già (2026-06-27) */
-  --fs-amount:   45px;   /* số tiền VND */
+  /* ── CỠ CHỮ (KHÓA — chỉ 6 bậc) ── */
+  --fs-amount:   40px;   /* số tiền lớn: số dư, nhập số gửi */
   --fs-title:    24px;   /* tiêu đề màn hình */
-  --fs-body:     20px;   /* nội dung, button chính */
+  --fs-body:     20px;   /* nội dung chính, chữ trên nút */
   --fs-item:     18px;   /* item list (tên, dòng chính) */
   --fs-label:    16px;   /* label, text phụ, placeholder */
-  --fs-content:  20px;   /* alias → dùng --fs-body */
-  --fs-sub:      16px;   /* alias → dùng --fs-label */
+  --fs-tiny:     13px;   /* badge / ghi chú rất nhỏ */
+  --fs-content:  20px;   /* alias → --fs-body */
+  --fs-sub:      16px;   /* alias → --fs-label */
 
   /* Font weights */
   --fw-normal:  400;
@@ -468,7 +477,7 @@ body {
 
 .amount-display {
   font-family: var(--font-condensed);
-  font-size: 28px;
+  font-size: var(--fs-amount);
   font-weight: var(--fw-bold);
   text-align: center;
   padding: 6px 0;

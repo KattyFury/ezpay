@@ -47,20 +47,34 @@
 
 ---
 
-## Design System
+## Design System — 🔒 KHÓA (2026-06-27)
 
-**Font:** Roboto Condensed (400 / 500 / 700)
+> Toàn app CHỈ dùng token dưới đây. KHÔNG hardcode px size / mã màu mới.
+> Định nghĩa ở `:root` trong `src/index.css`.
 
-**Màu (6 + muted):** `--color-primary #16A34A` · `--color-black #000` · `--color-gray #CCCCCC` (chỉ border/background) · `--color-muted #999999` (text phụ) · `--color-white #FFF` · `--color-error #DC2626` · `--color-warning #F59E0B`
+**Font:** 100% **Roboto Condensed** (400 / 500 / 700). Không dùng font khác.
 
-**Typography scale (mobile, hiện hành):**
-| Variable | Size | Dùng cho |
+**Cỡ chữ (6 bậc duy nhất):**
+| Token | px | Dùng cho |
 |---|---|---|
-| `--fs-amount` | 45px | Số tiền lớn |
-| `--fs-title` | 22px | Tiêu đề màn |
-| `--fs-body` | 18px | Nội dung, button |
-| `--fs-item` | 16px | Item list |
-| `--fs-label` | 15px | Label, placeholder, text phụ |
+| `--fs-amount` | 40 | số tiền lớn: số dư, nhập số gửi, biên lai |
+| `--fs-title` | 24 | tiêu đề màn |
+| `--fs-body` | 20 | nội dung chính, chữ trên nút |
+| `--fs-item` | 18 | item list (tên, dòng chính) |
+| `--fs-label` | 16 | label, text phụ, placeholder |
+| `--fs-tiny` | 13 | badge / ghi chú rất nhỏ |
+
+**Màu chữ (4 tầng phân cấp):**
+| Token | Hex | Dùng cho |
+|---|---|---|
+| `--color-black` | #000000 | tiêu đề màn + chữ trên nút |
+| `--color-content` | #333333 | nội dung chính |
+| `--color-muted` | #808080 | nội dung phụ |
+| `--color-faint` | #B3B3B3 | super phụ / placeholder |
+
+**Màu chức năng:** `--color-primary #16A34A` (+`-soft #DCFCE7`) · `--color-error #DC2626` · `--color-warning #F59E0B` (+`-soft #FEF3C7`) · `--color-white` · `--color-gray #CCCCCC` (CHỈ border/nền, không làm màu chữ).
+**Ngoại lệ:** màu thương hiệu token trong `src/chain.js` (USDC #2775CA, EURC #1A56DB, cirBTC #F7931A) — không phải token UI.
+**Số & tiền tệ:** class `.num` (= Roboto Condensed). Tiêu đề màn: class `.screen-title` (= đen).
 
 **Assets:**
 - `icon/` — line icons 100×100: back, up, down, left, right, trade, menu, email, google, facebook, hint (bóng đèn), copy, qr, qr-white, danhba, share, download, add, add-white, verified

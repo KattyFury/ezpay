@@ -47,7 +47,7 @@ export default function SendAmount() {
       </div>
 
       <div className="row-3-4 center col" style={{ gap: 6 }}>
-        <div className="num" style={{ fontSize: 40, fontWeight: 'var(--fw-bold)', lineHeight: 1, textAlign: 'center', color: overBalance ? 'var(--color-error)' : digits ? 'var(--color-content)' : 'var(--color-gray)' }}>
+        <div className="num" style={{ fontSize: 'var(--fs-amount)', fontWeight: 'var(--fw-bold)', lineHeight: 1, textAlign: 'center', color: overBalance ? 'var(--color-error)' : digits ? 'var(--color-content)' : 'var(--color-gray)' }}>
           {digits ? fmtVND(amount) : '0 ₫'}
         </div>
         {overBalance && (

@@ -38,7 +38,7 @@ function TxRow({ tx, walletAddr }) {
       {/* Icon */}
       <div style={{
         width: 40, height: 40, borderRadius: '50%', flexShrink: 0,
-        background: isSend ? '#FEF3C7' : '#DCFCE7',
+        background: isSend ? 'var(--color-warning-soft)' : 'var(--color-primary-soft)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         <img src={isSend ? upIcon : downIcon} alt="" style={{ width: 20, height: 20 }} />

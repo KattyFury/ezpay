@@ -60,7 +60,7 @@ export default function Language() {
           <button key={l.code} onClick={() => setLang(l.code)}
             style={{
               flex: 1, height: '100%', border: `2px solid ${lang === l.code ? 'var(--color-primary)' : 'var(--color-gray)'}`,
-              borderRadius: 10, background: lang === l.code ? '#DCFCE7' : 'none',
+              borderRadius: 10, background: lang === l.code ? 'var(--color-primary-soft)' : 'none',
               cursor: 'pointer', fontFamily: 'inherit', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
             }}>
             <span style={{ fontSize: 18, fontWeight: lang === l.code ? 700 : 500, color: lang === l.code ? 'var(--color-primary)' : 'var(--color-content)' }}>{l.code.toUpperCase()}</span>
@@ -80,7 +80,7 @@ export default function Language() {
             style={{
               display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px',
               border: `2px solid ${currency === c ? 'var(--color-primary)' : 'var(--color-gray)'}`,
-              borderRadius: 10, background: currency === c ? '#DCFCE7' : 'none',
+              borderRadius: 10, background: currency === c ? 'var(--color-primary-soft)' : 'none',
               cursor: 'pointer', fontFamily: 'inherit',
             }}>
             <div style={{ width: 20, height: 20, borderRadius: '50%', background: currency === c ? 'var(--color-primary)' : 'var(--color-gray)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
