@@ -1,14 +1,11 @@
 import { useNav } from '../nav'
-import tradeIcon from '../../icon/trade.png'
-import upIcon from '../../icon/up.png'
-import downIcon from '../../icon/down.png'
-import menuIcon from '../../icon/menu.png'
+import Icon from './Icon'
 
 const TABS = [
-  { id: 'Swap',        label: 'Đổi tiền', icon: tradeIcon, disabled: true },
-  { id: 'HomeSend',    label: 'Gửi',      icon: upIcon },
-  { id: 'HomeReceive', label: 'Nhận',     icon: downIcon },
-  { id: 'MenuScreen',  label: 'Menu',     icon: menuIcon },
+  { id: 'Swap',        label: 'Đổi tiền', icon: 'trade', disabled: true },
+  { id: 'HomeSend',    label: 'Gửi',      icon: 'up' },
+  { id: 'HomeReceive', label: 'Nhận',     icon: 'down' },
+  { id: 'MenuScreen',  label: 'Menu',     icon: 'menu' },
 ]
 
 export default function NavBar({ active }) {
@@ -21,9 +18,12 @@ export default function NavBar({ active }) {
           className={`navbar-btn${active === t.id ? ' active' : ''}`}
           disabled={t.disabled}
           onClick={t.disabled ? undefined : () => navigate(t.id)}
-          style={t.disabled ? { opacity: 0.4, cursor: 'not-allowed' } : undefined}
+          style={{ position: 'relative', ...(t.disabled ? { opacity: 0.4, cursor: 'not-allowed' } : {}) }}
         >
-          {t.icon && <img src={t.icon} alt="" style={{ width: 18, height: 18, marginBottom: 2, opacity: active === t.id ? 1 : 0.4 }} />}
+          {active === t.id && (
+            <span style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '70%', height: 5, borderRadius: '0 0 5px 5px', background: 'var(--color-primary)' }} />
+          )}
+          <Icon name={t.icon} size={20} color={active === t.id ? 'var(--color-black)' : 'var(--color-muted)'} style={{ marginBottom: 2 }} />
           {t.label}
         </button>
       ))}

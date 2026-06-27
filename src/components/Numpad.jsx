@@ -1,4 +1,4 @@
-import leftIcon from '../../icon/left.png'
+import Icon from './Icon'
 
 const ROWS = [
   ['1', '2', '3'],
@@ -22,7 +22,7 @@ export default function Numpad({ onKey, showComma = false, disabled = false }) {
                 onClick={() => !isEmpty && onKey(key)}
               >
                 {key === 'BACK'
-                  ? <img src={leftIcon} alt="⌫" style={{ width: 20, height: 20 }} />
+                  ? <Icon name="left" size={24} />
                   : isEmpty ? '' : key}
               </button>
             )

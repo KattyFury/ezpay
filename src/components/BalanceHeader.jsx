@@ -4,10 +4,11 @@ export default function BalanceHeader({ totalVND, loading }) {
   const num = loading ? '...' : (totalVND || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
   return (
     <div className="row-1-2" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, fontFamily: 'var(--font-condensed)' }}>
-        <span style={{ fontSize: 'var(--fs-amount)', fontWeight: 'var(--fw-bold)', color: 'var(--color-content)', lineHeight: 1 }}>{num}</span>
-        <span style={{ fontSize: 'var(--fs-body)', color: 'var(--color-muted)' }}>VND</span>
-      </div>
+      {/* Số dư căn giữa tuyệt đối; VND treo bên phải (absolute) + căn giữa dọc → không kéo lệch tâm */}
+      <span style={{ position: 'relative', fontFamily: 'var(--font-condensed)', fontSize: 'var(--fs-amount)', fontWeight: 'var(--fw-bold)', color: 'var(--color-content)', lineHeight: 1 }}>
+        {num}
+        <span style={{ position: 'absolute', left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: 10, fontFamily: 'var(--font-condensed)', fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-normal)', color: 'var(--color-muted)', whiteSpace: 'nowrap' }}>VND</span>
+      </span>
     </div>
   )
 }

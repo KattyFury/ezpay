@@ -21,7 +21,7 @@ export default function About() {
         About
       </div>
 
-      <div className="row-2-9" style={{ justifyContent: 'flex-start' }}>
+      <div className="row-2-9" style={{ gridRow: '2 / 9', justifyContent: 'flex-start', overflowY: 'auto' }}>
         {ITEMS.map(({ label, value, link }) => (
           <div key={label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 0', borderBottom: '1px solid var(--color-gray)', width: '100%' }}>
             <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>{label}</span>

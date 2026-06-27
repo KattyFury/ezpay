@@ -1,15 +1,10 @@
-﻿import hintIcon from '../../icon/hint.png'
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import NavBar from '../components/NavBar'
 import BalanceHeader from '../components/BalanceHeader'
+import Icon from '../components/Icon'
 import { useNav } from '../nav'
 import { getTokenBalances } from '../chain'
-import { IconScan } from '../icons'
-import qrWhiteIcon from '../../icon/qr-white.png'
-import copyIcon from '../../icon/copy.png'
-import shareIcon from '../../icon/share.png'
-import downloadIcon from '../../icon/download.png'
 
 export default function HomeReceive() {
   const { navigate } = useNav()
@@ -50,35 +45,31 @@ export default function HomeReceive() {
           padding: '6px 14px', background: 'none', cursor: 'pointer',
         }}>
           <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-content)' }}>{shortAddr}</span>
-          {copied ? <span style={{ fontSize: 14 }}>✓</span> : <img src={copyIcon} alt="copy" style={{ width: 15, height: 15 }} />}
+          <Icon name={copied ? 'check' : 'copy'} size={16} color={copied ? 'var(--color-primary)' : 'var(--color-content)'} />
         </button>
       </div>
 
       <div className="row-7-8" style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '2dvh' }}>
-        <div className="tip-box" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 4, textAlign: 'left', padding: '10px 14px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
-            <img src={hintIcon} alt='' style={{ width: 16, height: 16 }} />
-            <span style={{ fontWeight: 'var(--fw-medium)' }}>Cách nhận tiền:</span>
-          </div>
-          <div><span style={{ fontWeight: 'var(--fw-medium)' }}>QR mặc định</span> — cho người gửi quét mã trên để chuyển tiền vào ví bạn</div>
-          <div><span style={{ fontWeight: 'var(--fw-medium)' }}>Chia sẻ</span> — gửi địa chỉ ví của bạn cho người khác</div>
-          <div><span style={{ fontWeight: 'var(--fw-medium)' }}>Custom QR</span> — tạo QR nhận đúng số tiền bạn muốn</div>
-          <div><span style={{ fontWeight: 'var(--fw-medium)' }}>QR đã lưu</span> — kho QR thường dùng để lấy lại nhanh</div>
+        <div className="tip-box" style={{ flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 8, textAlign: 'left', padding: '12px 16px' }}>
+          <div><span style={{ fontWeight: 'var(--fw-bold)', color: 'var(--color-content)' }}>QR mặc định</span> <span style={{ color: 'var(--color-muted)' }}>– Đây chính là địa chỉ ví của bạn</span></div>
+          <div><span style={{ fontWeight: 'var(--fw-bold)', color: 'var(--color-content)' }}>Chia sẻ</span> <span style={{ color: 'var(--color-muted)' }}>– Bấm để chia sẻ địa chỉ ví của bạn</span></div>
+          <div><span style={{ fontWeight: 'var(--fw-bold)', color: 'var(--color-content)' }}>Custom QR</span> <span style={{ color: 'var(--color-muted)' }}>– Tạo QR nhận đúng số tiền bạn muốn</span></div>
+          <div><span style={{ fontWeight: 'var(--fw-bold)', color: 'var(--color-content)' }}>Kho QR</span> <span style={{ color: 'var(--color-muted)' }}>– Nơi bạn lưu trữ những QR hay dùng</span></div>
         </div>
       </div>
 
       <div className="row-9 action-grid">
         <button className="action-card" onClick={handleShare}>
-          <img src={shareIcon} alt="" style={{ width: 20, height: 20 }} />
+          <Icon name="share" size={22} />
           <span>{copied ? 'Đã copy!' : 'Chia sẻ'}</span>
         </button>
         <button className="action-card primary" onClick={() => navigate('CreateQR')}>
-          <img src={qrWhiteIcon} alt="" style={{ width: 22, height: 22 }} />
+          <Icon name="qr" size={24} color="var(--color-white)" />
           <span>Custom QR</span>
         </button>
         <button className="action-card" onClick={() => navigate('SavedQRList')}>
-          <img src={downloadIcon} alt="" style={{ width: 20, height: 20 }} />
-          <span>QR đã lưu</span>
+          <Icon name="download" size={22} />
+          <span>Kho QR</span>
         </button>
       </div>
 

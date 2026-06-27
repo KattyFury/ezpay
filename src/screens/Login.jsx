@@ -1,6 +1,5 @@
 ﻿import logoLong from '../../design/logo-long.png'
-import emailIcon from '../../icon/email.png'
-import googleIcon from '../../icon/google.png'
+import Icon from '../components/Icon'
 import { useNav } from '../nav'
 import React, { useState, useEffect } from 'react'
 import { W3SSdk } from '@circle-fin/w3s-pw-web-sdk'
@@ -132,14 +131,14 @@ export default function Login() {
 
       <div style={{ gridRow: '6 / 11', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', gap: '2dvh', paddingBottom: '7dvh' }}>
         {[
-          { icon: emailIcon, label: 'Đăng nhập với Email', primary: true, onClick: () => navigate('EnterEmail'), disabled: false },
-          { icon: googleIcon, label: 'Đăng nhập với Google', primary: false, onClick: handleGoogleLogin, disabled: true },
+          { icon: <Icon name="mail" size={22} />, label: 'Đăng nhập với Email', primary: true, onClick: () => navigate('EnterEmail'), disabled: false },
+          { icon: <Icon name="google" size={22} />, label: 'Đăng nhập với Google', primary: false, onClick: handleGoogleLogin, disabled: true },
         ].map(({ icon, label, primary, onClick, disabled }) => (
           <button key={label} className={`btn ${primary ? 'btn-primary' : 'btn-secondary'}`}
             style={{ width: '80%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 10, opacity: disabled ? 0.4 : 1, cursor: disabled ? 'not-allowed' : 'pointer' }}
             disabled={disabled}
             onClick={disabled ? undefined : onClick}>
-            <img src={icon} alt="" style={{ width: 22, height: 22, flexShrink: 0 }} />
+            {icon}
             <span style={{ whiteSpace: 'nowrap' }}>{label}</span>
           </button>
         ))}

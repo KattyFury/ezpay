@@ -77,9 +77,11 @@
 **Số & tiền tệ:** class `.num` (= Roboto Condensed). Tiêu đề màn: class `.screen-title` (= đen).
 
 **Assets:**
-- `icon/` — line icons 100×100: back, up, down, left, right, trade, menu, email, google, facebook, hint (bóng đèn), copy, qr, qr-white, danhba, share, download, add, add-white, verified
-- `design/` — logo-long, logo-short, PFP, app-icon, pattern*
-- `public/tokens/` — usdc.png, eurc.png, cirbtc.png (logo token thật, lấy từ CoinGecko)
+- `icon/` — **SVG đơn sắc** (viewBox 100×100, `stroke/fill="currentColor"`, width/height 100%): add, back, check, clock, copy, down, down2 (tam giác đặc — dropdown), download, facebook, globe, google, hint, human, info, left, mail, menu, out, qr, right, scan, share, shield, trade, up. **PNG icon đã bỏ hoàn toàn.**
+- `design/` — logo-long, logo-short, PFP, app-icon, pattern* (PNG, không phải icon)
+- `public/tokens/` — usdc.png, eurc.png, cirbtc.png (logo token thật, CoinGecko)
+
+**Icon system:** dùng `<Icon name="..." size={} color={} />` ([src/components/Icon.jsx](src/components/Icon.jsx)) — nhúng SVG qua `?raw` + `currentColor` → recolor bằng token. Thêm icon mới: bỏ SVG vào `icon/`, chuẩn hóa `stroke/fill="black"→currentColor` + `width/height 100%→`, rồi import vào Icon.jsx. KHÔNG dùng emoji (iOS render icon Apple xấu).
 
 ---
 
@@ -89,25 +91,28 @@
 - **Sub-screen:** hàng 1 = tiêu đề (center, không line xám ngăn cách), hàng 10 = action buttons
 - **4 màn chính:** nav bar ở hàng 10
 - **Row 10:** 1 nút = `row10-single` (width 2/3); 2 nút = trái phụ trắng / phải chính xanh. (Lưu ý: `row10-dual` chiếm grid-row 9/11 — KHÔNG dùng chung màn có numpad.)
-- **Numpad:** LUÔN ở `row-7-9` (grid-row 7/10), đồng bộ mọi màn (SendAmount, Swap, EnterPin, CreatePin, CreateQR). Màn có numpad → nút bottom đặt riêng ở **hàng 10** (không dùng row10-dual để tránh đè).
+- **Numpad:** PIN/Swap dùng `row-7-9`. SendAmount/CreateQR: numpad đúng **2.5 hàng (7,8,nửa 9)** + nút ở ranh giới 9/10 — bằng `gridRow: '7/11'` flex `2.5` (numpad) / `1.5` (nút). KHÔNG để numpad lấn hàng 6.
 - **⚠ Input text (email, địa chỉ ví, tên, ảnh) PHẢI ở hàng 1–4 hoặc trong popup neo nửa trên.** Bàn phím iPhone che ~1/2 dưới (hàng 5–10). Popup form (vd thêm danh bạ) dùng overlay `align-items: flex-start` + paddingTop để nằm vùng trên.
 - **Không dùng line xám ngăn cách** (border-bottom) ở header/list — đã bỏ toàn bộ.
 
 ---
 
-## Trạng thái màn hình (hiện tại)
+## Trạng thái màn hình (cập nhật 2026-06-27, đợt UI lớn)
 
-- **Login:** 2 nút — Email (active), Google (disabled mờ 0.4). Facebook đã gỡ.
-- **EnterEmail:** tiêu đề "Đăng nhập với Email"; input absolute-center ở row-3; gợi ý email history + domain (`@gmail`/`@yahoo`/`@icloud`) cùng style box xám chữ đen.
-- **HomeSend:** Số dư căn trái "Số dư: X.XXX.XXX VND" (row 1-5 grid 5 hàng đều nhau) + list token (logo thật + tên + verified.png + VND); hint "Cách gửi tiền" (weight medium) ở hàng 7-8; actions hàng 9 (Danh bạ / Quét QR / Dán để gửi); nav hàng 10.
-- **Contacts (Danh bạ):** list không line xám; popup Thêm neo nửa trên có avatar tròn (xám + add-white) → chọn ảnh → **cropper zoom/pan tròn** → lưu PFP; nút Thêm icon 16px = cỡ chữ.
-- **QRScanner:** ô vuông camera giữa hàng 1-5 (khung 4 góc); quét QR bằng **jsQR** (chạy iOS Safari — `BarcodeDetector` KHÔNG có trên iOS); hàng 10: "Ảnh QR" (trắng, trái — đọc QR từ thư viện qua jsQR) / "Quay lại" (xanh, phải).
-- **PasteAddress:** input nhỏ row-3 + nút "Dán" cùng hàng `[0x...][Dán]`.
-- **SendAmount:** h1 "Gửi tiền" / h2 "Gửi cho: tên|ví" / h3-4 số tiền 40px / h5 memo / numpad h7-9 / nút h10. Số dư check = **USDC balance thật** (`getTokenInfo`).
-- **SendConfirm → SendReceipt:** recap VND+USDC dùng **tỷ giá live**; **phí gas thật** (eth_gasPrice × gas units → USDC → VND, thường "< 1đ"); nút đỏ "Xác nhận · PIN". Memo → gửi qua Memo contract.
-- **HomeReceive / MenuScreen:** cụm số dư **đồng bộ HomeSend** (căn trái "Số dư: X VND", không line xám). Share chỉ gửi **địa chỉ ví** (không kèm chữ).
-- **Custom QR (ShowQR) / SavedQRList:** mã hóa **địa chỉ ví thật** (`ez_wallet_addr`) — trước đây bug dùng `MOCK_ADDR`.
-- Khác: Swap, TxHistory (ArcScan), Language/Security/About, CreateQR, EnterPin/CreatePin/PinLocked/ForgotPin.
+- **Số dư (BalanceHeader, dùng chung HomeSend/HomeReceive/Menu):** số căn giữa tuyệt đối (--fs-amount, Condensed), "VND" treo phải absolute + căn giữa dọc. Component `src/components/BalanceHeader.jsx`, hàng 1-2.
+- **NavBar:** tab active = **vạch xanh lá** trên đỉnh (width 70%, cao 5px, bo dưới) + icon/chữ đen; tab khác xám.
+- **Login:** Email (active, icon mail SVG) / Google (disabled). Facebook gỡ.
+- **HomeSend:** BalanceHeader h1-2; list token h3-5 (logo thật + số token **bold** + check xanh + VND **regular** xám); hint h7-8 (label đậm – mô tả xám, en-dash); actions h9 (Danh bạ/Quét QR/Dán để gửi); nav h10.
+- **SendAmount:** h1 tiêu đề / h2 "Gửi cho:" (tra **tên danh bạ** theo địa chỉ) / h3-4 số **căn giữa tuyệt đối** + **chip `[VND ▼]`** (down2) đổi tiền tệ (VND/USDC/EURC, popup nửa trên) / h5 memo "Nội dung chuyển khoản (không bắt buộc)" / **numpad đúng 2.5 hàng (7,8,nửa 9)** + nút ở ranh giới 9/10 (gridRow 7/11, flex 2.5/1.5). Khả dụng hiển thị theo tiền tệ đang chọn.
+- **SendConfirm:** quy đổi theo `currency` (VND→USDC, USDC→USDC, EURC→EURC token); phí gas thật; nút đỏ "Xác nhận · PIN".
+- **HomeReceive:** BalanceHeader; QR h3-5; hint "QR mặc định/Chia sẻ/Custom QR/Kho QR"; actions Chia sẻ (chỉ địa chỉ) / Custom QR / **Kho QR**.
+- **CreateQR:** **đồng bộ SendAmount** (số to + VND + numpad 2.5 + nút). **ShowQR:** QR giữa + tự lưu vào Kho QR + 2 nút h9-10 [Lưu vào kho ảnh] (tải PNG) / [Quay lại]. **SavedQRList (Kho QR):** lưới 3 cột (tối đa 9 ô h2-7, scroll), bấm → ShowQR.
+- **TxHistory:** hiện **tên danh bạ** nếu lưu; bấm dòng → **popup chi tiết** (loại/người/địa chỉ/số tiền/quy đổi/thời gian/memo nếu có/link ArcScan); nút lọc "Chỉ gửi"/"Chỉ nhận" (active xanh); "Quay lại" xanh.
+- **MenuScreen:** Rút (trắng, khóa, trái) / Nạp (xanh, phải); menu items icon SVG (clock/globe/shield/info).
+- **Language:** 2 dòng "Ngôn ngữ >" / "Tiền tệ >" → popup. Ngôn ngữ: Việt/Anh/TBN/Trung/Nhật. Tiền tệ: VND/USDC/EURC/CNY/JPY (ưu tiên stablecoin).
+- **Security/About:** nội dung gridRow 2/9 (tới hàng 8) + scroll, nút Quay lại h9-11 (hết đè).
+- **Contacts:** list to (avatar 52, tên 20px); popup Thêm có avatar cropper (zoom/pan tròn); nút Gửi nhỏ hơn (phụ).
+- **QRScanner:** ô camera giữa h1-5 (bỏ khung 4 góc); quét bằng **jsQR** (iOS không có BarcodeDetector); h10 "Ảnh QR"/"Quay lại".
 
 ---
 

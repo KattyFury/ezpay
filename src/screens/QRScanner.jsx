@@ -109,17 +109,8 @@ export default function QRScanner() {
             <div style={{ position: 'relative', width: '62%', aspectRatio: '1', borderRadius: 16, overflow: 'hidden', background: '#000' }}>
               <video ref={videoRef} autoPlay playsInline muted
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
-              {/* khung góc */}
-              {[
-                { top: 8, left: 8, borderTop: '3px solid #fff', borderLeft: '3px solid #fff' },
-                { top: 8, right: 8, borderTop: '3px solid #fff', borderRight: '3px solid #fff' },
-                { bottom: 8, left: 8, borderBottom: '3px solid #fff', borderLeft: '3px solid #fff' },
-                { bottom: 8, right: 8, borderBottom: '3px solid #fff', borderRight: '3px solid #fff' },
-              ].map((s, i) => (
-                <div key={i} style={{ position: 'absolute', width: 28, height: 28, borderRadius: 4, ...s }} />
-              ))}
             </div>
-            <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)', textAlign: 'center' }}>{hint}</span>
+            <span style={{ fontSize: 'var(--fs-body)', color: 'var(--color-muted)', textAlign: 'center' }}>{hint}</span>
           </>
         )}
       </div>

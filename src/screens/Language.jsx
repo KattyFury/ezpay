@@ -1,47 +1,47 @@
 import { useState } from 'react'
 import { useNav } from '../nav'
+import Icon from '../components/Icon'
 
 const LANGUAGES = [
-  { code: 'vi', label: 'Tiếng Việt', flag: '🇻🇳' },
-  { code: 'en', label: 'English', flag: '🇺🇸' },
-  { code: 'fr', label: 'Français', flag: '🇫🇷' },
-  { code: 'ja', label: '日本語', flag: '🇯🇵' },
+  { code: 'vi', label: 'Tiếng Việt' },
+  { code: 'en', label: 'English (Anh)' },
+  { code: 'es', label: 'Español (Tây Ban Nha)' },
+  { code: 'zh', label: '中文 (Trung)' },
+  { code: 'ja', label: '日本語 (Nhật)' },
 ]
 
-const CURRENCIES_BY_LANG = {
-  vi: ['USD', 'VND', 'EUR'],
-  en: ['USD', 'EUR', 'VND'],
-  fr: ['USD', 'EUR', 'VND'],
-  ja: ['USD', 'JPY', 'VND'],
-}
-
-const CURRENCY_LABELS = {
-  USD: 'US Dollar (USD)',
-  VND: 'Việt Nam Đồng (VND)',
-  EUR: 'Euro (EUR)',
-  JPY: 'Nhật Yên (JPY)',
-}
-
-function detectLang() {
-  const lang = navigator.language?.slice(0, 2) || 'vi'
-  return LANGUAGES.find(l => l.code === lang)?.code || 'vi'
-}
+// Ưu tiên stablecoin: nước có stablecoin thì hiện stablecoin (USDC/EURC) thay vì USD/EUR
+const CURRENCIES = [
+  { code: 'VND', label: 'VND – Việt Nam Đồng' },
+  { code: 'USDC', label: 'USDC – USD stablecoin' },
+  { code: 'EURC', label: 'EURC – Euro stablecoin' },
+  { code: 'CNY', label: 'CNY – Nhân dân tệ' },
+  { code: 'JPY', label: 'JPY – Yên Nhật' },
+]
 
 export default function Language() {
   const { navigate } = useNav()
-  const [lang, setLang] = useState(() => localStorage.getItem('ez_lang') || detectLang())
-  const [currency, setCurrency] = useState(() => localStorage.getItem('ez_currency') || 'USD')
+  const [lang, setLang] = useState(() => localStorage.getItem('ez_lang') || 'vi')
+  const [currency, setCurrency] = useState(() => localStorage.getItem('ez_currency') || 'VND')
+  const [picker, setPicker] = useState(null) // 'lang' | 'currency' | null
 
-  const currencies = CURRENCIES_BY_LANG[lang] || ['USD', 'VND', 'EUR']
+  const langLabel = LANGUAGES.find(l => l.code === lang)?.label || 'Tiếng Việt'
+  const curLabel = CURRENCIES.find(c => c.code === currency)?.code || 'VND'
 
-  function save() {
-    localStorage.setItem('ez_lang', lang)
-    localStorage.setItem('ez_currency', currency)
-    navigate('MenuScreen')
-  }
+  function pickLang(code) { setLang(code); localStorage.setItem('ez_lang', code); setPicker(null) }
+  function pickCur(code) { setCurrency(code); localStorage.setItem('ez_currency', code); setPicker(null) }
 
-  const ROW = { display: 'flex', alignItems: 'center', gap: 12, padding: '0 4px', borderBottom: '1px solid var(--color-gray)' }
-  const LABEL = { flex: 1, fontSize: 'var(--fs-item)', fontWeight: 'var(--fw-medium)' }
+  const Row = ({ label, value, onClick }) => (
+    <button className="menu-item" style={{ width: '100%' }} onClick={onClick}>
+      <span style={{ flex: 1, fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>{label}</span>
+      <span style={{ fontSize: 'var(--fs-item)', color: 'var(--color-muted)', marginRight: 6 }}>{value}</span>
+      <Icon name="right" size={18} color="var(--color-faint)" />
+    </button>
+  )
+
+  const list = picker === 'lang' ? LANGUAGES : CURRENCIES
+  const active = picker === 'lang' ? lang : currency
+  const onPick = picker === 'lang' ? pickLang : pickCur
 
   return (
     <div className="screen">
@@ -49,52 +49,35 @@ export default function Language() {
         Ngôn ngữ & tiền tệ
       </div>
 
-      {/* Row 2: Language label */}
-      <div className="row-2 center" style={{ justifyContent: 'flex-start' }}>
-        <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Ngôn ngữ</span>
+      <div className="row-2" style={{ display: 'flex', alignItems: 'center' }}>
+        <Row label="Ngôn ngữ" value={langLabel} onClick={() => setPicker('lang')} />
+      </div>
+      <div className="row-3" style={{ display: 'flex', alignItems: 'center' }}>
+        <Row label="Tiền tệ" value={curLabel} onClick={() => setPicker('currency')} />
       </div>
 
-      {/* Row 3: Language selector */}
-      <div className="row-3" style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-        {LANGUAGES.map(l => (
-          <button key={l.code} onClick={() => setLang(l.code)}
-            style={{
-              flex: 1, height: '100%', border: `2px solid ${lang === l.code ? 'var(--color-primary)' : 'var(--color-gray)'}`,
-              borderRadius: 10, background: lang === l.code ? 'var(--color-primary-soft)' : 'none',
-              cursor: 'pointer', fontFamily: 'inherit', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
-            }}>
-            <span style={{ fontSize: 18, fontWeight: lang === l.code ? 700 : 500, color: lang === l.code ? 'var(--color-primary)' : 'var(--color-content)' }}>{l.code.toUpperCase()}</span>
-          </button>
-        ))}
+      <div className="row-10 row10-single">
+        <button className="btn btn-primary" onClick={() => navigate('MenuScreen')}>Quay lại</button>
       </div>
 
-      {/* Row 4: Currency label */}
-      <div className="row-4 center" style={{ justifyContent: 'flex-start' }}>
-        <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Tiền tệ hiển thị</span>
-      </div>
-
-      {/* Row 5: Currency selector */}
-      <div className="row-5" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 8 }}>
-        {currencies.map(c => (
-          <button key={c} onClick={() => setCurrency(c)}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px',
-              border: `2px solid ${currency === c ? 'var(--color-primary)' : 'var(--color-gray)'}`,
-              borderRadius: 10, background: currency === c ? 'var(--color-primary-soft)' : 'none',
-              cursor: 'pointer', fontFamily: 'inherit',
-            }}>
-            <div style={{ width: 20, height: 20, borderRadius: '50%', background: currency === c ? 'var(--color-primary)' : 'var(--color-gray)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              {currency === c && <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#fff' }} />}
+      {/* Popup chọn ngôn ngữ / tiền tệ */}
+      {picker && (
+        <div onClick={() => setPicker(null)}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+          <div onClick={e => e.stopPropagation()} style={{ width: '100%', maxWidth: 340, background: 'var(--color-white)', borderRadius: 16, padding: 16, display: 'flex', flexDirection: 'column', gap: 8, maxHeight: '80dvh', overflowY: 'auto' }}>
+            <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)', textAlign: 'center', marginBottom: 4 }}>
+              {picker === 'lang' ? 'Chọn ngôn ngữ' : 'Chọn tiền tệ'}
             </div>
-            <span style={{ fontSize: 'var(--fs-item)', fontWeight: currency === c ? 700 : 400 }}>{CURRENCY_LABELS[c]}</span>
-          </button>
-        ))}
-      </div>
-
-      <div className="row-10 row10-dual">
-        <button className="btn btn-secondary" onClick={() => navigate('MenuScreen')}>Hủy</button>
-        <button className="btn btn-primary" onClick={save}>Lưu</button>
-      </div>
+            {list.map(o => (
+              <button key={o.code} onClick={() => onPick(o.code)}
+                className={`btn ${o.code === active ? 'btn-primary' : 'btn-secondary'}`}
+                style={{ width: '100%', justifyContent: 'flex-start', paddingLeft: 18 }}>
+                {o.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

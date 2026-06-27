@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import hintIcon from '../../icon/hint.png'
+import Icon from '../components/Icon'
 import { useNav } from '../nav'
 import { createSession, getSDK, initializeWallet, executeChallenge, getWalletAddress } from '../circle'
 
@@ -99,7 +99,7 @@ export default function EnterEmail() {
                   fontSize: 'var(--fs-label)', fontFamily: 'inherit', color: 'var(--color-content)',
                   opacity: 0.8, alignSelf: 'flex-start',
                 }}>
-                <img src={hintIcon} alt='' style={{ width: 15, height: 15, marginRight: 6, verticalAlign: 'middle' }} />{s}
+                <Icon name="hint" size={15} color="var(--color-muted)" style={{ marginRight: 6, verticalAlign: 'middle' }} />{s}
               </button>
             ))}
           </div>

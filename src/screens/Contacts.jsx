@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNav } from '../nav'
-import addWhiteIcon from '../../icon/add-white.png'
+import Icon from '../components/Icon'
 
 function loadContacts() {
   try { return JSON.parse(localStorage.getItem('ez_contacts') || '[]') } catch { return [] }
@@ -172,7 +172,7 @@ export default function Contacts() {
       <div className="row-10 row10-dual">
         <button className="btn btn-secondary" onClick={() => navigate('HomeSend')}>Quay lại</button>
         <button className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }} onClick={() => setAdding(true)}>
-          <img src={addWhiteIcon} alt="" style={{ width: 20, height: 20 }} />Thêm
+          <Icon name="add" size={22} color="var(--color-white)" />Thêm
         </button>
       </div>
 
@@ -194,7 +194,7 @@ export default function Contacts() {
                   style={{ alignSelf: 'center', width: 80, height: 80, borderRadius: '50%', border: 'none', cursor: 'pointer', overflow: 'hidden', background: pfp ? 'transparent' : 'var(--color-gray)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>
                   {pfp
                     ? <img src={pfp} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    : <img src={addWhiteIcon} alt="thêm ảnh" style={{ width: 28, height: 28 }} />}
+                    : <Icon name="add" size={30} color="var(--color-white)" />}
                 </button>
                 <input className="address-input" placeholder="Tên" value={name} onChange={e => setName(e.target.value)} autoFocus style={{ fontSize: 'var(--fs-body)' }} />
                 <input className="address-input" placeholder="0x..." value={addr} onChange={e => setAddr(e.target.value)} style={{ fontSize: 'var(--fs-body)' }} />

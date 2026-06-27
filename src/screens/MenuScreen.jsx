@@ -1,19 +1,15 @@
 ﻿import NavBar from '../components/NavBar'
 import BalanceHeader from '../components/BalanceHeader'
+import Icon from '../components/Icon'
 import { getTokenBalances } from '../chain'
 import { useState, useEffect } from 'react'
-import timeIcon from '../../icon/time.png'
-import globeIcon from '../../icon/globe.png'
-import shieldIcon from '../../icon/shield.png'
-import infoIcon from '../../icon/info.png'
-import rightIcon from '../../icon/right.png'
 import { useNav } from '../nav'
 
 const ITEMS = [
-  { id: 'TxHistory', icon: timeIcon,   label: 'Lịch sử giao dịch' },
-  { id: 'Language',  icon: globeIcon,  label: 'Ngôn ngữ & tiền tệ' },
-  { id: 'Security',  icon: shieldIcon, label: 'Bảo mật' },
-  { id: 'About',     icon: infoIcon,   label: 'About' },
+  { id: 'TxHistory', icon: 'clock',  label: 'Lịch sử giao dịch' },
+  { id: 'Language',  icon: 'globe',  label: 'Ngôn ngữ & tiền tệ' },
+  { id: 'Security',  icon: 'shield', label: 'Bảo mật' },
+  { id: 'About',     icon: 'info',   label: 'About' },
 ]
 
 export default function MenuScreen() {
@@ -31,12 +27,12 @@ export default function MenuScreen() {
 
       {/* Row 3: Nạp / Rút */}
       <div className="row-3" style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+        <button className="btn btn-secondary" style={{ flex: 1, opacity: 0.4 }} disabled>
+          Rút tiền
+        </button>
         <button className="btn btn-primary" style={{ flex: 1 }}
           onClick={() => window.open('https://faucet.circle.com/', '_blank')}>
           Nạp tiền
-        </button>
-        <button className="btn btn-secondary" style={{ flex: 1, opacity: 0.4 }} disabled>
-          Rút tiền
         </button>
       </div>
 
@@ -44,9 +40,9 @@ export default function MenuScreen() {
       {ITEMS.map(({ id, icon, label }, i) => (
         <div key={id} className={`row-${i + 4}`} style={{ display: 'flex', alignItems: 'center' }}>
           <button className="menu-item" style={{ width: '100%' }} onClick={() => navigate(id, { title: label })}>
-            <img src={icon} alt='' style={{ width: 22, height: 22 }} />
+            <Icon name={icon} size={24} color="var(--color-content)" />
             <span style={{ flex: 1, fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>{label}</span>
-            <img src={rightIcon} alt='' style={{ width: 18, height: 18, opacity: 0.5 }} />
+            <Icon name="right" size={18} color="var(--color-faint)" />
           </button>
         </div>
       ))}

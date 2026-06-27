@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import hintIcon from '../../icon/hint.png'
+import Icon from '../components/Icon'
 import { useNav } from '../nav'
 import { fmtVND } from '../data'
 import { getVndRate, estimateFeeVnd } from '../chain'
@@ -11,19 +11,25 @@ function shortenAddr(addr) {
 
 export default function SendConfirm() {
   const { navigate, params } = useNav()
-  const { address, name, amount, memo } = params
-  const [rate, setRate] = useState(25000)        // tỷ giá USDC→VND live
+  const { address, name, amount, memo, currency = 'VND' } = params
+  const [rates, setRates] = useState({ USDC: 25000, EURC: 27000 })
   const [feeVnd, setFeeVnd] = useState(null)      // phí gas thật (null = đang tính)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    getVndRate('USDC').then(setRate).catch(() => {})
+    Promise.all([getVndRate('USDC'), getVndRate('EURC')]).then(([u, e]) => setRates({ USDC: u, EURC: e })).catch(() => {})
     // memo đi qua Memo contract → tốn gas hơn (~110k) so với transfer thường (~65k)
     estimateFeeVnd(memo && memo.trim() ? 110000 : 65000).then(setFeeVnd).catch(() => setFeeVnd(0))
   }, [memo])
 
-  const usdcAmount = (amount / rate).toFixed(4)
+  // VND → gửi USDC (quy đổi); USDC/EURC → gửi đúng token đó
+  const token = currency === 'EURC' ? 'EURC' : 'USDC'
+  const sendAmount = currency === 'VND' ? amount / rates.USDC : amount
+  const sendAmountStr = sendAmount.toFixed(currency === 'VND' ? 4 : 2)
+  const mainText = currency === 'VND' ? fmtVND(amount) : `${amount} ${currency}`
+  const vndEquiv = currency === 'VND' ? amount : Math.round(amount * (rates[currency] || 1))
+  const convText = currency === 'VND' ? `${sendAmountStr} USDC` : fmtVND(vndEquiv)
 
   async function handleConfirm() {
     setLoading(true); setError('')
@@ -39,8 +45,8 @@ export default function SendConfirm() {
         body: JSON.stringify({
           userToken, walletId,
           toAddress: address,
-          token: 'USDC',
-          amountDecimal: usdcAmount,
+          token,
+          amountDecimal: sendAmountStr,
           memo,
         }),
       })
@@ -50,7 +56,7 @@ export default function SendConfirm() {
       // User ký bằng PIN qua W3S SDK
       await executeChallenge(getSDK(), userToken, encryptionKey, data.challengeId)
 
-      navigate('SendReceipt', { address, name, amount, memo, timestamp: Date.now() })
+      navigate('SendReceipt', { address, name, amount, memo, currency, timestamp: Date.now() })
     } catch (e) {
       setError(e.message || 'Có lỗi xảy ra')
     } finally {
@@ -79,13 +85,13 @@ export default function SendConfirm() {
           <div className="confirm-row">
             <span className="confirm-label">Số tiền</span>
             <span className="confirm-value num" style={{ fontWeight: 'var(--fw-bold)', color: 'var(--color-primary)' }}>
-              {fmtVND(amount)}
+              {mainText}
             </span>
           </div>
           <div className="confirm-row">
             <span className="confirm-label">Quy đổi</span>
             <span className="confirm-value num" style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>
-              {usdcAmount} USDC
+              {convText}
             </span>
           </div>
           {memo && (
@@ -103,7 +109,7 @@ export default function SendConfirm() {
         </div>
 
         <div className="warning-badge" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-          <img src={hintIcon} alt='' style={{ width: 16, height: 16 }} />Giao dịch không thể hoàn tác sau khi xác nhận
+          <Icon name="hint" size={16} color="var(--color-warning)" />Giao dịch không thể hoàn tác sau khi xác nhận
         </div>
 
         {error && <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-error)', textAlign: 'center' }}>{error}</span>}

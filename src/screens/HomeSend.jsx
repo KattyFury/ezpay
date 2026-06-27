@@ -1,15 +1,10 @@
 ﻿import { useState, useEffect } from 'react'
 import NavBar from '../components/NavBar'
 import BalanceHeader from '../components/BalanceHeader'
-import hintIcon from '../../icon/hint.png'
-import danhbaIcon from '../../icon/danhba.png'
-import qrIcon from '../../icon/qr.png'
-import qrWhiteIcon from '../../icon/qr-white.png'
-import verifiedIcon from '../../icon/verified.png'
+import Icon from '../components/Icon'
 import { useNav } from '../nav'
 import { fmtVND } from '../data'
 import { getTokenBalances, fmtAmount } from '../chain'
-import { IconPaste } from '../icons'
 
 export default function HomeSend() {
   const { navigate } = useNav()
@@ -50,11 +45,11 @@ export default function HomeSend() {
               }}
             />
             <div className="token-icon" style={{ background: t.color, flexShrink: 0, display: 'none' }}>{t.symbol.slice(0, 2)}</div>
-            <span className="num" style={{ fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>
+            <span className="num" style={{ fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-bold)' }}>
               {t.amount.toFixed(t.symbol === 'cirBTC' ? 4 : 2)} {t.symbol}
             </span>
-            <img src={verifiedIcon} alt="verified" style={{ width: 17, height: 17, flexShrink: 0 }} />
-            <span className="num" style={{ marginLeft: 'auto', fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>{fmtVND(t.vnd)}</span>
+            <Icon name="check" size={18} color="var(--color-primary)" />
+            <span className="num" style={{ marginLeft: 'auto', fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-normal)' }}>{fmtVND(t.vnd)}</span>
           </div>
         ))}
       </div>
@@ -62,25 +57,21 @@ export default function HomeSend() {
       <div className="row-7-8" style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '2dvh' }}>
         {!loading && (tokens.find(t => t.symbol === 'USDC')?.amount ?? 0) <= 1 ? (
           <div className="tip-box" style={{ borderColor: 'var(--color-warning)', color: 'var(--color-warning)' }}>
-            <img src={hintIcon} alt='' style={{ width: 16, height: 16, marginRight: 6 }} />Hết USDC — cần USDC để thanh toán phí giao dịch. Vào <b>Đổi tiền</b> để swap.
+            <Icon name="hint" size={16} color="var(--color-warning)" style={{ marginRight: 6 }} />Hết USDC — cần USDC để thanh toán phí giao dịch. Vào <b>Đổi tiền</b> để swap.
           </div>
         ) : (
-          <div className="tip-box" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 4, textAlign: 'left', padding: '10px 14px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
-              <img src={hintIcon} alt='' style={{ width: 16, height: 16 }} />
-              <span style={{ fontWeight: 'var(--fw-medium)' }}>Cách gửi tiền:</span>
-            </div>
-            <div><span style={{ fontWeight: 'var(--fw-medium)' }}>Danh bạ</span> — lưu địa chỉ ví quen thuộc để gửi nhanh</div>
-            <div><span style={{ fontWeight: 'var(--fw-medium)' }}>Quét QR</span> — quét mã người nhận để chuyển tiền tiện lợi</div>
-            <div><span style={{ fontWeight: 'var(--fw-medium)' }}>Dán để gửi</span> — dán địa chỉ ví người khác đưa cho bạn</div>
+          <div className="tip-box" style={{ flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 8, textAlign: 'left', padding: '12px 16px' }}>
+            <div><span style={{ fontWeight: 'var(--fw-bold)', color: 'var(--color-content)' }}>Danh bạ</span> <span style={{ color: 'var(--color-muted)' }}>– Nơi bạn lưu địa chỉ ví của người quen</span></div>
+            <div><span style={{ fontWeight: 'var(--fw-bold)', color: 'var(--color-content)' }}>Quét QR</span> <span style={{ color: 'var(--color-muted)' }}>– Bấm để quét mã QR của người nhận</span></div>
+            <div><span style={{ fontWeight: 'var(--fw-bold)', color: 'var(--color-content)' }}>Dán để gửi</span> <span style={{ color: 'var(--color-muted)' }}>– Bấm để dán địa chỉ ví của người nhận</span></div>
           </div>
         )}
       </div>
 
       <div className="row-9 action-grid">
-        <button className="action-card" onClick={() => navigate('Contacts')}><img src={danhbaIcon} alt="" style={{ width: 20, height: 20 }} /><span>Danh bạ</span></button>
-        <button className="action-card primary" onClick={() => navigate('QRScanner')}><img src={qrWhiteIcon} alt="" style={{ width: 24, height: 24 }} /><span>Quét QR</span></button>
-        <button className="action-card" onClick={() => navigate('PasteAddress')}><IconPaste size={20} /><span>Dán để gửi</span></button>
+        <button className="action-card" onClick={() => navigate('Contacts')}><Icon name="human" size={24} /><span>Danh bạ</span></button>
+        <button className="action-card primary" onClick={() => navigate('QRScanner')}><Icon name="scan" size={24} color="var(--color-white)" /><span>Quét QR</span></button>
+        <button className="action-card" onClick={() => navigate('PasteAddress')}><Icon name="copy" size={24} /><span>Dán để gửi</span></button>
       </div>
 
       <NavBar active="HomeSend" />

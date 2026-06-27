@@ -48,7 +48,7 @@ export default function Security() {
         Bảo mật
       </div>
 
-      <div className="row-2-9" style={{ justifyContent: 'flex-start' }}>
+      <div className="row-2-9" style={{ gridRow: '2 / 9', justifyContent: 'flex-start', overflowY: 'auto' }}>
         {/* Email */}
         <div style={ROW}>
           <span style={LABEL}>Email đăng nhập</span>
