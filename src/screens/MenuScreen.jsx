@@ -1,5 +1,4 @@
 ﻿import NavBar from '../components/NavBar'
-import { fmtVND } from '../data'
 import { getTokenBalances } from '../chain'
 import { useState, useEffect } from 'react'
 import { IconHistory, IconLanguage, IconSecurity, IconInfo } from '../icons'
@@ -23,10 +22,13 @@ export default function MenuScreen() {
 
   return (
     <div className="screen">
-      {/* Row 1: Số dư khả dụng */}
-      <div className="row-1 col full-bleed" style={{ justifyContent: 'center', borderBottom: '1px solid var(--color-gray)' }}>
-        <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>Số dư khả dụng</span>
-        <span style={{ fontSize: 'var(--fs-amount)', fontWeight: 'var(--fw-bold)', lineHeight: 1.1 }}>{fmtVND(totalVND)}</span>
+      {/* Row 1: Số dư — đồng bộ với HomeSend / HomeReceive */}
+      <div className="row-1" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 2px' }}>
+        <span style={{ fontSize: 20, color: 'var(--color-muted)' }}>Số dư:</span>
+        <span style={{ fontSize: 28, fontWeight: 'var(--fw-bold)', color: 'var(--color-black)', lineHeight: 1 }}>
+          {totalVND.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
+        </span>
+        <span style={{ fontSize: 20, color: 'var(--color-muted)' }}>VND</span>
       </div>
 
       {/* Row 2: Số dư thực tế */}
