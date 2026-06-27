@@ -136,14 +136,11 @@ export default function Login() {
           { icon: googleIcon, label: 'Đăng nhập với Google', primary: false, onClick: handleGoogleLogin, disabled: true },
         ].map(({ icon, label, primary, onClick, disabled }) => (
           <button key={label} className={`btn ${primary ? 'btn-primary' : 'btn-secondary'}`}
-            style={{ width: '75%', display: 'flex', justifyContent: 'center', alignItems: 'center', opacity: disabled ? 0.4 : 1, cursor: disabled ? 'not-allowed' : 'pointer' }}
+            style={{ width: '80%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 10, opacity: disabled ? 0.4 : 1, cursor: disabled ? 'not-allowed' : 'pointer' }}
             disabled={disabled}
             onClick={disabled ? undefined : onClick}>
-            {/* inner-block width cố định theo nút dài nhất (Facebook) → icon + text thẳng cột */}
-            <span style={{ display: 'grid', gridTemplateColumns: '18px auto', columnGap: 10, alignItems: 'center', width: 195, textAlign: 'left' }}>
-              <img src={icon} alt="" style={{ width: 18, height: 18 }} />
-              <span>{label}</span>
-            </span>
+            <img src={icon} alt="" style={{ width: 22, height: 22, flexShrink: 0 }} />
+            <span style={{ whiteSpace: 'nowrap' }}>{label}</span>
           </button>
         ))}
       </div>

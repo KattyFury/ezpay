@@ -80,7 +80,7 @@ function AvatarCropper({ src, onCancel, onDone }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
-      <div style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)' }}>Chỉnh ảnh</div>
+      <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)' }}>Chỉnh ảnh</div>
       <div
         onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up}
         style={{ width: V, height: V, borderRadius: '50%', overflow: 'hidden', position: 'relative', background: '#000', touchAction: 'none', cursor: 'grab' }}
@@ -132,35 +132,35 @@ export default function Contacts() {
 
   return (
     <div className="screen">
-      <div className="row-1 center" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)' }}>
+      <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)' }}>
         Danh bạ
       </div>
 
       <div className="row-2-8" style={{ width: '100%', overflowY: 'auto', justifyContent: contacts.length ? 'flex-start' : 'center' }}>
         {contacts.length === 0 ? (
-          <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>Chưa có danh bạ</span>
+          <span style={{ fontSize: 'var(--fs-body)', color: 'var(--color-muted)' }}>Chưa có danh bạ</span>
         ) : (
           contacts.map(c => {
             const av = avatar(c.name)
             return (
-              <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', padding: '10px 0' }}>
+              <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 14, width: '100%', padding: '14px 0' }}>
                 {c.avatar ? (
-                  <img src={c.avatar} alt="" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                  <img src={c.avatar} alt="" style={{ width: 52, height: 52, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
                 ) : (
-                  <div style={{ width: 40, height: 40, borderRadius: '50%', background: av.color, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, flexShrink: 0 }}>
+                  <div style={{ width: 52, height: 52, borderRadius: '50%', background: av.color, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 22, flexShrink: 0 }}>
                     {av.letter}
                   </div>
                 )}
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 'var(--fs-item)', fontWeight: 'var(--fw-medium)' }}>{c.name}</div>
-                  <div style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>{c.address.slice(0, 8)}...{c.address.slice(-6)}</div>
+                  <div style={{ fontSize: 20, fontWeight: 'var(--fw-medium)' }}>{c.name}</div>
+                  <div style={{ fontSize: 'var(--fs-item)', color: 'var(--color-muted)' }}>{c.address.slice(0, 8)}...{c.address.slice(-6)}</div>
                 </div>
                 <button onClick={() => navigate('SendAmount', { address: c.address, name: c.name })}
-                  className="btn btn-primary" style={{ height: 32, padding: '0 12px', fontSize: 'var(--fs-label)' }}>
+                  className="btn btn-primary" style={{ height: 40, minHeight: 40, padding: '0 22px', fontSize: 'var(--fs-item)' }}>
                   Gửi
                 </button>
                 <button onClick={() => handleDelete(c.id)}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, color: 'var(--color-muted)', padding: '0 4px' }}>
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 24, color: 'var(--color-muted)', padding: '0 4px', flexShrink: 0 }}>
                   ×
                 </button>
               </div>
@@ -172,7 +172,7 @@ export default function Contacts() {
       <div className="row-10 row10-dual">
         <button className="btn btn-secondary" onClick={() => navigate('HomeSend')}>Quay lại</button>
         <button className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }} onClick={() => setAdding(true)}>
-          <img src={addWhiteIcon} alt="" style={{ width: 16, height: 16 }} />Thêm
+          <img src={addWhiteIcon} alt="" style={{ width: 20, height: 20 }} />Thêm
         </button>
       </div>
 
@@ -189,7 +189,7 @@ export default function Contacts() {
               <AvatarCropper src={picked} onCancel={() => setPicked(null)} onDone={d => { setPfp(d); setPicked(null) }} />
             ) : (
               <>
-                <div style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)', textAlign: 'center' }}>Thêm danh bạ</div>
+                <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)', textAlign: 'center' }}>Thêm danh bạ</div>
                 <button onClick={() => fileRef.current?.click()}
                   style={{ alignSelf: 'center', width: 80, height: 80, borderRadius: '50%', border: 'none', cursor: 'pointer', overflow: 'hidden', background: pfp ? 'transparent' : 'var(--color-gray)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>
                   {pfp

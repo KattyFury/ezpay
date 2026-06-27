@@ -1,5 +1,6 @@
 ﻿import { useState, useEffect } from 'react'
 import NavBar from '../components/NavBar'
+import BalanceHeader from '../components/BalanceHeader'
 import hintIcon from '../../icon/hint.png'
 import danhbaIcon from '../../icon/danhba.png'
 import qrIcon from '../../icon/qr.png'
@@ -28,16 +29,9 @@ export default function HomeSend() {
 
   return (
     <div className="screen">
-      <div className="row-1-5" style={{ display: 'grid', gridTemplateRows: 'repeat(5, 1fr)', overflowY: 'auto' }}>
-        {/* Số dư — căn trái, cùng khoảng cách như mỗi token */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 2px' }}>
-          <span style={{ fontSize: 20, color: 'var(--color-muted)' }}>Số dư:</span>
-          <span style={{ fontSize: 28, fontWeight: 'var(--fw-bold)', color: 'var(--color-black)', lineHeight: 1 }}>
-            {loading ? '...' : totalVND.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
-          </span>
-          <span style={{ fontSize: 20, color: 'var(--color-muted)' }}>VND</span>
-        </div>
+      <BalanceHeader totalVND={totalVND} loading={loading} />
 
+      <div className="row-3-5" style={{ display: 'grid', gridTemplateRows: 'repeat(3, 1fr)', overflowY: 'auto' }}>
         {loading ? (
           <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-muted)', fontSize: 'var(--fs-body)', padding: '0 2px' }}>Đang tải...</div>
         ) : tokens.length === 0 ? (
@@ -56,11 +50,11 @@ export default function HomeSend() {
               }}
             />
             <div className="token-icon" style={{ background: t.color, flexShrink: 0, display: 'none' }}>{t.symbol.slice(0, 2)}</div>
-            <span style={{ fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>
+            <span className="num" style={{ fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>
               {t.amount.toFixed(t.symbol === 'cirBTC' ? 4 : 2)} {t.symbol}
             </span>
             <img src={verifiedIcon} alt="verified" style={{ width: 17, height: 17, flexShrink: 0 }} />
-            <span style={{ marginLeft: 'auto', fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>{fmtVND(t.vnd)}</span>
+            <span className="num" style={{ marginLeft: 'auto', fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>{fmtVND(t.vnd)}</span>
           </div>
         ))}
       </div>

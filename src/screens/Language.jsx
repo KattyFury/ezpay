@@ -45,7 +45,7 @@ export default function Language() {
 
   return (
     <div className="screen">
-      <div className="row-1 center full-bleed" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)', borderBottom: '1px solid var(--color-gray)' }}>
+      <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)' }}>
         Ngôn ngữ & tiền tệ
       </div>
 
@@ -63,8 +63,7 @@ export default function Language() {
               borderRadius: 10, background: lang === l.code ? '#DCFCE7' : 'none',
               cursor: 'pointer', fontFamily: 'inherit', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
             }}>
-            <span style={{ fontSize: 20 }}>{l.flag}</span>
-            <span style={{ fontSize: 11, fontWeight: lang === l.code ? 700 : 400, color: lang === l.code ? 'var(--color-primary)' : 'var(--color-black)' }}>{l.code.toUpperCase()}</span>
+            <span style={{ fontSize: 18, fontWeight: lang === l.code ? 700 : 500, color: lang === l.code ? 'var(--color-primary)' : 'var(--color-content)' }}>{l.code.toUpperCase()}</span>
           </button>
         ))}
       </div>

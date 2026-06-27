@@ -1,5 +1,4 @@
-﻿import backIcon from '../../icon/back.png'
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useNav } from '../nav'
 import Numpad from '../components/Numpad'
 import { fmtVND } from '../data'
@@ -20,9 +19,8 @@ export default function CreateQR() {
 
   return (
     <div className="screen">
-      <div className="row-1 center send-title">
-        <button className="back-btn" onClick={() => navigate('HomeReceive')}><img src={backIcon} alt='‹' style={{ width: 18, height: 18 }} /></button>
-        <span>Custom QR</span>
+      <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)' }}>
+        Custom QR
       </div>
 
       <div className="row-2-5 center col" style={{ gap: 12 }}>
@@ -38,10 +36,11 @@ export default function CreateQR() {
         <Numpad onKey={handleKey} showComma={false} />
       </div>
 
-      <div className="row-10 row10-dual">
-        <button className="btn btn-secondary" onClick={() => navigate('HomeReceive')}>Hủy</button>
+      <div className="row-10" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+        <button className="btn btn-secondary" style={{ width: '44%' }} onClick={() => navigate('HomeReceive')}>Hủy</button>
         <button
           className="btn btn-primary"
+          style={{ width: '44%' }}
           disabled={amount <= 0}
           onClick={() => navigate('ShowQR', { amount })}
         >

@@ -1,5 +1,4 @@
-﻿import backIcon from '../../icon/back.png'
-import { useNav } from '../nav'
+﻿import { useNav } from '../nav'
 import { QRCodeSVG } from 'qrcode.react'
 import { fmtVND } from '../data'
 
@@ -22,14 +21,13 @@ export default function ShowQR() {
 
   return (
     <div className="screen">
-      <div className="row-1 center send-title">
-        <button className="back-btn" onClick={() => navigate('CreateQR', { amount })}><img src={backIcon} alt='‹' style={{ width: 18, height: 18 }} /></button>
-        <span>Custom QR</span>
+      <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)' }}>
+        Custom QR
       </div>
 
       <div className="row-2-5 center col" style={{ gap: 12 }}>
         <QRCodeSVG value={qrValue} size={160} level="M" />
-        <span style={{ fontSize: 'var(--fs-amount)', fontWeight: 'var(--fw-bold)' }}>
+        <span className="num" style={{ fontSize: 'var(--fs-amount)', fontWeight: 'var(--fw-bold)' }}>
           {fmtVND(amount)}
         </span>
         <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>

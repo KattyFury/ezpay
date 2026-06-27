@@ -70,7 +70,7 @@ export default function EnterEmail() {
 
   return (
     <div className="screen">
-      <div className="row-1 center" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)' }}>
+      <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)' }}>
         Đăng nhập với Email
       </div>
 
@@ -96,7 +96,7 @@ export default function EnterEmail() {
                   textAlign: 'left', padding: '6px 12px',
                   border: 'none', borderRadius: 10,
                   background: 'var(--color-gray)', cursor: 'pointer',
-                  fontSize: 'var(--fs-label)', fontFamily: 'inherit', color: 'var(--color-black)',
+                  fontSize: 'var(--fs-label)', fontFamily: 'inherit', color: 'var(--color-content)',
                   opacity: 0.8, alignSelf: 'flex-start',
                 }}>
                 <img src={hintIcon} alt='' style={{ width: 15, height: 15, marginRight: 6, verticalAlign: 'middle' }} />{s}
@@ -113,7 +113,7 @@ export default function EnterEmail() {
                 style={{
                   padding: '6px 12px', border: 'none', borderRadius: 10,
                   background: 'var(--color-gray)', cursor: 'pointer',
-                  fontSize: 'var(--fs-label)', fontFamily: 'inherit', color: 'var(--color-black)', opacity: 0.8,
+                  fontSize: 'var(--fs-label)', fontFamily: 'inherit', color: 'var(--color-content)', opacity: 0.8,
                 }}>
                 {d}
               </button>

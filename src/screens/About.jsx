@@ -17,7 +17,7 @@ export default function About() {
 
   return (
     <div className="screen">
-      <div className="row-1 center full-bleed" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)', borderBottom: '1px solid var(--color-gray)' }}>
+      <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)' }}>
         About
       </div>
 
@@ -26,11 +26,11 @@ export default function About() {
           <div key={label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 0', borderBottom: '1px solid var(--color-gray)', width: '100%' }}>
             <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>{label}</span>
             {link ? (
-              <a href={link} target="_blank" rel="noopener" style={{ fontSize: 'var(--fs-item)', fontWeight: 'var(--fw-medium)', color: 'var(--color-black)', textDecoration: 'none', textAlign: 'right', maxWidth: '60%' }}>
+              <a href={link} target="_blank" rel="noopener" style={{ fontSize: 'var(--fs-item)', fontWeight: 'var(--fw-medium)', color: 'var(--color-content)', textDecoration: 'none', textAlign: 'right', maxWidth: '60%' }}>
                 {value}
               </a>
             ) : (
-              <span style={{ fontSize: 'var(--fs-item)', fontWeight: 'var(--fw-medium)', textAlign: 'right', maxWidth: '60%', color: 'var(--color-black)' }}>{value}</span>
+              <span style={{ fontSize: 'var(--fs-item)', fontWeight: 'var(--fw-medium)', textAlign: 'right', maxWidth: '60%', color: 'var(--color-content)' }}>{value}</span>
             )}
           </div>
         ))}

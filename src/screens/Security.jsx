@@ -44,7 +44,7 @@ export default function Security() {
 
   return (
     <div className="screen">
-      <div className="row-1 center full-bleed" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)', borderBottom: '1px solid var(--color-gray)' }}>
+      <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)' }}>
         Bảo mật
       </div>
 
@@ -58,7 +58,7 @@ export default function Security() {
         {/* Wallet address */}
         <button onClick={copyAddr} style={{ ...ROW, width: '100%', border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', borderBottom: '1px solid var(--color-gray)' }}>
           <span style={LABEL}>Địa chỉ ví</span>
-          <span style={{ ...VALUE, color: copied ? 'var(--color-primary)' : 'var(--color-black)' }}>{copied ? '✓ Đã sao chép' : shortAddr}</span>
+          <span style={{ ...VALUE, color: copied ? 'var(--color-primary)' : 'var(--color-content)' }}>{copied ? '✓ Đã sao chép' : shortAddr}</span>
         </button>
 
         {/* Change PIN */}

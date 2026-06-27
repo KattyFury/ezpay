@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import NavBar from '../components/NavBar'
+import BalanceHeader from '../components/BalanceHeader'
 import { useNav } from '../nav'
 import { getTokenBalances } from '../chain'
 import { IconScan } from '../icons'
@@ -39,28 +40,31 @@ export default function HomeReceive() {
 
   return (
     <div className="screen">
-      <div className="row-1" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 2px' }}>
-        <span style={{ fontSize: 20, color: 'var(--color-muted)' }}>Số dư:</span>
-        <span style={{ fontSize: 28, fontWeight: 'var(--fw-bold)', color: 'var(--color-black)', lineHeight: 1 }}>
-          {totalVND.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
-        </span>
-        <span style={{ fontSize: 20, color: 'var(--color-muted)' }}>VND</span>
-      </div>
+      <BalanceHeader totalVND={totalVND} loading={false} />
 
-      <div className="row-2-5 center col" style={{ gap: 12 }}>
+      <div className="row-3-5 center col" style={{ gap: 12 }}>
         <QRCodeSVG value={walletAddr || '0x'} size={200} level="M" />
         <button onClick={copyAddr} style={{
           display: 'flex', alignItems: 'center', gap: 6,
           border: '1px solid var(--color-gray)', borderRadius: 8,
           padding: '6px 14px', background: 'none', cursor: 'pointer',
         }}>
-          <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-black)' }}>{shortAddr}</span>
+          <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-content)' }}>{shortAddr}</span>
           {copied ? <span style={{ fontSize: 14 }}>✓</span> : <img src={copyIcon} alt="copy" style={{ width: 15, height: 15 }} />}
         </button>
       </div>
 
       <div className="row-7-8" style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '2dvh' }}>
-        <div className="tip-box"><img src={hintIcon} alt='' style={{ width: 16, height: 16, marginRight: 6, opacity: 0.6 }} />Cho người gửi quét QR này để nhận tiền</div>
+        <div className="tip-box" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 4, textAlign: 'left', padding: '10px 14px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+            <img src={hintIcon} alt='' style={{ width: 16, height: 16 }} />
+            <span style={{ fontWeight: 'var(--fw-medium)' }}>Cách nhận tiền:</span>
+          </div>
+          <div><span style={{ fontWeight: 'var(--fw-medium)' }}>QR mặc định</span> — cho người gửi quét mã trên để chuyển tiền vào ví bạn</div>
+          <div><span style={{ fontWeight: 'var(--fw-medium)' }}>Chia sẻ</span> — gửi địa chỉ ví của bạn cho người khác</div>
+          <div><span style={{ fontWeight: 'var(--fw-medium)' }}>Custom QR</span> — tạo QR nhận đúng số tiền bạn muốn</div>
+          <div><span style={{ fontWeight: 'var(--fw-medium)' }}>QR đã lưu</span> — kho QR thường dùng để lấy lại nhanh</div>
+        </div>
       </div>
 
       <div className="row-9 action-grid">

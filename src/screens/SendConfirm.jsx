@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import hintIcon from '../../icon/hint.png'
 import { useNav } from '../nav'
 import { fmtVND } from '../data'
 import { getVndRate, estimateFeeVnd } from '../chain'
@@ -77,13 +78,13 @@ export default function SendConfirm() {
           )}
           <div className="confirm-row">
             <span className="confirm-label">Số tiền</span>
-            <span className="confirm-value" style={{ fontWeight: 'var(--fw-bold)', color: 'var(--color-primary)' }}>
+            <span className="confirm-value num" style={{ fontWeight: 'var(--fw-bold)', color: 'var(--color-primary)' }}>
               {fmtVND(amount)}
             </span>
           </div>
           <div className="confirm-row">
             <span className="confirm-label">Quy đổi</span>
-            <span className="confirm-value" style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>
+            <span className="confirm-value num" style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>
               {usdcAmount} USDC
             </span>
           </div>
@@ -95,13 +96,15 @@ export default function SendConfirm() {
           )}
           <div className="confirm-row">
             <span className="confirm-label">Phí mạng</span>
-            <span className="confirm-value" style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>
+            <span className="confirm-value num" style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>
               {feeVnd === null ? 'Đang tính...' : feeVnd < 1 ? '< 1đ' : fmtVND(feeVnd)}
             </span>
           </div>
         </div>
 
-        <div className="warning-badge">⚠ Giao dịch không thể hoàn tác sau khi xác nhận</div>
+        <div className="warning-badge" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+          <img src={hintIcon} alt='' style={{ width: 16, height: 16 }} />Giao dịch không thể hoàn tác sau khi xác nhận
+        </div>
 
         {error && <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-error)', textAlign: 'center' }}>{error}</span>}
         {loading && <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)', textAlign: 'center' }}>Đang mở xác nhận PIN...</span>}

@@ -34,7 +34,7 @@ export default function SendReceipt() {
       <div className="row-2-5 col center" style={{ gap: 10 }}>
         <CheckIcon />
         <span style={{ fontSize: 'var(--fs-content)', fontWeight: 'var(--fw-bold)' }}>Đã gửi thành công</span>
-        <span style={{ fontSize: 28, fontWeight: 'var(--fw-bold)', color: 'var(--color-primary)' }}>
+        <span className="num" style={{ fontSize: 28, fontWeight: 'var(--fw-bold)', color: 'var(--color-primary)' }}>
           {fmtVND(amount)}
         </span>
         <div className="confirm-box" style={{ width: '100%' }}>

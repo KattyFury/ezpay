@@ -127,7 +127,7 @@ export default function Swap() {
                 <div style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>{(balances[fromSym] || 0).toFixed(2)}</div>
               </div>
             </button>
-            <div style={{ fontSize: 31, fontWeight: 700, color: input ? 'var(--color-black)' : 'var(--color-gray)' }}>{input || '0'}</div>
+            <div style={{ fontSize: 31, fontWeight: 700, color: input ? 'var(--color-content)' : 'var(--color-gray)' }}>{input || '0'}</div>
           </div>
           <div style={{ display: 'flex', gap: 6 }}>
             {['25%', '50%', '75%', 'Max'].map(v => (
@@ -152,7 +152,7 @@ export default function Swap() {
             </div>
           </button>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: 31, fontWeight: 700, color: estAmt ? 'var(--color-black)' : 'var(--color-gray)' }}>
+            <div style={{ fontSize: 31, fontWeight: 700, color: estAmt ? 'var(--color-content)' : 'var(--color-gray)' }}>
               {loading ? '...' : estAmt ? `~${parseFloat(estAmt).toFixed(4)}` : '0'}
             </div>
             {fee && <div style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>phí mạng: {fee.split(' + ').find(f => f.includes('USDC')) || fee}</div>}

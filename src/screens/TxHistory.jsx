@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNav } from '../nav'
 import { fmtVND } from '../data'
 import { TOKENS } from '../chain'
+import upIcon from '../../icon/up.png'
+import downIcon from '../../icon/down.png'
 
 const ARCSCAN = 'https://testnet.arcscan.app/api'
 const TOKEN_MAP = Object.fromEntries(TOKENS.map(t => [t.address.toLowerCase(), t]))
@@ -29,7 +31,7 @@ function TxRow({ tx, walletAddr }) {
 
   return (
     <div style={{
-      display: 'flex', alignItems: 'center', gap: 12,
+      display: 'flex', alignItems: 'center', gap: 12, width: '100%',
       padding: '12px 0',
       borderBottom: '1px solid var(--color-gray)',
     }}>
@@ -38,9 +40,8 @@ function TxRow({ tx, walletAddr }) {
         width: 40, height: 40, borderRadius: '50%', flexShrink: 0,
         background: isSend ? '#FEF3C7' : '#DCFCE7',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: 18,
       }}>
-        {isSend ? '↑' : '↓'}
+        <img src={isSend ? upIcon : downIcon} alt="" style={{ width: 20, height: 20 }} />
       </div>
 
       {/* Info */}
@@ -55,13 +56,13 @@ function TxRow({ tx, walletAddr }) {
 
       {/* Amount */}
       <div style={{ textAlign: 'right', flexShrink: 0 }}>
-        <div style={{
+        <div className="num" style={{
           fontSize: 'var(--fs-item)', fontWeight: 'var(--fw-medium)',
           color: isSend ? 'var(--color-error)' : 'var(--color-primary)',
         }}>
           {isSend ? '-' : '+'}{amount.toFixed(amount < 0.01 ? 6 : 2)} {symbol}
         </div>
-        <div style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>
+        <div className="num" style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>
           {fmtVND(vnd)}
         </div>
       </div>
@@ -73,7 +74,12 @@ export default function TxHistory() {
   const { navigate } = useNav()
   const [txs, setTxs] = useState([])
   const [loading, setLoading] = useState(true)
+  const [filter, setFilter] = useState('all') // 'all' | 'send' | 'receive'
   const walletAddr = localStorage.getItem('ez_wallet_addr')
+
+  const isSendTx = tx => tx.from?.toLowerCase() === walletAddr?.toLowerCase()
+  const filtered = txs.filter(tx => filter === 'all' ? true : filter === 'send' ? isSendTx(tx) : !isSendTx(tx))
+  const emptyMsg = filter === 'send' ? 'Chưa có giao dịch gửi' : filter === 'receive' ? 'Chưa có giao dịch nhận' : 'Chưa có giao dịch nào'
 
   useEffect(() => {
     if (!walletAddr) { setLoading(false); return }
@@ -86,27 +92,30 @@ export default function TxHistory() {
 
   return (
     <div className="screen">
-      <div className="row-1 center full-bleed" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)', borderBottom: '1px solid var(--color-gray)' }}>
+      <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)' }}>
         Lịch sử giao dịch
       </div>
 
-      <div className="row-2-9" style={{ overflowY: 'auto', justifyContent: 'flex-start' }}>
+      <div className="row-2-8" style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', overflowY: 'auto', justifyContent: 'flex-start' }}>
         {loading ? (
           <div style={{ width: '100%', textAlign: 'center', paddingTop: 40, color: 'var(--color-muted)', fontSize: 'var(--fs-label)' }}>
             Đang tải...
           </div>
-        ) : txs.length === 0 ? (
+        ) : filtered.length === 0 ? (
           <div style={{ width: '100%', textAlign: 'center', paddingTop: 40 }}>
-            <div style={{ fontSize: 32, marginBottom: 8 }}>📭</div>
-            <div style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>Chưa có giao dịch nào</div>
+            <div style={{ fontSize: 'var(--fs-body)', color: 'var(--color-muted)' }}>{emptyMsg}</div>
           </div>
         ) : (
-          txs.map(tx => <TxRow key={tx.hash} tx={tx} walletAddr={walletAddr} />)
+          filtered.map(tx => <TxRow key={tx.hash} tx={tx} walletAddr={walletAddr} />)
         )}
       </div>
 
-      <div className="row-10 row10-single">
-        <button className="btn btn-secondary" onClick={() => navigate('MenuScreen')}>Quay lại</button>
+      <div style={{ gridRow: '9 / 11', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+        <button className={`btn ${filter === 'send' ? 'btn-primary' : 'btn-secondary'}`} style={{ flex: 1 }}
+          onClick={() => setFilter(f => f === 'send' ? 'all' : 'send')}>Gửi</button>
+        <button className={`btn ${filter === 'receive' ? 'btn-primary' : 'btn-secondary'}`} style={{ flex: 1 }}
+          onClick={() => setFilter(f => f === 'receive' ? 'all' : 'receive')}>Nhận</button>
+        <button className="btn btn-secondary" style={{ flex: 1 }} onClick={() => navigate('MenuScreen')}>Quay lại</button>
       </div>
     </div>
   )

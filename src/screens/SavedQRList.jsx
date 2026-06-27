@@ -1,10 +1,7 @@
-﻿import backIcon from '../../icon/back.png'
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useNav } from '../nav'
 import { QRCodeSVG } from 'qrcode.react'
 import { fmtVND } from '../data'
-
-const WALLET_ADDR = localStorage.getItem('ez_wallet_addr') || ''
 
 function loadQRs() {
   try { return JSON.parse(localStorage.getItem('ez_saved_qrs') || '[]') } catch { return [] }
@@ -13,6 +10,7 @@ function loadQRs() {
 export default function SavedQRList() {
   const { navigate } = useNav()
   const [list, setList] = useState(loadQRs)
+  const walletAddr = localStorage.getItem('ez_wallet_addr') || ''
 
   function handleDelete(id) {
     const updated = list.filter(q => q.id !== id)
@@ -22,9 +20,8 @@ export default function SavedQRList() {
 
   return (
     <div className="screen">
-      <div className="row-1 center send-title">
-        <button className="back-btn" onClick={() => navigate('HomeReceive')}><img src={backIcon} alt='‹' style={{ width: 18, height: 18 }} /></button>
-        <span>QR đã lưu</span>
+      <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)' }}>
+        QR đã lưu
       </div>
 
       <div className="row-2-9" style={{ overflowY: 'auto', padding: '8px 0' }}>
@@ -53,8 +50,8 @@ export default function SavedQRList() {
                     fontSize: 16, color: 'var(--color-gray)', lineHeight: 1,
                   }}
                 >×</button>
-                <QRCodeSVG value={`ezwallet:${WALLET_ADDR}?amount=${q.amount}`} size={80} level="M" />
-                <span style={{ fontSize: 'var(--fs-label)', fontWeight: 'var(--fw-bold)', textAlign: 'center' }}>
+                <QRCodeSVG value={`ezwallet:${walletAddr}?amount=${q.amount}`} size={80} level="M" />
+                <span className="num" style={{ fontSize: 'var(--fs-label)', fontWeight: 'var(--fw-bold)', textAlign: 'center' }}>
                   {fmtVND(q.amount)}
                 </span>
               </div>

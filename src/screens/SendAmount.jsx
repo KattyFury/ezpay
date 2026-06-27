@@ -35,7 +35,7 @@ export default function SendAmount() {
 
   return (
     <div className="screen">
-      <div className="row-1 center" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)' }}>
+      <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)' }}>
         Gửi tiền
       </div>
 
@@ -47,7 +47,7 @@ export default function SendAmount() {
       </div>
 
       <div className="row-3-4 center col" style={{ gap: 6 }}>
-        <div style={{ fontSize: 40, fontWeight: 'var(--fw-bold)', lineHeight: 1, textAlign: 'center', color: overBalance ? 'var(--color-error)' : digits ? 'var(--color-black)' : 'var(--color-gray)' }}>
+        <div className="num" style={{ fontSize: 40, fontWeight: 'var(--fw-bold)', lineHeight: 1, textAlign: 'center', color: overBalance ? 'var(--color-error)' : digits ? 'var(--color-content)' : 'var(--color-gray)' }}>
           {digits ? fmtVND(amount) : '0 ₫'}
         </div>
         {overBalance && (
