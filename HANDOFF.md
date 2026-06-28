@@ -172,9 +172,9 @@
 
 ## Pending / TODO
 
-**Hoãn tới khi dự án hoàn thiện (theo ý user):**
-1. **i18n (đa ngôn ngữ)** — app đang 100% hardcode tiếng Việt; nút "Ngôn ngữ" mới lưu `ez_lang` chứ chưa dịch. Cần tách chuỗi → vi/en/... + áp theo `ez_lang`/`navigator.language`. **User: làm khi dự án xong.**
-2. **Onboarding sau tạo ví** — chọn ngôn ngữ/tiền tệ mặc định + hướng dẫn ngắn. (Gắn với i18n nên hoãn cùng.)
+**Hoãn tới khi dự án hoàn thiện (theo ý user, làm theo THỨ TỰ):**
+1. **i18n (đa ngôn ngữ) — LÀM TRƯỚC** — app đang 100% hardcode tiếng Việt; nút "Ngôn ngữ" mới lưu `ez_lang` chứ chưa dịch. Cần tách chuỗi → vi/en/... + áp theo `ez_lang`/`navigator.language`. **User: làm khi dự án xong.**
+2. **Onboarding sau tạo ví — LÀM SAU i18n** — màn chọn ngôn ngữ/tiền tệ mặc định + hướng dẫn ngắn cho người già (sau EnterEmail tạo ví lần đầu). User chốt: làm, nhưng sau khi có i18n.
 
 **Còn lại:**
 3. **#4 Trạng thái giao dịch thật** — poll txHash → "✓ đã lên blockchain" (Arc finality <1s).
