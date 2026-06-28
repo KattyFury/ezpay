@@ -5,9 +5,9 @@ export function getNotifs() {
   try { return JSON.parse(localStorage.getItem(KEY) || '[]') } catch { return [] }
 }
 
-export function addNotif(text, type = 'info') {
+export function addNotif(text, type = 'info', hash = null) {
   const list = getNotifs()
-  list.unshift({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`, text, type, ts: Date.now() })
+  list.unshift({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`, text, type, hash, ts: Date.now() })
   localStorage.setItem(KEY, JSON.stringify(list.slice(0, 10)))
 }
 

@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useNav } from '../nav'
 import { fmtVND } from '../data'
 import { addNotif } from '../notif'
+import { saveImageToPhotos } from '../saveImage'
 
 function CheckIcon() {
   return (
@@ -59,10 +60,7 @@ export default function SendReceipt() {
     if (memo) row('Nội dung', memo)
     row('Thời gian', fmtTime(timestamp))
     x.textAlign = 'center'; x.fillStyle = '#16A34A'; x.font = '700 26px sans-serif'; x.fillText('EZ Wallet', W / 2, H - 30)
-    const a = document.createElement('a')
-    a.href = cv.toDataURL('image/png')
-    a.download = `bien-lai-${timestamp}.png`
-    a.click()
+    saveImageToPhotos(cv, `bien-lai-${timestamp}.png`)
   }
 
   return (

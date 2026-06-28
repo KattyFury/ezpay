@@ -1,6 +1,7 @@
 ﻿import { useState, useEffect, useRef } from 'react'
 import NavBar from '../components/NavBar'
 import Numpad from '../components/Numpad'
+import Icon from '../components/Icon'
 import { estimateSwap, executeSwap, getSDK, executeChallenge } from '../circle'
 import { getTokenBalances } from '../chain'
 
@@ -123,7 +124,7 @@ export default function Swap() {
             <button onClick={() => setPicker('from')} style={{ display: 'flex', alignItems: 'center', gap: 10, border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', padding: 0 }}>
               <div style={{ width: 36, height: 36, borderRadius: '50%', background: COLORS[fromSym], display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: '#fff' }}>{fromSym.slice(0, 2)}</div>
               <div>
-                <div style={{ fontSize: 21, fontWeight: 700 }}>{fromSym} ▾</div>
+                <div style={{ fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-semibold)', display: 'flex', alignItems: 'center', gap: 4 }}>{fromSym} <Icon name="down2" size={12} color="var(--color-muted)" /></div>
                 <div style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>{(balances[fromSym] || 0).toFixed(2)}</div>
               </div>
             </button>
@@ -139,7 +140,7 @@ export default function Swap() {
 
         {/* ⇅ swap button */}
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <button onClick={swapDir} style={{ width: 44, height: 44, borderRadius: '50%', border: '1.5px solid var(--color-gray)', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 22 }}>⇅</button>
+          <button onClick={swapDir} style={{ width: 44, height: 44, borderRadius: '50%', border: '1.5px solid var(--color-gray)', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><Icon name="trade" size={20} color="var(--color-content)" /></button>
         </div>
 
         {/* TO card */}
@@ -147,7 +148,7 @@ export default function Swap() {
           <button onClick={() => setPicker('to')} style={{ display: 'flex', alignItems: 'center', gap: 10, border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', padding: 0 }}>
             <div style={{ width: 36, height: 36, borderRadius: '50%', background: COLORS[toSym], display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: '#fff' }}>{toSym.slice(0, 2)}</div>
             <div>
-              <div style={{ fontSize: 21, fontWeight: 700 }}>{toSym} ▾</div>
+              <div style={{ fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-semibold)', display: 'flex', alignItems: 'center', gap: 4 }}>{toSym} <Icon name="down2" size={12} color="var(--color-muted)" /></div>
               <div style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>{(balances[toSym] || 0).toFixed(2)}</div>
             </div>
           </button>

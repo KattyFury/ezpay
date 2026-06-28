@@ -130,8 +130,10 @@
 - Swap **estimate** (hiển thị tỷ giá)
 - TxHistory, Contacts (avatar cropper), QRScanner (jsQR), Custom/Saved QR (địa chỉ thật), Reset PIN
 
-**⚠️ Đã build, CHƯA verify on-chain:**
-- **Memo on-chain (Arc Transaction Memos):** khi user nhập nội dung → `send.js` route qua Memo contract `memo(address,bytes,bytes32,bytes)` thay vì transfer thẳng (transferData encode thủ công, memoId random bytes32, memoData = UTF-8→hex). Cần test deployed: nếu Circle reject `bytes`/`bytes32` trong abiParameters thì chỉnh. Đường transfer-không-memo vẫn là đường đã verify.
+- **Memo on-chain ✅ VERIFIED (2026-06-28):** tx `0xb75b...7e50` — Memo event đúng (target USDC, memo bytes = "Mua banh"). `send.js` route qua Memo contract `memo(address,bytes,bytes32,bytes)` khi có nội dung → chạy đúng qua Circle User-Controlled Wallet. Hỗ trợ tiếng Việt có dấu (UTF-8). Lịch sử giao dịch đọc lại memo qua `getTxMemo(hash)` (decode Memo event).
+- **Thông báo in-app ✅** — `src/notif.js` + `components/NotifArea.jsx` (dùng chung HomeSend + HomeReceive, vùng hàng 7-8): gửi xong → "Đã gửi", nhận tiền (poll ArcScan) → "Đã nhận" (xanh), lỗi gửi → đỏ. Click thông báo → mở chi tiết giao dịch (TxHistory openHash). Hết thông báo → hiện hint.
+- **Session-restore ✅** — App.jsx: có `ez_user_token`+`ez_wallet_addr` → vào thẳng HomeSend.
+- **Lưu ảnh vào Kho ảnh ✅** — `saveImage.js` dùng Web Share API (iOS lưu Photos, không phải Files) cho biên lai + QR.
 
 **❌ Blocked (đã disable trong UI, chờ Circle):**
 - **Swap execute:** App Kit/Swap Kit KHÔNG có adapter cho User-Controlled Wallet (chỉ có viem private-key / browser / circle-wallets dev-controlled). Manual instruction-replay fail on-chain. → Tab "Đổi tiền" trên nav bar đã disable; giữ estimate. Đã gửi bug report Circle.
@@ -170,12 +172,14 @@
 
 ## Pending / TODO
 
-1. **Test memo on-chain trên deployed** — verify Memo contract chạy với User-Controlled Wallet (xem phần "đã build chưa verify").
-2. **Onboarding sau tạo ví** (đã chốt làm): chọn ngôn ngữ/tiền tệ mặc định + hướng dẫn ngắn cho người già.
-3. **Session-restore:** user đã login (có `ez_user_token`) quay lại app vẫn phải login lại — nên tự vào HomeSend nếu session còn hạn.
-4. **#4 Trạng thái giao dịch thật** — poll txHash → "✓ đã lên blockchain" (Arc finality <1s).
-5. **#5 Batch (Multicall3From `0x522f...47D0`)** — gửi nhiều người / gộp approve+swap.
-6. Send: mới chỉ USDC/EURC theo currency — chưa chọn token tự do.
-7. Khi Circle phản hồi → bật lại Google/Facebook + Swap execute (Swap còn UI cũ, chưa theo token/font).
+**Hoãn tới khi dự án hoàn thiện (theo ý user):**
+1. **i18n (đa ngôn ngữ)** — app đang 100% hardcode tiếng Việt; nút "Ngôn ngữ" mới lưu `ez_lang` chứ chưa dịch. Cần tách chuỗi → vi/en/... + áp theo `ez_lang`/`navigator.language`. **User: làm khi dự án xong.**
+2. **Onboarding sau tạo ví** — chọn ngôn ngữ/tiền tệ mặc định + hướng dẫn ngắn. (Gắn với i18n nên hoãn cùng.)
+
+**Còn lại:**
+3. **#4 Trạng thái giao dịch thật** — poll txHash → "✓ đã lên blockchain" (Arc finality <1s).
+4. **#5 Batch (Multicall3From `0x522f...47D0`)** — gửi nhiều người / gộp approve+swap.
+5. Send: mới chỉ USDC/EURC theo currency — chưa chọn token tự do.
+6. **Blocked (chờ Circle):** Google/Facebook login (verify-token iframe hang) + Swap execute (App Kit không có adapter UCW). Swap UI đã de-unicode nhưng vẫn estimate-only.
 
 > Đã xong session này: memo integration, tỷ giá VND live, số dư+phí thật ở SendAmount/SendConfirm, jsQR (iOS), fix MOCK_ADDR ở Custom/Saved QR, fix layout 3/4-trái, đồng bộ cụm số dư 3 màn, avatar cropper danh bạ, share chỉ địa chỉ.

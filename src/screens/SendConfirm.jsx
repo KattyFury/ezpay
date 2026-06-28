@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Icon from '../components/Icon'
+import { addNotif } from '../notif'
 import { useNav } from '../nav'
 import { fmtVND } from '../data'
 import { getVndRate, estimateFeeVnd } from '../chain'
@@ -59,6 +60,7 @@ export default function SendConfirm() {
       navigate('SendReceipt', { address, name, amount, memo, currency, timestamp: Date.now() })
     } catch (e) {
       setError(e.message || 'Có lỗi xảy ra')
+      addNotif(`Gửi thất bại: ${e.message || 'có lỗi xảy ra'}`, 'error')
     } finally {
       setLoading(false)
     }

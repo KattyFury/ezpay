@@ -87,7 +87,7 @@ function DetailRow({ label, children }) {
 }
 
 export default function TxHistory() {
-  const { navigate } = useNav()
+  const { navigate, params } = useNav()
   const [txs, setTxs] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all') // 'all' | 'send' | 'receive'
@@ -121,6 +121,14 @@ export default function TxHistory() {
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [walletAddr])
+
+  // Mở thẳng chi tiết khi tới từ thông báo (openHash)
+  useEffect(() => {
+    if (params?.openHash && txs.length) {
+      const tx = txs.find(t => t.hash === params.openHash)
+      if (tx) setSelected(tx)
+    }
+  }, [txs, params?.openHash])
 
   const d = selected ? txInfo(selected, walletAddr, contacts) : null
 

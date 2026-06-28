@@ -3,6 +3,7 @@ import { QRCodeSVG } from 'qrcode.react'
 import NavBar from '../components/NavBar'
 import BalanceHeader from '../components/BalanceHeader'
 import Icon from '../components/Icon'
+import NotifArea from '../components/NotifArea'
 import { useNav } from '../nav'
 import { getTokenBalances } from '../chain'
 
@@ -50,12 +51,14 @@ export default function HomeReceive() {
       </div>
 
       <div className="row-7-8" style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '2dvh' }}>
-        <div className="tip-box" style={{ flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 8, textAlign: 'left', padding: '12px 16px' }}>
-          <div><span style={{ color: 'var(--color-content)' }}>QR mặc định</span> <span style={{ color: 'var(--color-muted)' }}>– Đây chính là địa chỉ ví của bạn</span></div>
-          <div><span style={{ color: 'var(--color-content)' }}>Chia sẻ</span> <span style={{ color: 'var(--color-muted)' }}>– Bấm để chia sẻ địa chỉ ví của bạn</span></div>
-          <div><span style={{ color: 'var(--color-content)' }}>Tạo QR</span> <span style={{ color: 'var(--color-muted)' }}>– Tạo mã QR nhận đúng số tiền bạn muốn</span></div>
-          <div><span style={{ color: 'var(--color-content)' }}>Kho QR</span> <span style={{ color: 'var(--color-muted)' }}>– Nơi bạn lưu trữ những QR hay dùng</span></div>
-        </div>
+        <NotifArea fallback={
+          <div className="tip-box" style={{ flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 8, textAlign: 'left', padding: '12px 16px' }}>
+            <div><span style={{ color: 'var(--color-content)' }}>QR mặc định</span> <span style={{ color: 'var(--color-muted)' }}>– Đây chính là địa chỉ ví của bạn</span></div>
+            <div><span style={{ color: 'var(--color-content)' }}>Chia sẻ</span> <span style={{ color: 'var(--color-muted)' }}>– Bấm để chia sẻ địa chỉ ví của bạn</span></div>
+            <div><span style={{ color: 'var(--color-content)' }}>Tạo QR</span> <span style={{ color: 'var(--color-muted)' }}>– Tạo mã QR nhận đúng số tiền bạn muốn</span></div>
+            <div><span style={{ color: 'var(--color-content)' }}>Kho QR</span> <span style={{ color: 'var(--color-muted)' }}>– Nơi bạn lưu trữ những QR hay dùng</span></div>
+          </div>
+        } />
       </div>
 
       <div className="row-9 action-grid">

@@ -35,10 +35,11 @@ const SCREENS = {
 }
 
 export default function App() {
-  const [nav, setNav] = useState(() => ({
-    screen: 'Login',
-    params: {},
-  }))
+  const [nav, setNav] = useState(() => {
+    // Đã đăng nhập (còn session + ví) → vào thẳng HomeSend, khỏi login lại
+    const hasSession = localStorage.getItem('ez_user_token') && localStorage.getItem('ez_wallet_addr')
+    return { screen: hasSession ? 'HomeSend' : 'Login', params: {} }
+  })
 
   function navigate(screen, params = {}) {
     setNav({ screen, params })

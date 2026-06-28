@@ -2,6 +2,7 @@ import { useRef, useEffect } from 'react'
 import { useNav } from '../nav'
 import { QRCodeCanvas } from 'qrcode.react'
 import { fmtVND } from '../data'
+import { saveImageToPhotos } from '../saveImage'
 
 function savedQRs() {
   try { return JSON.parse(localStorage.getItem('ez_saved_qrs') || '[]') } catch { return [] }
@@ -27,10 +28,7 @@ export default function ShowQR() {
   function saveToPhotos() {
     const canvas = wrapRef.current?.querySelector('canvas')
     if (!canvas) return
-    const a = document.createElement('a')
-    a.href = canvas.toDataURL('image/png')
-    a.download = `ezwallet-qr-${amount}.png`
-    a.click()
+    saveImageToPhotos(canvas, `ezwallet-qr-${amount}.png`)
   }
 
   return (
