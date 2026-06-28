@@ -1,4 +1,5 @@
 ﻿import { useNav } from '../nav'
+import Icon from '../components/Icon'
 
 export default function ComingSoon({ title = 'Tính năng này' }) {
   const { navigate, params } = useNav()
@@ -11,7 +12,7 @@ export default function ComingSoon({ title = 'Tính năng này' }) {
       </div>
 
       <div className="row-2-8" style={{ gap: 12, textAlign: 'center' }}>
-        <span style={{ fontSize: 32 }}>🔧</span>
+        <Icon name="shield" size={48} color="var(--color-faint)" />
         <span style={{ fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>Đang xây dựng</span>
         <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>
           Tính năng này sẽ sớm có trong bản cập nhật tiếp theo.

@@ -77,15 +77,15 @@ export default function SendAmount() {
 
       <div className="row-3-4 center col" style={{ gap: 6 }}>
         {/* Số to như màn số dư; VND là NÚT đổi tiền tệ (nhỏ, xám, mũi tên xuống) */}
-        <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          {/* số căn giữa tuyệt đối; nút đổi tiền tệ là chip có viền bên phải */}
-          <span className="num" style={{ fontSize: 'var(--fs-amount)', fontWeight: 'var(--fw-bold)', lineHeight: 1, color: overBalance ? 'var(--color-error)' : digits ? 'var(--color-content)' : 'var(--color-faint)' }}>
+        <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {/* số căn giữa tuyệt đối; chip VND treo SÁT bên phải số (absolute left:100%) */}
+          <span className="num" style={{ position: 'relative', fontSize: 'var(--fs-amount)', fontWeight: 'var(--fw-semibold)', lineHeight: 1, color: overBalance ? 'var(--color-error)' : digits ? 'var(--color-content)' : 'var(--color-faint)' }}>
             {fmtNum(amount, cur)}
+            <button onClick={() => setShowCur(true)}
+              style={{ position: 'absolute', left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: 10, display: 'inline-flex', alignItems: 'center', gap: 4, border: '1.5px solid var(--color-gray)', borderRadius: 10, padding: '6px 10px', background: 'var(--color-white)', cursor: 'pointer', fontFamily: 'var(--font-condensed)', fontSize: 'var(--fs-label)', fontWeight: 'var(--fw-semibold)', color: 'var(--color-content)', whiteSpace: 'nowrap' }}>
+              {cur}<Icon name="down2" size={12} color="var(--color-muted)" />
+            </button>
           </span>
-          <button onClick={() => setShowCur(true)}
-            style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', display: 'inline-flex', alignItems: 'center', gap: 4, border: '1.5px solid var(--color-gray)', borderRadius: 10, padding: '6px 10px', background: 'var(--color-white)', cursor: 'pointer', fontFamily: 'var(--font-condensed)', fontSize: 'var(--fs-label)', fontWeight: 'var(--fw-bold)', color: 'var(--color-content)' }}>
-            {cur}<Icon name="down2" size={12} color="var(--color-muted)" />
-          </button>
         </div>
         {overBalance && (
           <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-error)', textAlign: 'center' }}>

@@ -1,14 +1,19 @@
 import { useState } from 'react'
 import { useNav } from '../nav'
 import Numpad from '../components/Numpad'
+import Icon from '../components/Icon'
 
-function fmtNum(n) {
-  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+const CURRENCIES = ['VND', 'USDC', 'EURC']
+function fmtNum(n, cur) {
+  if (cur === 'VND') return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+  return String(n)
 }
 
 export default function CreateQR() {
   const { navigate } = useNav()
   const [digits, setDigits] = useState('')
+  const [cur, setCur] = useState('VND')
+  const [showCur, setShowCur] = useState(false)
 
   const amount = parseInt(digits || '0')
 
@@ -23,7 +28,7 @@ export default function CreateQR() {
   return (
     <div className="screen">
       <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)' }}>
-        Custom QR
+        Tạo QR nhận tiền
       </div>
 
       <div className="row-2 center">
@@ -31,11 +36,14 @@ export default function CreateQR() {
       </div>
 
       <div className="row-3-4 center col">
-        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 10 }}>
-          <span className="num" style={{ fontSize: 'var(--fs-amount)', fontWeight: 'var(--fw-bold)', lineHeight: 1, color: digits ? 'var(--color-content)' : 'var(--color-faint)' }}>
-            {fmtNum(amount)}
+        <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <span className="num" style={{ position: 'relative', fontSize: 'var(--fs-amount)', fontWeight: 'var(--fw-semibold)', lineHeight: 1, color: digits ? 'var(--color-content)' : 'var(--color-faint)' }}>
+            {fmtNum(amount, cur)}
+            <button onClick={() => setShowCur(true)}
+              style={{ position: 'absolute', left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: 10, display: 'inline-flex', alignItems: 'center', gap: 4, border: '1.5px solid var(--color-gray)', borderRadius: 10, padding: '6px 10px', background: 'var(--color-white)', cursor: 'pointer', fontFamily: 'var(--font-condensed)', fontSize: 'var(--fs-label)', fontWeight: 'var(--fw-semibold)', color: 'var(--color-content)', whiteSpace: 'nowrap' }}>
+              {cur}<Icon name="down2" size={12} color="var(--color-muted)" />
+            </button>
           </span>
-          <span className="num" style={{ fontSize: 'var(--fs-body)', color: 'var(--color-muted)' }}>VND</span>
         </div>
       </div>
 
@@ -47,11 +55,24 @@ export default function CreateQR() {
         <div style={{ flex: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
           <button className="btn btn-secondary" style={{ width: '44%' }} onClick={() => navigate('HomeReceive')}>Hủy</button>
           <button className="btn btn-primary" style={{ width: '44%' }} disabled={amount <= 0}
-            onClick={() => navigate('ShowQR', { amount })}>
+            onClick={() => navigate('ShowQR', { amount, currency: cur })}>
             Tạo QR
           </button>
         </div>
       </div>
+
+      {showCur && (
+        <div onClick={() => setShowCur(false)}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 100, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: '14dvh' }}>
+          <div onClick={e => e.stopPropagation()} style={{ width: '70%', maxWidth: 300, background: 'var(--color-white)', borderRadius: 16, padding: 12, display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)', textAlign: 'center', padding: '6px 0' }}>Chọn tiền tệ</div>
+            {CURRENCIES.map(c => (
+              <button key={c} onClick={() => { setCur(c); setShowCur(false) }}
+                className={`btn ${c === cur ? 'btn-primary' : 'btn-secondary'}`} style={{ width: '100%' }}>{c}</button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

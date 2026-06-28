@@ -26,24 +26,27 @@ export default function SavedQRList() {
         Kho QR
       </div>
 
-      {/* Lưới 3 cột, tối đa 9 ô hiện (hàng 2-7), nhiều hơn thì scroll */}
+      {/* Lưới 3 cột (hàng 2-7), ô cuối là "+" để thêm QR; nhiều thì scroll */}
       <div style={{ gridRow: '2 / 8', overflowY: 'auto' }}>
-        {list.length === 0 ? (
-          <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--fs-body)', color: 'var(--color-muted)' }}>
-            Chưa có QR nào
-          </div>
-        ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, alignContent: 'start' }}>
-            {list.map(q => (
-              <button key={q.id} onClick={() => navigate('ShowQR', { amount: q.amount, from: 'SavedQRList' })}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, alignContent: 'start' }}>
+          {list.map(q => {
+            const c = q.currency || 'VND'
+            const label = c === 'VND' ? fmtVND(q.amount) : `${q.amount} ${c}`
+            return (
+              <button key={q.id} onClick={() => navigate('ShowQR', { amount: q.amount, currency: c, from: 'SavedQRList' })}
                 style={{ position: 'relative', aspectRatio: '1', border: '1.5px solid var(--color-gray)', borderRadius: 12, background: 'none', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, padding: 8, fontFamily: 'inherit' }}>
                 <span onClick={e => handleDelete(q.id, e)} style={{ position: 'absolute', top: 6, right: 6, display: 'flex' }}><Icon name="x" size={14} color="var(--color-muted)" /></span>
-                <QRCodeSVG value={`ezwallet:${walletAddr}?amount=${q.amount}`} size={64} level="M" />
-                <span className="num" style={{ fontSize: 'var(--fs-label)', fontWeight: 'var(--fw-bold)', color: 'var(--color-content)' }}>{fmtVND(q.amount)}</span>
+                <QRCodeSVG value={`ezwallet:${walletAddr}?amount=${q.amount}&cur=${c}`} size={64} level="M" />
+                <span className="num" style={{ fontSize: 'var(--fs-label)', fontWeight: 'var(--fw-semibold)', color: 'var(--color-content)' }}>{label}</span>
               </button>
-            ))}
-          </div>
-        )}
+            )
+          })}
+          {/* ô + thêm QR mới */}
+          <button onClick={() => navigate('CreateQR')}
+            style={{ aspectRatio: '1', border: '1.5px dashed var(--color-muted)', borderRadius: 12, background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Icon name="add" size={32} color="var(--color-muted)" />
+          </button>
+        </div>
       </div>
 
       <div className="row-10 row10-single">

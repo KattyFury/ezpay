@@ -53,7 +53,7 @@ export default function HomeReceive() {
         <div className="tip-box" style={{ flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 8, textAlign: 'left', padding: '12px 16px' }}>
           <div><span style={{ color: 'var(--color-content)' }}>QR mặc định</span> <span style={{ color: 'var(--color-muted)' }}>– Đây chính là địa chỉ ví của bạn</span></div>
           <div><span style={{ color: 'var(--color-content)' }}>Chia sẻ</span> <span style={{ color: 'var(--color-muted)' }}>– Bấm để chia sẻ địa chỉ ví của bạn</span></div>
-          <div><span style={{ color: 'var(--color-content)' }}>Custom QR</span> <span style={{ color: 'var(--color-muted)' }}>– Tạo QR nhận đúng số tiền bạn muốn</span></div>
+          <div><span style={{ color: 'var(--color-content)' }}>Tạo QR</span> <span style={{ color: 'var(--color-muted)' }}>– Tạo mã QR nhận đúng số tiền bạn muốn</span></div>
           <div><span style={{ color: 'var(--color-content)' }}>Kho QR</span> <span style={{ color: 'var(--color-muted)' }}>– Nơi bạn lưu trữ những QR hay dùng</span></div>
         </div>
       </div>
@@ -65,7 +65,7 @@ export default function HomeReceive() {
         </button>
         <button className="action-card primary" onClick={() => navigate('CreateQR')}>
           <Icon name="qr" size={22} color="var(--color-white)" />
-          <span>Custom QR</span>
+          <span>Tạo QR</span>
         </button>
         <button className="action-card" onClick={() => navigate('SavedQRList')}>
           <Icon name="download" size={22} />

@@ -36,6 +36,7 @@ const SCREENS = {
   Language,
   Security,
   About,
+  ComingSoon,
 }
 
 export default function App() {

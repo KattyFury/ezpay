@@ -6,9 +6,9 @@ function isValid(addr) { return /^0x[0-9a-fA-F]{40}$/.test(addr.trim()) }
 
 function parseQR(text) {
   const raw = text.trim()
-  if (isValid(raw)) return { address: raw, amount: null }
-  const m = raw.match(/ezwallet:(0x[0-9a-fA-F]{40})(?:\?amount=(\d+))?/)
-  if (m) return { address: m[1], amount: m[2] ? parseInt(m[2]) : null }
+  if (isValid(raw)) return { address: raw, amount: null, currency: 'VND' }
+  const m = raw.match(/ezwallet:(0x[0-9a-fA-F]{40})(?:\?amount=(\d+))?(?:&cur=(\w+))?/)
+  if (m) return { address: m[1], amount: m[2] ? parseInt(m[2]) : null, currency: m[3] || 'VND' }
   return null
 }
 
@@ -53,7 +53,7 @@ export default function QRScanner() {
           const parsed = parseQR(code.data)
           if (parsed) {
             active = false
-            navigate('SendAmount', { address: parsed.address, name: null, amount: parsed.amount })
+            navigate('SendAmount', { address: parsed.address, name: null, amount: parsed.amount, currency: parsed.currency })
             return
           } else {
             setHint('QR không hợp lệ, thử lại')
@@ -88,7 +88,7 @@ export default function QRScanner() {
         URL.revokeObjectURL(url)
         const code = jsQR(data.data, data.width, data.height)
         const parsed = code ? parseQR(code.data) : null
-        if (parsed) navigate('SendAmount', { address: parsed.address, name: null, amount: parsed.amount })
+        if (parsed) navigate('SendAmount', { address: parsed.address, name: null, amount: parsed.amount, currency: parsed.currency })
         else setHint('Không tìm thấy mã QR hợp lệ trong ảnh')
       }
       img.onerror = () => setHint('Không đọc được ảnh')
