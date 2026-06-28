@@ -80,7 +80,7 @@ function AvatarCropper({ src, onCancel, onDone }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
-      <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)' }}>Chỉnh ảnh</div>
+      <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)' }}>Chỉnh ảnh</div>
       <div
         onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up}
         style={{ width: V, height: V, borderRadius: '50%', overflow: 'hidden', position: 'relative', background: '#000', touchAction: 'none', cursor: 'grab' }}
@@ -132,7 +132,7 @@ export default function Contacts() {
 
   return (
     <div className="screen">
-      <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)' }}>
+      <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)' }}>
         Danh bạ
       </div>
 
@@ -189,7 +189,7 @@ export default function Contacts() {
               <AvatarCropper src={picked} onCancel={() => setPicked(null)} onDone={d => { setPfp(d); setPicked(null) }} />
             ) : (
               <>
-                <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)', textAlign: 'center' }}>Thêm danh bạ</div>
+                <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)', textAlign: 'center' }}>Thêm danh bạ</div>
                 <button onClick={() => fileRef.current?.click()}
                   style={{ alignSelf: 'center', width: 80, height: 80, borderRadius: '50%', border: 'none', cursor: 'pointer', overflow: 'hidden', background: pfp ? 'transparent' : 'var(--color-gray)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>
                   {pfp

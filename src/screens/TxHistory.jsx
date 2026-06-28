@@ -68,7 +68,7 @@ function TxRow({ tx, walletAddr, contacts, onClick }) {
       </div>
 
       <div style={{ textAlign: 'right', flexShrink: 0 }}>
-        <div className="num" style={{ fontSize: 'var(--fs-item)', fontWeight: 'var(--fw-medium)', color: isSend ? 'var(--color-error)' : 'var(--color-primary)' }}>
+        <div className="num" style={{ fontSize: 'var(--fs-num)', fontWeight: 'var(--fw-semibold)', color: isSend ? 'var(--color-error)' : 'var(--color-primary)' }}>
           {isSend ? '-' : '+'}{amount.toFixed(amount < 0.01 ? 6 : 2)} {symbol}
         </div>
         <div className="num" style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>{fmtVND(vnd)}</div>
@@ -112,7 +112,7 @@ export default function TxHistory() {
 
   return (
     <div className="screen">
-      <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)' }}>
+      <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)' }}>
         Lịch sử giao dịch
       </div>
 
@@ -141,7 +141,7 @@ export default function TxHistory() {
         <div onClick={() => setSelected(null)}
           style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
           <div onClick={e => e.stopPropagation()} style={{ width: '100%', maxWidth: 360, background: 'var(--color-white)', borderRadius: 16, padding: 20 }}>
-            <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-bold)', textAlign: 'center', marginBottom: 8 }}>Chi tiết giao dịch</div>
+            <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)', textAlign: 'center', marginBottom: 8 }}>Chi tiết giao dịch</div>
             <DetailRow label="Loại">{d.isSend ? 'Đã gửi' : 'Đã nhận'} {d.symbol}</DetailRow>
             <DetailRow label={d.isSend ? 'Người nhận' : 'Người gửi'}>{d.name || shortAddr(d.counter)}</DetailRow>
             {d.name && <DetailRow label="Địa chỉ">{shortAddr(d.counter)}</DetailRow>}

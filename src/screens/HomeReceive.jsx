@@ -44,17 +44,17 @@ export default function HomeReceive() {
           border: '1px solid var(--color-gray)', borderRadius: 8,
           padding: '6px 14px', background: 'none', cursor: 'pointer',
         }}>
-          <span className="num" style={{ fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-bold)', color: 'var(--color-content)' }}>{shortAddr}</span>
+          <span className="num" style={{ fontSize: 'var(--fs-body)', color: 'var(--color-content)' }}>{shortAddr}</span>
           <Icon name={copied ? 'check' : 'copy'} size={16} color={copied ? 'var(--color-primary)' : 'var(--color-content)'} />
         </button>
       </div>
 
       <div className="row-7-8" style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '2dvh' }}>
         <div className="tip-box" style={{ flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 8, textAlign: 'left', padding: '12px 16px' }}>
-          <div><span style={{ fontWeight: 'var(--fw-bold)', color: 'var(--color-content)' }}>QR mặc định</span> <span style={{ color: 'var(--color-muted)' }}>– Đây chính là địa chỉ ví của bạn</span></div>
-          <div><span style={{ fontWeight: 'var(--fw-bold)', color: 'var(--color-content)' }}>Chia sẻ</span> <span style={{ color: 'var(--color-muted)' }}>– Bấm để chia sẻ địa chỉ ví của bạn</span></div>
-          <div><span style={{ fontWeight: 'var(--fw-bold)', color: 'var(--color-content)' }}>Custom QR</span> <span style={{ color: 'var(--color-muted)' }}>– Tạo QR nhận đúng số tiền bạn muốn</span></div>
-          <div><span style={{ fontWeight: 'var(--fw-bold)', color: 'var(--color-content)' }}>Kho QR</span> <span style={{ color: 'var(--color-muted)' }}>– Nơi bạn lưu trữ những QR hay dùng</span></div>
+          <div><span style={{ color: 'var(--color-content)' }}>QR mặc định</span> <span style={{ color: 'var(--color-muted)' }}>– Đây chính là địa chỉ ví của bạn</span></div>
+          <div><span style={{ color: 'var(--color-content)' }}>Chia sẻ</span> <span style={{ color: 'var(--color-muted)' }}>– Bấm để chia sẻ địa chỉ ví của bạn</span></div>
+          <div><span style={{ color: 'var(--color-content)' }}>Custom QR</span> <span style={{ color: 'var(--color-muted)' }}>– Tạo QR nhận đúng số tiền bạn muốn</span></div>
+          <div><span style={{ color: 'var(--color-content)' }}>Kho QR</span> <span style={{ color: 'var(--color-muted)' }}>– Nơi bạn lưu trữ những QR hay dùng</span></div>
         </div>
       </div>
 
@@ -64,7 +64,7 @@ export default function HomeReceive() {
           <span>{copied ? 'Đã copy!' : 'Chia sẻ'}</span>
         </button>
         <button className="action-card primary" onClick={() => navigate('CreateQR')}>
-          <Icon name="qr" size={24} color="var(--color-white)" />
+          <Icon name="qr" size={22} color="var(--color-white)" />
           <span>Custom QR</span>
         </button>
         <button className="action-card" onClick={() => navigate('SavedQRList')}>

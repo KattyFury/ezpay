@@ -42,7 +42,7 @@ export default function MenuScreen() {
           <button className="menu-item" style={{ width: '100%' }} onClick={() => navigate(id, { title: label })}>
             <Icon name={icon} size={24} color="var(--color-content)" />
             <span style={{ flex: 1, fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>{label}</span>
-            <Icon name="right" size={18} color="var(--color-faint)" />
+            <Icon name="right2" size={15} color="var(--color-faint)" />
           </button>
         </div>
       ))}

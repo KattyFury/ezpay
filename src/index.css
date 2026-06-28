@@ -8,8 +8,8 @@
   /* ── MÀU CHỮ — trắng/đen là chân ái ── */
   --color-black:      #000000;   /* text chính + tiêu đề + nút */
   --color-content:    #000000;   /* nội dung chính = đen */
-  --color-muted:      #AEAEB2;   /* text phụ (xám đậm) */
-  --color-faint:      #AEAEB2;   /* placeholder / chevron */
+  --color-muted:      #AEAEB2;   /* text phụ (xám đậm) — DÙNG CHO CHỮ */
+  --color-faint:      #E5E5EA;   /* icon ẩn / chevron / placeholder (xám nhạt) */
 
   /* ── MÀU CHỨC NĂNG ── */
   --color-primary:      #16A34A; /* màu chủ đạo, active */
@@ -28,19 +28,21 @@
   --font-condensed: 'Barlow Condensed', sans-serif;    /* alias → display (số) */
 
   /* ── CỠ CHỮ (scale gợi ý — đã mở khóa, tùy chỉnh được) ── */
-  --fs-amount:   40px;   /* số tiền lớn: số dư, nhập số gửi */
-  --fs-title:    24px;   /* tiêu đề màn hình */
-  --fs-body:     20px;   /* nội dung chính, chữ trên nút */
-  --fs-item:     18px;   /* item list (tên, dòng chính) */
-  --fs-label:    16px;   /* label, text phụ, placeholder */
+  --fs-amount:   52px;   /* Barlow display — số tiền lớn */
+  --fs-title:    30px;   /* Barlow display — tiêu đề màn */
+  --fs-num:      24px;   /* Barlow — số trong list (token amount, VND) */
+  --fs-body:     19px;   /* IBM UI — nội dung, nút */
+  --fs-item:     17px;   /* IBM UI — item list */
+  --fs-label:    15px;   /* IBM UI — label, text phụ, placeholder */
   --fs-tiny:     13px;   /* badge / ghi chú rất nhỏ */
   --fs-content:  20px;   /* alias → --fs-body */
   --fs-sub:      16px;   /* alias → --fs-label */
 
   /* Font weights */
-  --fw-normal:  400;
-  --fw-medium:  500;
-  --fw-bold:    700;
+  --fw-normal:    400;
+  --fw-medium:    500;
+  --fw-semibold:  600;
+  --fw-bold:      600;   /* KHÓA ở 600 — Barlow không bao giờ 700 (xấu). Max = semibold */
 }
 
 /* ── Reset ── */
@@ -189,7 +191,7 @@ body {
   align-items: center;
   justify-content: center;
   font-family: var(--font-condensed);
-  font-size: 20px;
+  font-size: 26px;
   font-weight: var(--fw-medium);
   color: var(--color-black);
   background: none;
@@ -350,7 +352,7 @@ body {
   background: var(--color-white);
   color: var(--color-black);
   font-family: var(--font-base);
-  font-size: var(--fs-label);
+  font-size: var(--fs-item);
   font-weight: var(--fw-medium);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -440,7 +442,7 @@ body {
   gap: 10px;
   font-family: var(--font-display);
   font-size: var(--fs-title);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-medium);
   color: var(--color-black);
 }
 
