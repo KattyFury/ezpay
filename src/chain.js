@@ -91,7 +91,7 @@ export async function estimateFeeVnd(gasUnits = 65000) {
   try {
     const [gasPrice, rate] = await Promise.all([publicClient.getGasPrice(), getVndRate('USDC')])
     const feeUsdc = Number(gasPrice * BigInt(gasUnits)) / 1e18
-    return feeUsdc * rate
+    return Math.round(feeUsdc * rate)   // làm tròn về VND nguyên (tránh fmtVND chèn dấu vào phần lẻ)
   } catch {
     return 0
   }

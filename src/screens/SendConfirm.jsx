@@ -70,7 +70,7 @@ export default function SendConfirm() {
         <span>Xác nhận giao dịch</span>
       </div>
 
-      <div className="row-2-8 col" style={{ justifyContent: 'center', gap: 12 }}>
+      <div className="row-2-8 col" style={{ justifyContent: 'center', alignItems: 'stretch', gap: 14 }}>
         <div className="confirm-box">
           <div className="confirm-row">
             <span className="confirm-label">Gửi đến</span>
@@ -118,7 +118,7 @@ export default function SendConfirm() {
 
       <div className="row-10 row10-dual">
         <button className="btn btn-secondary" disabled={loading} onClick={() => navigate('SendAmount', params)}>Sửa</button>
-        <button className="btn" style={{ background: 'var(--color-error)', color: 'var(--color-white)', flex: 1 }}
+        <button className="btn btn-primary" style={{ flex: 1 }}
           disabled={loading} onClick={handleConfirm}>
           {loading ? 'Đang xử lý...' : 'Xác nhận · PIN'}
         </button>

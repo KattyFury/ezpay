@@ -512,8 +512,9 @@ body {
 .memo-input::placeholder { color: var(--color-muted); }
 
 .confirm-box {
+  width: 100%;
   border: 1.5px solid var(--color-gray);
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
 }
 
@@ -521,7 +522,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
+  padding: 15px 18px;
   border-bottom: 1px solid rgba(204,204,204,0.5);
 }
 
@@ -534,7 +535,7 @@ body {
 }
 
 .confirm-value {
-  font-size: var(--fs-item);
+  font-size: var(--fs-body);
   font-weight: var(--fw-medium);
   text-align: right;
   word-break: break-all;
