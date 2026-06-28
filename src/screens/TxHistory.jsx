@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNav } from '../nav'
 import { fmtVND } from '../data'
-import { TOKENS } from '../chain'
+import { TOKENS, getTxMemo } from '../chain'
 import Icon from '../components/Icon'
 
 const ARCSCAN = 'https://testnet.arcscan.app'
@@ -92,8 +92,22 @@ export default function TxHistory() {
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all') // 'all' | 'send' | 'receive'
   const [selected, setSelected] = useState(null)
+  const [memo, setMemo] = useState(null)
+  const [memoLoading, setMemoLoading] = useState(false)
+  const [copied, setCopied] = useState(false)
+
+  function copyCounter(addr) {
+    navigator.clipboard.writeText(addr)
+    setCopied(true); setTimeout(() => setCopied(false), 1500)
+  }
   const walletAddr = localStorage.getItem('ez_wallet_addr')
   const contacts = loadContactMap()
+
+  useEffect(() => {
+    if (!selected?.hash) { setMemo(null); return }
+    setMemo(null); setMemoLoading(true)
+    getTxMemo(selected.hash).then(setMemo).catch(() => {}).finally(() => setMemoLoading(false))
+  }, [selected])
 
   const isSendTx = tx => tx.from?.toLowerCase() === walletAddr?.toLowerCase()
   const filtered = txs.filter(tx => filter === 'all' ? true : filter === 'send' ? isSendTx(tx) : !isSendTx(tx))
@@ -143,8 +157,15 @@ export default function TxHistory() {
           <div onClick={e => e.stopPropagation()} style={{ width: '100%', maxWidth: 360, background: 'var(--color-white)', borderRadius: 16, padding: 20 }}>
             <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)', textAlign: 'center', marginBottom: 8 }}>Chi tiết giao dịch</div>
             <DetailRow label="Loại">{d.isSend ? 'Đã gửi' : 'Đã nhận'} {d.symbol}</DetailRow>
-            <DetailRow label={d.isSend ? 'Người nhận' : 'Người gửi'}>{d.name || shortAddr(d.counter)}</DetailRow>
-            {d.name && <DetailRow label="Địa chỉ">{shortAddr(d.counter)}</DetailRow>}
+            {d.name && <DetailRow label={d.isSend ? 'Người nhận' : 'Người gửi'}>{d.name}</DetailRow>}
+            <DetailRow label="Địa chỉ ví">
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                {shortAddr(d.counter)}
+                <button onClick={() => copyCounter(d.counter)} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', padding: 0 }}>
+                  <Icon name={copied ? 'check' : 'copy'} size={16} color={copied ? 'var(--color-primary)' : 'var(--color-muted)'} />
+                </button>
+              </span>
+            </DetailRow>
             <DetailRow label="Số tiền">
               <span className="num" style={{ color: d.isSend ? 'var(--color-error)' : 'var(--color-primary)' }}>
                 {d.isSend ? '-' : '+'}{d.amount.toFixed(d.amount < 0.01 ? 6 : 2)} {d.symbol}
@@ -152,7 +173,7 @@ export default function TxHistory() {
             </DetailRow>
             <DetailRow label="Quy đổi"><span className="num">{fmtVND(d.vnd)}</span></DetailRow>
             <DetailRow label="Thời gian">{new Date(selected.timeStamp * 1000).toLocaleString('vi-VN')}</DetailRow>
-            {selected.memo && <DetailRow label="Nội dung">{selected.memo}</DetailRow>}
+            {memoLoading ? <DetailRow label="Nội dung">Đang tải...</DetailRow> : memo ? <DetailRow label="Nội dung">{memo}</DetailRow> : null}
             <button className="btn btn-secondary" style={{ width: '100%', marginTop: 14 }}
               onClick={() => window.open(`${ARCSCAN}/tx/${selected.hash}`, '_blank')}>
               Xem trên ArcScan

@@ -1,4 +1,4 @@
-import { createPublicClient, http } from 'viem'
+import { createPublicClient, http, decodeEventLog, parseAbiItem } from 'viem'
 import { defineChain } from 'viem'
 
 export const arcTestnet = defineChain({
@@ -83,6 +83,26 @@ export async function getTokenInfo(addr, symbol = 'USDC') {
   const [balances, rate] = await Promise.all([getTokenBalances(addr), getVndRate(symbol)])
   const t = balances.find(b => b.symbol === symbol)
   return { balance: t?.amount ?? 0, vnd: t?.vnd ?? 0, rate }
+}
+
+// Đọc memo (Arc Transaction Memos) của 1 giao dịch từ Memo event on-chain → text
+const MEMO_CONTRACT = '0x5294E9927c3306DcBaDb03fe70b92e01cCede505'
+const memoEventAbi = parseAbiItem('event Memo(address indexed sender, address indexed target, bytes32 callDataHash, bytes32 indexed memoId, bytes memo, uint256 memoIndex)')
+export async function getTxMemo(hash) {
+  try {
+    const r = await publicClient.getTransactionReceipt({ hash })
+    for (const log of r.logs) {
+      if (log.address.toLowerCase() !== MEMO_CONTRACT.toLowerCase()) continue
+      try {
+        const d = decodeEventLog({ abi: [memoEventAbi], data: log.data, topics: log.topics })
+        if (d.eventName === 'Memo' && d.args.memo && d.args.memo.length > 2) {
+          const bytes = Uint8Array.from(d.args.memo.slice(2).match(/.{1,2}/g).map(b => parseInt(b, 16)))
+          return new TextDecoder().decode(bytes)
+        }
+      } catch {}
+    }
+  } catch {}
+  return null
 }
 
 // Phí gas thật: Arc tính gas bằng USDC (18 decimals nội bộ) → quy ra VND

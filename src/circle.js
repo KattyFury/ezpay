@@ -4,8 +4,8 @@ let sdk = null
 
 const VI = {
   enterPincode: {
-    headline: 'Nhập mã PIN',
-    headline2: 'Xác nhận giao dịch',
+    headline: 'Xác nhận giao dịch',
+    headline2: '',
     subhead: 'Nhập mã PIN 6 chữ số của bạn',
     forgotPin: 'Quên PIN?',
   },
