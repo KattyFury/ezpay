@@ -1,13 +1,12 @@
-﻿{
+{
   "name": "EZwallet",
   "short_name": "EZwallet",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0c0c14",
-  "theme_color": "#0c0c14",
+  "background_color": "#FFFFFF",
+  "theme_color": "#16A34A",
   "icons": [
-    { "src": "/design/app-icon.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/design/app-icon.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "/pfp.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/pfp.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
   ]
 }
-

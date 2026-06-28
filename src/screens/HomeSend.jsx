@@ -4,7 +4,7 @@ import BalanceHeader from '../components/BalanceHeader'
 import Icon from '../components/Icon'
 import { useNav } from '../nav'
 import { fmtVND } from '../data'
-import { getTokenBalances, fmtAmount } from '../chain'
+import { getTokenBalances } from '../chain'
 
 export default function HomeSend() {
   const { navigate } = useNav()

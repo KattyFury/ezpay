@@ -1,10 +1,6 @@
 import { useState } from 'react'
 import { NavContext } from './nav'
 import Login from './screens/Login'
-import CreatePin from './screens/CreatePin'
-import Recovery from './screens/Recovery'
-import EnterPin from './screens/EnterPin'
-import PinLocked from './screens/PinLocked'
 import HomeSend from './screens/HomeSend'
 import HomeReceive from './screens/HomeReceive'
 import Swap from './screens/Swap'
@@ -26,8 +22,7 @@ import Security from './screens/Security'
 import About from './screens/About'
 
 const SCREENS = {
-  Login, CreatePin, Recovery,
-  EnterPin, PinLocked,
+  Login,
   HomeSend, HomeReceive, Swap, MenuScreen,
   PasteAddress, SendAmount, SendConfirm, SendReceipt,
   EnterEmail, CreateQR, ShowQR, SavedQRList,
@@ -41,7 +36,7 @@ const SCREENS = {
 
 export default function App() {
   const [nav, setNav] = useState(() => ({
-    screen: localStorage.getItem('ez_pin') ? 'EnterPin' : 'Login',
+    screen: 'Login',
     params: {},
   }))
 

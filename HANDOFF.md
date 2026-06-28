@@ -95,7 +95,7 @@
 - **Sub-screen:** hàng 1 = tiêu đề (center, không line xám ngăn cách), hàng 10 = action buttons
 - **4 màn chính:** nav bar ở hàng 10
 - **Row 10:** 1 nút = `row10-single` (width 2/3); 2 nút = trái phụ trắng / phải chính xanh. (Lưu ý: `row10-dual` chiếm grid-row 9/11 — KHÔNG dùng chung màn có numpad.)
-- **Numpad:** PIN/Swap dùng `row-7-9`. SendAmount/CreateQR: numpad đúng **2.5 hàng (7,8,nửa 9)** + nút ở ranh giới 9/10 — bằng `gridRow: '7/11'` flex `2.5` (numpad) / `1.5` (nút). KHÔNG để numpad lấn hàng 6.
+- **Numpad:** SendAmount/CreateQR: numpad đúng **2.5 hàng (7,8,nửa 9)** + nút ở ranh giới 9/10 — bằng `gridRow: '7/11'` flex `2.5` (numpad) / `1.5` (nút). KHÔNG để numpad lấn hàng 6. (Swap vẫn `row-7-9`.)
 - **⚠ Input text (email, địa chỉ ví, tên, ảnh) PHẢI ở hàng 1–4 hoặc trong popup neo nửa trên.** Bàn phím iPhone che ~1/2 dưới (hàng 5–10). Popup form (vd thêm danh bạ) dùng overlay `align-items: flex-start` + paddingTop để nằm vùng trên.
 - **Không dùng line xám ngăn cách** (border-bottom) ở header/list — đã bỏ toàn bộ.
 
@@ -158,18 +158,24 @@
 ## Cần rà đồng bộ (audit UI — chưa làm)
 
 - **Swap** vẫn giao diện cũ (đang disable): còn ký tự unicode `▾`/`⇅`, màu/cỡ chưa theo token, layout chưa giống SendAmount. Khi bật lại swap phải làm lại theo chuẩn.
-- **EnterPin / CreatePin / PinLocked / ForgotPin / Recovery / ComingSoon** — chưa rà đợt này, có thể lệch token/màu/nút.
+- **ComingSoon** — đã fix (trước crash vì thiếu route), dùng cho "Phương thức khôi phục".
 - **Bottom button không đồng nhất:** SendAmount/CreateQR dùng flex 2.5/1.5; TxHistory 3 nút; còn lại row10-single/dual. Cân nhắc 1 chuẩn.
-- Các màn còn ký tự `›`/`×` text (Contacts xóa ×, ...) — cân nhắc thay icon.
+## Đã dọn dẹp (2026-06-28)
+
+- **Xóa code chết — hệ PIN-cục-bộ cũ** (không nằm trong luồng nào): `CreatePin`, `EnterPin`, `PinLocked`, `Recovery` screens + `components/PinDots.jsx` + `src/icons.jsx` (icon SVG cũ, đã thay bằng `Icon.jsx`). Bỏ logic `ez_pin` trong App.jsx → màn khởi động luôn là **Login**. (Note: chưa có session-restore — user quay lại vẫn phải login email; cân nhắc làm sau.)
+- **Auth thật:** Login → EnterEmail (Circle email session, PIN ký qua W3S SDK). KHÔNG có app-lock PIN cục bộ.
+- **`ForgotPin`** từng được navigate tới nhưng KHÔNG có file/route → đã hết (xóa cùng cụm PIN).
+- Bỏ `MOCK_VND/MOCK_USDC/MOCK_ADDR` khỏi data.js.
+- **App icon / favicon:** `public/pfp.png` (apple-touch-icon iOS + manifest 192/512 — iOS KHÔNG nhận SVG nên phải PNG nền trắng) · favicon `public/icon.svg` (SVG ok, nền trắng). Sửa manifest (trước trỏ `/design/...` → 404).
 
 ## Pending / TODO
 
 1. **Test memo on-chain trên deployed** — verify Memo contract chạy với User-Controlled Wallet (xem phần "đã build chưa verify").
-2. **#4 Trạng thái giao dịch thật** — sau khi ký PIN, poll txHash → "✓ đã lên blockchain" (Arc finality <1s). Hiện receipt báo success ngay sau challenge.
-3. **#5 Batch (Multicall3From `0x522f...47D0`)** — gửi nhiều người 1 lần, hoặc gộp approve+swap 1 lần ký PIN.
-4. Send: mới chỉ USDC — chưa chọn token khác.
-5. Fix manifest icon `design/app-icon.png` ("invalid image", cosmetic).
-6. Account Recovery (Reset PIN đã có).
-7. Khi Circle phản hồi → bật lại Google/Facebook + Swap execute.
+2. **Onboarding sau tạo ví** (đã chốt làm): chọn ngôn ngữ/tiền tệ mặc định + hướng dẫn ngắn cho người già.
+3. **Session-restore:** user đã login (có `ez_user_token`) quay lại app vẫn phải login lại — nên tự vào HomeSend nếu session còn hạn.
+4. **#4 Trạng thái giao dịch thật** — poll txHash → "✓ đã lên blockchain" (Arc finality <1s).
+5. **#5 Batch (Multicall3From `0x522f...47D0`)** — gửi nhiều người / gộp approve+swap.
+6. Send: mới chỉ USDC/EURC theo currency — chưa chọn token tự do.
+7. Khi Circle phản hồi → bật lại Google/Facebook + Swap execute (Swap còn UI cũ, chưa theo token/font).
 
 > Đã xong session này: memo integration, tỷ giá VND live, số dư+phí thật ở SendAmount/SendConfirm, jsQR (iOS), fix MOCK_ADDR ở Custom/Saved QR, fix layout 3/4-trái, đồng bộ cụm số dư 3 màn, avatar cropper danh bạ, share chỉ địa chỉ.
