@@ -147,7 +147,6 @@
 **❌ Blocked (đã disable trong UI, chờ Circle):**
 - **Swap execute:** App Kit/Swap Kit KHÔNG có adapter cho User-Controlled Wallet (chỉ có viem private-key / browser / circle-wallets dev-controlled). Manual instruction-replay fail on-chain. → Tab "Đổi tiền" trên nav bar đã disable; giữ estimate. Đã gửi bug report Circle.
 - **Google/Facebook login:** iframe `pw-auth.circle.com/social/verify-token` không post back → `onLoginComplete` không fire. → disable, chờ Circle. Bật lại: đổi `disabled: true→false` trong `src/screens/Login.jsx`.
-- **securityConfirm button không activate trên PC desktop (Chrome):** Bug trong Circle's hosted iframe tại `pw-auth.circle.com`. Nút "Tiếp tục" ở bước xác nhận câu hỏi bảo mật không sáng dù nhập đúng câu trả lời. Đã thử mọi config của `setCustomSecurityQuestions` — đều fail trên PC. Mobile (Safari/Chrome) hoạt động bình thường. **Workaround: tạo ví lần đầu trên mobile, sau đó dùng PC bình thường.** Chờ Circle fix từ phía server (`pw-auth.circle.com`).
 
 ---
 
@@ -163,6 +162,7 @@
 - **Layout "3/4 trái":** container flex `flex-direction: column` mà đặt `alignItems: 'flex-start'` sẽ **co child về content-width + dồn trái**. Muốn full width → để mặc định `stretch` (đừng set flex-start). Top-align thì dùng `justify-content: flex-start`.
 - **Arc gas tính bằng USDC** (18 decimals nội bộ). Phí = `eth_gasPrice × gasUnits / 1e18` USDC. Gas rất rẻ → hiển thị "< 1đ". Paymaster (gas hộ) **chưa hỗ trợ** lúc launch.
 - **Tra docs Arc bằng MCP `arc-docs`** (search_arc_docs / query_docs_filesystem) — ưu tiên hơn trí nhớ.
+- **⚠️ Circle W3S SDK getSDK() CHỈ gọi `setLocalizations(VI)` — KHÔNG thêm `setCustomSecurityQuestions` hay `setThemeColor`.** Hai cái này làm nút "Tiếp tục" ở bước xác nhận câu trả lời bảo mật **không sáng trên PC desktop** (tạo ví fail). Đã debug bằng git: config gốc chỉ có `setLocalizations` → tạo ví chạy tốt mobile + PC. Thêm 2 call kia (session 2) → vỡ PC. Đã revert. Hệ quả: câu hỏi bảo mật hiện English (Circle hardcode, không localize được) + modal màu tím Circle gốc — CHẤP NHẬN, đừng "fix" lại theo hướng thêm custom config.
 - EURC trên CoinGecko = id `euro-coin`; USDC = `usd-coin`; cirBTC dùng `bitcoin`.
 
 ---

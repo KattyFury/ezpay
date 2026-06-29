@@ -79,23 +79,11 @@ const VI = {
 export function getSDK() {
   if (!sdk) {
     sdk = new W3SSdk({ appSettings: { appId: '518fec6a-4680-5175-9de6-0810fb3dfd04' } })
+    // CHỈ localization tiếng Việt — đây là config ĐÃ KIỂM CHỨNG tạo ví chạy tốt cả
+    // mobile lẫn PC. ⚠️ KHÔNG thêm setCustomSecurityQuestions hay setThemeColor:
+    // 2 cái đó làm NÚT "Tiếp tục" ở bước xác nhận câu trả lời KHÔNG sáng trên PC
+    // (matching trong iframe Circle vỡ với config custom). Xem HANDOFF "securityConfirm PC".
     sdk.setLocalizations(VI)
-    sdk.setCustomSecurityQuestions([
-      { question: 'Tên thú cưng đầu tiên của bạn?', type: 'TEXT' },
-      { question: 'Tên trường tiểu học bạn học đầu tiên?', type: 'TEXT' },
-      { question: 'Tên người bạn thân nhất thời thơ ấu?', type: 'TEXT' },
-      { question: 'Tên thành phố nơi bạn sinh ra?', type: 'TEXT' },
-      { question: 'Tên đường phố bạn lớn lên?', type: 'TEXT' },
-      { question: 'Biệt danh thời nhỏ của bạn?', type: 'TEXT' },
-    ])
-    // Đổi màu Circle SDK → xanh lá thay cho tím/xanh mặc định
-    sdk.setThemeColor({
-      mainBtnBg:         '#16A34A',
-      mainBtnBgOnHover:  '#15803D',
-      mainBtnBgDisabled: '#86EFAC',
-      inputBorderFocused: '#16A34A',
-      titleGradients:    ['#16A34A', '#16A34A'],  // bỏ gradient 7 màu
-    })
   }
   return sdk
 }
