@@ -1,6 +1,6 @@
 # HANDOFF — EZwallet
 
-**Cập nhật:** 2026-06-29
+**Cập nhật:** 2026-06-29 (session 2)
 **Repo:** https://github.com/KattyFury/ezwallet
 **Local:** `D:\Files\Claude_laptop\Build_on_Arc\ezwallet`
 **Live:** https://ezwallet.pages.dev (Cloudflare Pages, auto-deploy từ GitHub `main`)
@@ -83,7 +83,7 @@
 
 **Brand assets (design/, dùng nguyên — KHÔNG ép currentColor):** `logo.svg` (logo màn Login), `icon.svg` (favicon vuông, → `public/icon.svg`), `pfp.svg` (app-icon tròn Apple/Android, → `public/pfp.svg`). index.html: favicon = `/icon.svg`, apple-touch-icon = `/pfp.svg`. ⚠️ **pfp/app-icon nên nền TRẮNG đặc, KHÔNG transparent** (iOS hiện nền đen sau transparent); apple-touch-icon lý tưởng là PNG 180×180 (SVG iOS hỗ trợ kém — cân nhắc export PNG sau). `x.svg` = dấu X (nút xóa Contacts/Kho QR).
 
-**Onboarding sau tạo ví (GÁC LẠI — 2026-06-29):** user thấy ví đã đủ dễ dùng, tạm không làm màn onboarding (chọn ngôn ngữ/tiền tệ + hướng dẫn). Có thể làm lại sau nếu cần.
+**Onboarding ✅ (2026-06-29 session 2):** `src/screens/Onboarding.jsx` — màn chọn ngôn ngữ + tiền tệ compact (2 chip row + popup). Hiện sau lần login đầu tiên (`ez_onboarded` flag). Reload sau khi chọn để áp dụng `ez_lang` + `ez_currency`. Chip dùng icon `right2` (popup, không phải dropdown).
 
 **Icon system:** dùng `<Icon name="..." size={} color={} />` ([src/components/Icon.jsx](src/components/Icon.jsx)) — nhúng SVG qua `?raw` + `currentColor` → recolor bằng token. Thêm icon mới: bỏ SVG vào `icon/`, chuẩn hóa `stroke/fill="black"→currentColor` + `width/height 100%→`, rồi import vào Icon.jsx. KHÔNG dùng emoji (iOS render icon Apple xấu).
 
@@ -107,10 +107,10 @@
 - **NavBar:** tab active = **vạch xanh lá** trên đỉnh (width 70%, cao 5px, bo dưới) + icon/chữ đen; tab khác xám.
 - **Login:** Email (active, icon mail SVG) / Google (disabled). Facebook gỡ.
 - **HomeSend:** BalanceHeader h1-2; list token h3-5 (logo thật + số token **bold** + check xanh + VND **regular** xám); hint h7-8 (label đậm – mô tả xám, en-dash); actions h9 (Danh bạ/Quét QR/Dán để gửi); nav h10.
-- **SendAmount:** h1 tiêu đề / h2 "Gửi cho:" (tra **tên danh bạ** theo địa chỉ) / h3-4 số **căn giữa tuyệt đối** + **chip `[VND ▼]`** (down2) đổi tiền tệ (VND/USDC/EURC, popup nửa trên) / h5 memo "Nội dung chuyển khoản (không bắt buộc)" / **numpad đúng 2.5 hàng (7,8,nửa 9)** + nút ở ranh giới 9/10 (gridRow 7/11, flex 2.5/1.5). Khả dụng hiển thị theo tiền tệ đang chọn.
-- **SendConfirm:** quy đổi theo `currency` (VND→USDC, USDC→USDC, EURC→EURC token); phí gas thật; nút đỏ "Xác nhận · PIN".
+- **SendAmount:** h1 tiêu đề / h2 "Gửi cho:" (tra **tên danh bạ** theo địa chỉ) / h3-4 số **căn giữa tuyệt đối** + **chip `[VND ›]`** (right2) đổi tiền tệ (**VND/USDC/EURC/CNY**, popup nửa trên) / h5 memo "Nội dung chuyển khoản (không bắt buộc)" / **numpad đúng 2.5 hàng (7,8,nửa 9)** + nút ở ranh giới 9/10 (gridRow 7/11, flex 2.5/1.5). Default currency đọc từ `ez_currency`. Khả dụng hiển thị theo tiền tệ đang chọn.
+- **SendConfirm:** quy đổi theo `currency` (VND→USDC, CNY→USDC via rate USDC/7.25, USDC→USDC, EURC→EURC); phí gas thật; nút đỏ "Xác nhận · PIN".
 - **HomeReceive:** BalanceHeader; QR h3-5; hint "QR mặc định/Chia sẻ/Custom QR/Kho QR"; actions Chia sẻ (chỉ địa chỉ) / Custom QR / **Kho QR**.
-- **CreateQR:** **đồng bộ SendAmount** (số to + VND + numpad 2.5 + nút). **ShowQR:** QR giữa + tự lưu vào Kho QR + 2 nút h9-10 [Lưu vào kho ảnh] (tải PNG) / [Quay lại]. **SavedQRList (Kho QR):** lưới 3 cột (tối đa 9 ô h2-7, scroll), bấm → ShowQR.
+- **CreateQR:** đồng bộ SendAmount (VND/USDC/EURC/CNY, default đọc `ez_currency`). Navigate ShowQR với `from: 'CreateQR'`. **ShowQR:** từ CreateQR → nút "Lưu vào thư viện" (lưu vào `ez_saved_qrs`) + "Quay lại"; từ SavedQRList → nút "Lưu vào kho ảnh" (Photos) + "Quay lại". **KHÔNG tự auto-save** (bug cũ đã fix). **SavedQRList (Kho QR):** lưới 3 cột, bấm → ShowQR với `from: 'SavedQRList'`.
 - **TxHistory:** hiện **tên danh bạ** nếu lưu; bấm dòng → **popup chi tiết** (loại/người/địa chỉ/số tiền/quy đổi/thời gian/memo nếu có/link ArcScan); nút lọc "Chỉ gửi"/"Chỉ nhận" (active xanh); "Quay lại" xanh.
 - **MenuScreen:** Rút (trắng, khóa, trái) / Nạp (xanh, phải); menu items icon SVG (clock/globe/shield/info).
 - **Sub-screen template ĐỒNG BỘ (Language/Security/About):** header screen-title h1; nội dung gridRow 2/9 dùng **hàng `.menu-item`** (label trái fs-body, value/chevron phải, divider rgba nhạt); nút **Quay lại = primary xanh** row10-single. Value hiển thị trong **box viền** (Language) hoặc text muted (Security/About). Chevron = **right2.svg** (▶ đặc).
@@ -135,7 +135,14 @@
 - **Thông báo in-app ✅** — `src/notif.js` + `components/NotifArea.jsx` (dùng chung HomeSend + HomeReceive, vùng hàng 7-8): gửi xong → "Đã gửi", nhận tiền (poll ArcScan) → "Đã nhận" (xanh), lỗi gửi → đỏ. Click thông báo → mở chi tiết giao dịch (TxHistory openHash). Hết thông báo → hiện hint.
 - **Session-restore ✅** — App.jsx: có `ez_user_token`+`ez_wallet_addr` → vào thẳng HomeSend.
 - **Lưu ảnh vào Kho ảnh ✅** — `saveImage.js` dùng Web Share API (iOS lưu Photos, không phải Files) cho biên lai + QR.
-- **i18n (đa ngôn ngữ) ✅ (2026-06-29):** `src/i18n.js` — key = chuỗi tiếng Việt gốc, từ điển EN + ZH (giản thể). `detect()` theo `navigator.language` (vi/zh, còn lại → en), nhớ `ez_lang`. `t(s)` tra dict; vi → trả nguyên; thiếu key → fallback EN → gốc. Đổi ngôn ngữ = `setLang()` reload. **Đã bọc `t()` toàn bộ màn** (chuỗi chưa dịch tự fallback về VI, không vỡ UI). ⚠️ Build pass; chưa chạy thử runtime trên trình duyệt.
+- **i18n (đa ngôn ngữ) ✅:** `src/i18n.js` — key = chuỗi tiếng Việt gốc, từ điển EN + ZH. `detect()` theo `navigator.language`, nhớ `ez_lang`. `t(s)` tra dict. Đổi ngôn ngữ = `setLang()` reload. Đã bọc `t()` toàn bộ màn.
+- **Circle SDK UI (VI) ✅ (session 2):** `src/circle.js` — `setLocalizations(VI)` dịch toàn bộ: initPincode, confirmInitPincode, newPincode, confirmNewPincode, enterPincode, recoverPincode, securityIntros, securityQuestions, securityConfirm, securitySummary, common (showPin/hidePin/continue). `setThemeColor` → xanh lá #16A34A thay gradient tím Circle. Câu hỏi bảo mật: hiện dùng Circle default questions tiếng Anh (Vietnamese custom questions gây bug PC — xem Blocked).
+- **Memo UTF-8 ✅:** `send.js` dùng `TextEncoder().encode()` — hỗ trợ tiếng Việt có dấu + chữ Trung. Verified on-chain tx `0xb75b...7e50`.
+- **Sign-out giữ contacts/settings ✅ (session 2):** MenuScreen chỉ xóa session keys (`ez_user_token`, `ez_wallet_addr`, `ez_wallet_id`, `ez_encryption_key`, `ez_email`, `ez_notifs`, `ez_last_recv_ts`, `ez_email_history`). Giữ lại: `ez_contacts`, `ez_saved_qrs`, `ez_lang`, `ez_currency`, `ez_onboarded`.
+- **Notif tự hết hạn sau 2h ✅ (session 2):** `notif.js` `getNotifs()` filter `ts > Date.now() - 2h` → hint tự hiện lại.
+- **PasteAddress ✅ (session 2):** Bỏ `clipboard.readText()` (gây iOS dialog Paste/Speak). Auto-focus input → user native paste. Button đổi thành "Tiếp tục" (disabled khi chưa có địa chỉ hợp lệ).
+- **QR scanner 85% ✅ (session 2):** Tăng scan area từ 62% → 85%.
+- **Contact popup ✅ (session 2):** Bỏ `autoFocus` (gây iOS keyboard jump). `paddingTop: 60px` thay `8dvh`.
 
 **❌ Blocked (đã disable trong UI, chờ Circle):**
 - **Swap execute:** App Kit/Swap Kit KHÔNG có adapter cho User-Controlled Wallet (chỉ có viem private-key / browser / circle-wallets dev-controlled). Manual instruction-replay fail on-chain. → Tab "Đổi tiền" trên nav bar đã disable; giữ estimate. Đã gửi bug report Circle.
@@ -179,14 +186,11 @@
 - ~~i18n (đa ngôn ngữ)~~ ✅ — VI/EN/ZH, mặc định theo trình duyệt (xem phần "Chạy thật").
 - ~~Đưa nút Đăng xuất ra Menu~~ ✅.
 
-**Gác lại (user thấy ví đủ dễ dùng — 2026-06-29):**
-- **Onboarding sau tạo ví** — màn chọn ngôn ngữ/tiền tệ mặc định + hướng dẫn ngắn. Tạm không làm; làm lại sau nếu cần.
-
 **Còn lại:**
-3. **#4 Trạng thái giao dịch thật** — poll txHash → "✓ đã lên blockchain" (Arc finality <1s).
-4. **#5 Batch (Multicall3From `0x522f...47D0`)** — gửi nhiều người / gộp approve+swap.
-5. Send: mới chỉ USDC/EURC theo currency — chưa chọn token tự do.
-6. **Blocked (chờ Circle):** Google/Facebook login (verify-token iframe hang) + Swap execute (App Kit không có adapter UCW). Swap UI đã de-unicode nhưng vẫn estimate-only.
+1. **Trạng thái giao dịch thật** — poll txHash → "✓ đã lên blockchain" (Arc finality <1s).
+2. **Batch (Multicall3From `0x522f...47D0`)** — gửi nhiều người / gộp approve+swap.
+3. Send: mới chỉ USDC/EURC/VND/CNY theo currency — chưa chọn token tự do (cirBTC).
+4. **Blocked (chờ Circle):** Google/Facebook login + Swap execute + securityConfirm PC bug (xem Blocked).
 
-> Đã xong session này: memo integration, tỷ giá VND live, số dư+phí thật ở SendAmount/SendConfirm, jsQR (iOS), fix MOCK_ADDR ở Custom/Saved QR, fix layout 3/4-trái, đồng bộ cụm số dư 3 màn, avatar cropper danh bạ, share chỉ địa chỉ.
-> Đã xong 2026-06-29: i18n VI/EN/ZH (auto theo trình duyệt, fallback EN, `src/i18n.js`), bọc `t()` toàn bộ màn, đưa Đăng xuất ra Menu, click thông báo mở chi tiết giao dịch. Onboarding gác lại.
+> **Session 1 (2026-06-29):** i18n VI/EN/ZH, bọc t() toàn bộ màn, Đăng xuất ra Menu, memo on-chain, tỷ giá live, jsQR iOS.
+> **Session 2 (2026-06-29):** 12 mobile UX bugs (contacts, hints, QR, paste, onboarding, CNY), Circle SDK full VI localization + green theme, Onboarding screen, securityConfirm PC bug discovered (unfixable — Circle iframe).
