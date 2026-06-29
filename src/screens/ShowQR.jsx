@@ -3,6 +3,7 @@ import { useNav } from '../nav'
 import { QRCodeCanvas } from 'qrcode.react'
 import { fmtVND } from '../data'
 import { saveImageToPhotos } from '../saveImage'
+import { t } from '../i18n'
 
 function savedQRs() {
   try { return JSON.parse(localStorage.getItem('ez_saved_qrs') || '[]') } catch { return [] }
@@ -34,18 +35,18 @@ export default function ShowQR() {
   return (
     <div className="screen">
       <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)' }}>
-        Tạo QR nhận tiền
+        {t('Tạo QR nhận tiền')}
       </div>
 
       <div ref={wrapRef} className="row-3-6 center col" style={{ gap: 12 }}>
         <QRCodeCanvas value={qrValue} size={200} level="M" />
         <span className="num" style={{ fontSize: 'var(--fs-amount)', fontWeight: 'var(--fw-semibold)' }}>{amountText}</span>
-        <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>Cho người gửi quét mã này</span>
+        <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>{t('Cho người gửi quét mã này')}</span>
       </div>
 
       <div className="row10-dual">
-        <button className="btn btn-secondary" onClick={saveToPhotos}>Lưu vào kho ảnh</button>
-        <button className="btn btn-primary" onClick={() => navigate(params.from || 'HomeReceive')}>Quay lại</button>
+        <button className="btn btn-secondary" onClick={saveToPhotos}>{t('Lưu vào kho ảnh')}</button>
+        <button className="btn btn-primary" onClick={() => navigate(params.from || 'HomeReceive')}>{t('Quay lại')}</button>
       </div>
     </div>
   )

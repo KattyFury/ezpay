@@ -3,6 +3,7 @@ import { useNav } from '../nav'
 import { fmtVND } from '../data'
 import { addNotif } from '../notif'
 import { saveImageToPhotos } from '../saveImage'
+import { t } from '../i18n'
 
 function CheckIcon() {
   return (
@@ -31,7 +32,7 @@ export default function SendReceipt() {
 
   // Lưu thông báo "đã gửi" để HomeSend hiện
   useEffect(() => {
-    addNotif(`Đã gửi ${amountText} cho ${to}`, 'sent')
+    addNotif(`${t('Đã gửi')} ${amountText} ${t('cho')} ${to}`, 'sent')
   }, [])
 
   // Vẽ biên lai ra canvas rồi tải về kho ảnh
@@ -46,7 +47,7 @@ export default function SendReceipt() {
     x.strokeStyle = '#FFFFFF'; x.lineWidth = 7; x.lineCap = 'round'; x.lineJoin = 'round'
     x.beginPath(); x.moveTo(W / 2 - 18, 90); x.lineTo(W / 2 - 5, 104); x.lineTo(W / 2 + 20, 76); x.stroke()
     x.textAlign = 'center'
-    x.fillStyle = '#000000'; x.font = '600 32px sans-serif'; x.fillText('Đã gửi thành công', W / 2, 175)
+    x.fillStyle = '#000000'; x.font = '600 32px sans-serif'; x.fillText(t('Đã gửi thành công'), W / 2, 175)
     x.fillStyle = '#16A34A'; x.font = '700 52px sans-serif'; x.fillText(amountText, W / 2, 240)
     // các dòng
     let yy = 320
@@ -56,9 +57,9 @@ export default function SendReceipt() {
       x.strokeStyle = '#E5E5EA'; x.lineWidth = 1; x.beginPath(); x.moveTo(50, yy + 22); x.lineTo(W - 50, yy + 22); x.stroke()
       yy += 60
     }
-    row('Gửi đến', to)
-    if (memo) row('Nội dung', memo)
-    row('Thời gian', fmtTime(timestamp))
+    row(t('Gửi đến'), to)
+    if (memo) row(t('Nội dung'), memo)
+    row(t('Thời gian'), fmtTime(timestamp))
     x.textAlign = 'center'; x.fillStyle = '#16A34A'; x.font = '700 26px sans-serif'; x.fillText('EZ Wallet', W / 2, H - 30)
     saveImageToPhotos(cv, `bien-lai-${timestamp}.png`)
   }
@@ -66,36 +67,36 @@ export default function SendReceipt() {
   return (
     <div className="screen">
       <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)' }}>
-        Biên lai
+        {t('Biên lai')}
       </div>
 
       <div className="row-2-8 col center" style={{ gap: 12 }}>
         <CheckIcon />
-        <span style={{ fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>Đã gửi thành công</span>
+        <span style={{ fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>{t('Đã gửi thành công')}</span>
         <span className="num" style={{ fontSize: 'var(--fs-amount)', fontWeight: 'var(--fw-semibold)', color: 'var(--color-primary)' }}>
           {amountText}
         </span>
         <div className="confirm-box" style={{ width: '100%' }}>
           <div className="confirm-row">
-            <span className="confirm-label">Gửi đến</span>
+            <span className="confirm-label">{t('Gửi đến')}</span>
             <span className="confirm-value">{to}</span>
           </div>
           {memo ? (
             <div className="confirm-row">
-              <span className="confirm-label">Nội dung</span>
+              <span className="confirm-label">{t('Nội dung')}</span>
               <span className="confirm-value">{memo}</span>
             </div>
           ) : null}
           <div className="confirm-row">
-            <span className="confirm-label">Thời gian</span>
+            <span className="confirm-label">{t('Thời gian')}</span>
             <span className="confirm-value" style={{ fontSize: 'var(--fs-label)' }}>{fmtTime(timestamp)}</span>
           </div>
         </div>
       </div>
 
       <div className="row-10 row10-dual">
-        <button className="btn btn-secondary" onClick={saveReceipt}>Lưu biên lai</button>
-        <button className="btn btn-primary" onClick={() => navigate('HomeSend')}>Xong</button>
+        <button className="btn btn-secondary" onClick={saveReceipt}>{t('Lưu biên lai')}</button>
+        <button className="btn btn-primary" onClick={() => navigate('HomeSend')}>{t('Xong')}</button>
       </div>
     </div>
   )

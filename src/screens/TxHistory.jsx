@@ -3,6 +3,7 @@ import { useNav } from '../nav'
 import { fmtVND } from '../data'
 import { TOKENS, getTxMemo } from '../chain'
 import Icon from '../components/Icon'
+import { t } from '../i18n'
 
 const ARCSCAN = 'https://testnet.arcscan.app'
 const TOKEN_MAP = Object.fromEntries(TOKENS.map(t => [t.address.toLowerCase(), t]))
@@ -18,10 +19,10 @@ function loadContactMap() {
 
 function timeAgo(ts) {
   const diff = Math.floor(Date.now() / 1000) - parseInt(ts)
-  if (diff < 60) return 'vừa xong'
-  if (diff < 3600) return `${Math.floor(diff / 60)} phút trước`
-  if (diff < 86400) return `${Math.floor(diff / 3600)} giờ trước`
-  if (diff < 604800) return `${Math.floor(diff / 86400)} ngày trước`
+  if (diff < 60) return t('vừa xong')
+  if (diff < 3600) return `${Math.floor(diff / 60)} ${t('phút trước')}`
+  if (diff < 86400) return `${Math.floor(diff / 3600)} ${t('giờ trước')}`
+  if (diff < 604800) return `${Math.floor(diff / 86400)} ${t('ngày trước')}`
   return new Date(ts * 1000).toLocaleDateString('vi-VN')
 }
 
@@ -60,10 +61,10 @@ function TxRow({ tx, walletAddr, contacts, onClick }) {
 
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontSize: 'var(--fs-item)', fontWeight: 'var(--fw-medium)', color: 'var(--color-content)' }}>
-          {isSend ? 'Đã gửi' : 'Đã nhận'} {symbol}
+          {isSend ? t('Đã gửi') : t('Đã nhận')} {symbol}
         </div>
         <div style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {isSend ? 'Đến' : 'Từ'} {name || shortAddr(counter)} · {timeAgo(tx.timeStamp)}
+          {isSend ? t('Đến') : t('Từ')} {name || shortAddr(counter)} · {timeAgo(tx.timeStamp)}
         </div>
       </div>
 
@@ -111,7 +112,7 @@ export default function TxHistory() {
 
   const isSendTx = tx => tx.from?.toLowerCase() === walletAddr?.toLowerCase()
   const filtered = txs.filter(tx => filter === 'all' ? true : filter === 'send' ? isSendTx(tx) : !isSendTx(tx))
-  const emptyMsg = filter === 'send' ? 'Chưa có giao dịch gửi' : filter === 'receive' ? 'Chưa có giao dịch nhận' : 'Chưa có giao dịch nào'
+  const emptyMsg = filter === 'send' ? t('Chưa có giao dịch gửi') : filter === 'receive' ? t('Chưa có giao dịch nhận') : t('Chưa có giao dịch nào')
 
   useEffect(() => {
     if (!walletAddr) { setLoading(false); return }
@@ -135,12 +136,12 @@ export default function TxHistory() {
   return (
     <div className="screen">
       <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)' }}>
-        Lịch sử giao dịch
+        {t('Lịch sử giao dịch')}
       </div>
 
       <div className="row-2-8" style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', overflowY: 'auto', justifyContent: 'flex-start' }}>
         {loading ? (
-          <div style={{ width: '100%', textAlign: 'center', paddingTop: 40, color: 'var(--color-muted)', fontSize: 'var(--fs-label)' }}>Đang tải...</div>
+          <div style={{ width: '100%', textAlign: 'center', paddingTop: 40, color: 'var(--color-muted)', fontSize: 'var(--fs-label)' }}>{t('Đang tải...')}</div>
         ) : filtered.length === 0 ? (
           <div style={{ width: '100%', textAlign: 'center', paddingTop: 40 }}>
             <div style={{ fontSize: 'var(--fs-body)', color: 'var(--color-muted)' }}>{emptyMsg}</div>
@@ -152,10 +153,10 @@ export default function TxHistory() {
 
       <div style={{ gridRow: '9 / 11', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
         <button className={`btn ${filter === 'send' ? 'btn-primary' : 'btn-secondary'}`} style={{ flex: 1 }}
-          onClick={() => setFilter(f => f === 'send' ? 'all' : 'send')}>Chỉ gửi</button>
+          onClick={() => setFilter(f => f === 'send' ? 'all' : 'send')}>{t('Chỉ gửi')}</button>
         <button className={`btn ${filter === 'receive' ? 'btn-primary' : 'btn-secondary'}`} style={{ flex: 1 }}
-          onClick={() => setFilter(f => f === 'receive' ? 'all' : 'receive')}>Chỉ nhận</button>
-        <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => navigate('MenuScreen')}>Quay lại</button>
+          onClick={() => setFilter(f => f === 'receive' ? 'all' : 'receive')}>{t('Chỉ nhận')}</button>
+        <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => navigate('MenuScreen')}>{t('Quay lại')}</button>
       </div>
 
       {/* Popup chi tiết giao dịch */}
@@ -163,10 +164,10 @@ export default function TxHistory() {
         <div onClick={() => setSelected(null)}
           style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
           <div onClick={e => e.stopPropagation()} style={{ width: '100%', maxWidth: 360, background: 'var(--color-white)', borderRadius: 16, padding: 20 }}>
-            <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)', textAlign: 'center', marginBottom: 8 }}>Chi tiết giao dịch</div>
-            <DetailRow label="Loại">{d.isSend ? 'Đã gửi' : 'Đã nhận'} {d.symbol}</DetailRow>
-            {d.name && <DetailRow label={d.isSend ? 'Người nhận' : 'Người gửi'}>{d.name}</DetailRow>}
-            <DetailRow label="Địa chỉ ví">
+            <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)', textAlign: 'center', marginBottom: 8 }}>{t('Chi tiết giao dịch')}</div>
+            <DetailRow label={t('Loại')}>{d.isSend ? t('Đã gửi') : t('Đã nhận')} {d.symbol}</DetailRow>
+            {d.name && <DetailRow label={d.isSend ? t('Người nhận') : t('Người gửi')}>{d.name}</DetailRow>}
+            <DetailRow label={t('Địa chỉ ví')}>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
                 {shortAddr(d.counter)}
                 <button onClick={() => copyCounter(d.counter)} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', padding: 0 }}>
@@ -174,19 +175,19 @@ export default function TxHistory() {
                 </button>
               </span>
             </DetailRow>
-            <DetailRow label="Số tiền">
+            <DetailRow label={t('Số tiền')}>
               <span className="num" style={{ color: d.isSend ? 'var(--color-error)' : 'var(--color-primary)' }}>
                 {d.isSend ? '-' : '+'}{d.amount.toFixed(d.amount < 0.01 ? 6 : 2)} {d.symbol}
               </span>
             </DetailRow>
-            <DetailRow label="Quy đổi"><span className="num">{fmtVND(d.vnd)}</span></DetailRow>
-            <DetailRow label="Thời gian">{new Date(selected.timeStamp * 1000).toLocaleString('vi-VN')}</DetailRow>
-            {memoLoading ? <DetailRow label="Nội dung">Đang tải...</DetailRow> : memo ? <DetailRow label="Nội dung">{memo}</DetailRow> : null}
+            <DetailRow label={t('Quy đổi')}><span className="num">{fmtVND(d.vnd)}</span></DetailRow>
+            <DetailRow label={t('Thời gian')}>{new Date(selected.timeStamp * 1000).toLocaleString('vi-VN')}</DetailRow>
+            {memoLoading ? <DetailRow label={t('Nội dung')}>{t('Đang tải...')}</DetailRow> : memo ? <DetailRow label={t('Nội dung')}>{memo}</DetailRow> : null}
             <button className="btn btn-secondary" style={{ width: '100%', marginTop: 14 }}
               onClick={() => window.open(`${ARCSCAN}/tx/${selected.hash}`, '_blank')}>
-              Xem trên ArcScan
+              {t('Xem trên ArcScan')}
             </button>
-            <button className="btn btn-primary" style={{ width: '100%', marginTop: 8 }} onClick={() => setSelected(null)}>Đóng</button>
+            <button className="btn btn-primary" style={{ width: '100%', marginTop: 8 }} onClick={() => setSelected(null)}>{t('Đóng')}</button>
           </div>
         </div>
       )}

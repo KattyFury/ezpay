@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Icon from '../components/Icon'
 import { useNav } from '../nav'
 import { createSession, getSDK, initializeWallet, executeChallenge, getWalletAddress } from '../circle'
+import { t } from '../i18n'
 
 const DOMAINS = ['@gmail.com', '@yahoo.com', '@icloud.com']
 
@@ -71,7 +72,7 @@ export default function EnterEmail() {
   return (
     <div className="screen">
       <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)' }}>
-        Đăng nhập với Email
+        {t('Đăng nhập với Email')}
       </div>
 
       <div className="row-3" style={{ position: 'relative' }}>
@@ -125,9 +126,9 @@ export default function EnterEmail() {
       </div>
 
       <div className="row-10 row10-dual">
-        <button className="btn btn-secondary" onClick={() => navigate('Login')}>Quay lại</button>
+        <button className="btn btn-secondary" onClick={() => navigate('Login')}>{t('Quay lại')}</button>
         <button className="btn btn-primary" disabled={!valid || loading} onClick={handleSubmit}>
-          {loading ? 'Đang xử lý...' : 'Tiếp tục'}
+          {loading ? t('Đang xử lý...') : t('Tiếp tục')}
         </button>
       </div>
     </div>

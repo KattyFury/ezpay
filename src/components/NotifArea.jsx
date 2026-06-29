@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Icon from './Icon'
 import { useNav } from '../nav'
 import { getNotifs, dismissNotif, addNotif } from '../notif'
+import { t } from '../i18n'
 
 // Phát hiện tiền vào (poll ArcScan) → tạo thông báo "đã nhận" (dùng chung mọi màn có NotifArea)
 function pollIncoming(after) {
@@ -9,13 +10,13 @@ function pollIncoming(after) {
   if (!addr) return
   fetch(`https://testnet.arcscan.app/api?module=account&action=tokentx&address=${addr}&sort=desc&limit=20`)
     .then(r => r.json()).then(d => {
-      const recv = (d?.result || []).filter(t => t.to?.toLowerCase() === addr.toLowerCase())
+      const recv = (d?.result || []).filter(tx => tx.to?.toLowerCase() === addr.toLowerCase())
       const lastSeen = parseInt(localStorage.getItem('ez_last_recv_ts') || '0')
       if (recv[0]) localStorage.setItem('ez_last_recv_ts', recv[0].timeStamp)
       if (lastSeen) {
-        recv.filter(t => parseInt(t.timeStamp) > lastSeen).reverse().forEach(t => {
-          const amt = (parseFloat(t.value) / Math.pow(10, parseInt(t.tokenDecimal || 6))).toFixed(2)
-          addNotif(`Đã nhận ${amt} ${t.tokenSymbol || 'USDC'} từ ${t.from.slice(0, 6)}...${t.from.slice(-4)}`, 'received', t.hash)
+        recv.filter(tx => parseInt(tx.timeStamp) > lastSeen).reverse().forEach(tx => {
+          const amt = (parseFloat(tx.value) / Math.pow(10, parseInt(tx.tokenDecimal || 6))).toFixed(2)
+          addNotif(`${t('Đã nhận')} ${amt} ${tx.tokenSymbol || 'USDC'} ${t('từ')} ${tx.from.slice(0, 6)}...${tx.from.slice(-4)}`, 'received', tx.hash)
         })
         after()
       }
@@ -35,7 +36,6 @@ export default function NotifArea({ fallback }) {
   useEffect(() => { pollIncoming(() => setNotifs(getNotifs())) }, [])
   function clear(id, e) { e.stopPropagation(); dismissNotif(id); setNotifs(getNotifs()) }
   function open(n) {
-    if (n.type === 'error') return
     navigate('TxHistory', n.hash ? { openHash: n.hash } : {})
   }
 

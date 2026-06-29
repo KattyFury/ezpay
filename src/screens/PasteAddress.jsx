@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNav } from '../nav'
+import { t } from '../i18n'
 
 function isValid(addr) { return /^0x[0-9a-fA-F]{40}$/.test(addr.trim()) }
 
@@ -25,7 +26,7 @@ export default function PasteAddress() {
   return (
     <div className="screen">
       <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)' }}>
-        Dán địa chỉ để gửi
+        {t('Dán địa chỉ để gửi')}
       </div>
 
       <div className="row-3" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 8 }}>
@@ -38,14 +39,14 @@ export default function PasteAddress() {
         />
         {showError && (
           <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-error)' }}>
-            Địa chỉ không hợp lệ — bắt đầu bằng 0x, 42 ký tự
+            {t('Địa chỉ không hợp lệ — bắt đầu bằng 0x, 42 ký tự')}
           </span>
         )}
       </div>
 
       <div className="row-10 row10-dual">
-        <button className="btn btn-secondary" onClick={() => navigate('HomeSend')}>Quay lại</button>
-        <button className="btn btn-primary" onClick={handleDan}>Dán</button>
+        <button className="btn btn-secondary" onClick={() => navigate('HomeSend')}>{t('Quay lại')}</button>
+        <button className="btn btn-primary" onClick={handleDan}>{t('Dán')}</button>
       </div>
     </div>
   )

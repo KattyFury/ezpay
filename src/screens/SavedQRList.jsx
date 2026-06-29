@@ -3,6 +3,7 @@ import { useNav } from '../nav'
 import { QRCodeSVG } from 'qrcode.react'
 import Icon from '../components/Icon'
 import { fmtVND } from '../data'
+import { t } from '../i18n'
 
 function loadQRs() {
   try { return JSON.parse(localStorage.getItem('ez_saved_qrs') || '[]') } catch { return [] }
@@ -23,7 +24,7 @@ export default function SavedQRList() {
   return (
     <div className="screen">
       <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)' }}>
-        Kho QR
+        {t('Kho QR')}
       </div>
 
       {/* Lưới 3 cột (hàng 2-7), ô cuối là "+" để thêm QR; nhiều thì scroll */}
@@ -50,7 +51,7 @@ export default function SavedQRList() {
       </div>
 
       <div className="row-10 row10-single">
-        <button className="btn btn-secondary" onClick={() => navigate('HomeReceive')}>Quay lại</button>
+        <button className="btn btn-secondary" onClick={() => navigate('HomeReceive')}>{t('Quay lại')}</button>
       </div>
     </div>
   )

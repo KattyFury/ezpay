@@ -3,6 +3,7 @@ import { useNav } from '../nav'
 import Numpad from '../components/Numpad'
 import Icon from '../components/Icon'
 import { getTokenInfo, getVndRate } from '../chain'
+import { t } from '../i18n'
 
 function shortenAddr(addr) {
   return addr ? addr.slice(0, 6) + '…' + addr.slice(-4) : ''
@@ -65,11 +66,11 @@ export default function SendAmount() {
   return (
     <div className="screen">
       <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)' }}>
-        Gửi tiền
+        {t('Gửi tiền')}
       </div>
 
       <div className="row-2 center" style={{ gap: 6 }}>
-        <span style={{ fontSize: 'var(--fs-body)', color: 'var(--color-muted)' }}>Gửi cho:</span>
+        <span style={{ fontSize: 'var(--fs-body)', color: 'var(--color-muted)' }}>{t('Gửi cho:')}</span>
         <span style={{ fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>
           {name || shortenAddr(address)}
         </span>
@@ -89,7 +90,7 @@ export default function SendAmount() {
         </div>
         {overBalance && (
           <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-error)', textAlign: 'center' }}>
-            Số dư không đủ (khả dụng: {availableStr})
+            {t('Số dư không đủ (khả dụng:')} {availableStr})
           </span>
         )}
       </div>
@@ -97,7 +98,7 @@ export default function SendAmount() {
       <div className="row-5 center">
         <input
           className="address-input"
-          placeholder="Nội dung chuyển khoản (không bắt buộc)"
+          placeholder={t('Nội dung chuyển khoản (không bắt buộc)')}
           value={memo}
           onChange={e => setMemo(e.target.value)}
           maxLength={100}
@@ -111,11 +112,11 @@ export default function SendAmount() {
           <Numpad onKey={handleKey} showComma={false} />
         </div>
         <div style={{ flex: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
-          <button className="btn btn-secondary" style={{ width: '44%' }} onClick={() => navigate('HomeSend')}>Quay lại</button>
+          <button className="btn btn-secondary" style={{ width: '44%' }} onClick={() => navigate('HomeSend')}>{t('Quay lại')}</button>
           <button className="btn btn-primary" style={{ width: '44%' }} disabled={!canContinue}
             onClick={() => navigate('SendConfirm', { address, name, amount, memo, currency: cur })}
           >
-            Tiếp tục
+            {t('Tiếp tục')}
           </button>
         </div>
       </div>
@@ -125,7 +126,7 @@ export default function SendAmount() {
         <div onClick={() => setShowCur(false)}
           style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 100, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: '14dvh' }}>
           <div onClick={e => e.stopPropagation()} style={{ width: '70%', maxWidth: 300, background: 'var(--color-white)', borderRadius: 16, padding: 12, display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)', textAlign: 'center', padding: '6px 0' }}>Chọn tiền tệ</div>
+            <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)', textAlign: 'center', padding: '6px 0' }}>{t('Chọn tiền tệ')}</div>
             {CURRENCIES.map(c => (
               <button key={c} onClick={() => { setCur(c); setShowCur(false) }}
                 className={`btn ${c === cur ? 'btn-primary' : 'btn-secondary'}`} style={{ width: '100%' }}>

@@ -1,5 +1,6 @@
 import { useNav } from '../nav'
 import Icon from './Icon'
+import { t } from '../i18n'
 
 const TABS = [
   { id: 'Swap',        label: 'Đổi tiền', icon: 'trade', disabled: true },
@@ -12,19 +13,19 @@ export default function NavBar({ active }) {
   const { navigate } = useNav()
   return (
     <nav className="navbar full-bleed">
-      {TABS.map(t => (
+      {TABS.map(tab => (
         <button
-          key={t.id}
-          className={`navbar-btn${active === t.id ? ' active' : ''}`}
-          disabled={t.disabled}
-          onClick={t.disabled ? undefined : () => navigate(t.id)}
-          style={{ position: 'relative', ...(t.disabled ? { opacity: 0.4, cursor: 'not-allowed' } : {}) }}
+          key={tab.id}
+          className={`navbar-btn${active === tab.id ? ' active' : ''}`}
+          disabled={tab.disabled}
+          onClick={tab.disabled ? undefined : () => navigate(tab.id)}
+          style={{ position: 'relative', ...(tab.disabled ? { opacity: 0.4, cursor: 'not-allowed' } : {}) }}
         >
-          {active === t.id && (
+          {active === tab.id && (
             <span style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '70%', height: 5, borderRadius: '0 0 5px 5px', background: 'var(--color-primary)' }} />
           )}
-          <Icon name={t.icon} size={20} color={active === t.id ? 'var(--color-black)' : 'var(--color-muted)'} style={{ marginBottom: 2 }} />
-          {t.label}
+          <Icon name={tab.icon} size={20} color={active === tab.id ? 'var(--color-black)' : 'var(--color-muted)'} style={{ marginBottom: 2 }} />
+          {t(tab.label)}
         </button>
       ))}
     </nav>

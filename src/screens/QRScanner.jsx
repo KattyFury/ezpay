@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import jsQR from 'jsqr'
 import { useNav } from '../nav'
+import { t } from '../i18n'
 
 function isValid(addr) { return /^0x[0-9a-fA-F]{40}$/.test(addr.trim()) }
 
@@ -19,7 +20,7 @@ export default function QRScanner() {
   const loopRef = useRef(null)
   const fileRef = useRef(null)
   const [error, setError] = useState('')
-  const [hint, setHint] = useState('Hướng camera vào mã QR')
+  const [hint, setHint] = useState(t('Hướng camera vào mã QR'))
 
   useEffect(() => {
     let stream = null
@@ -36,7 +37,7 @@ export default function QRScanner() {
         await videoRef.current.play().catch(() => {})
         scan()
       } catch {
-        setError('Không truy cập được camera — chọn ảnh QR hoặc dán địa chỉ.')
+        setError(t('Không truy cập được camera — chọn ảnh QR hoặc dán địa chỉ.'))
       }
     }
 
@@ -56,7 +57,7 @@ export default function QRScanner() {
             navigate('SendAmount', { address: parsed.address, name: null, amount: parsed.amount, currency: parsed.currency })
             return
           } else {
-            setHint('QR không hợp lệ, thử lại')
+            setHint(t('QR không hợp lệ, thử lại'))
           }
         }
       }
@@ -89,12 +90,12 @@ export default function QRScanner() {
         const code = jsQR(data.data, data.width, data.height)
         const parsed = code ? parseQR(code.data) : null
         if (parsed) navigate('SendAmount', { address: parsed.address, name: null, amount: parsed.amount, currency: parsed.currency })
-        else setHint('Không tìm thấy mã QR hợp lệ trong ảnh')
+        else setHint(t('Không tìm thấy mã QR hợp lệ trong ảnh'))
       }
-      img.onerror = () => setHint('Không đọc được ảnh')
+      img.onerror = () => setHint(t('Không đọc được ảnh'))
       img.src = url
     } catch {
-      setHint('Không đọc được ảnh QR')
+      setHint(t('Không đọc được ảnh QR'))
     }
   }
 
@@ -118,8 +119,8 @@ export default function QRScanner() {
       <input ref={fileRef} type="file" accept="image/*" onChange={handlePickImage} style={{ display: 'none' }} />
 
       <div className="row-10 row10-dual">
-        <button className="btn btn-secondary" onClick={() => fileRef.current?.click()}>Ảnh QR</button>
-        <button className="btn btn-primary" onClick={() => navigate('HomeSend')}>Quay lại</button>
+        <button className="btn btn-secondary" onClick={() => fileRef.current?.click()}>{t('Ảnh QR')}</button>
+        <button className="btn btn-primary" onClick={() => navigate('HomeSend')}>{t('Quay lại')}</button>
       </div>
     </div>
   )

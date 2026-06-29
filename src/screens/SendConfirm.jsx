@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Icon from '../components/Icon'
 import { addNotif } from '../notif'
 import { useNav } from '../nav'
+import { t } from '../i18n'
 import { fmtVND } from '../data'
 import { getVndRate, estimateFeeVnd } from '../chain'
 import { getSDK, executeChallenge } from '../circle'
@@ -69,60 +70,60 @@ export default function SendConfirm() {
   return (
     <div className="screen">
       <div className="row-1 center send-title" style={{ justifyContent: 'center' }}>
-        <span>Xác nhận giao dịch</span>
+        <span>{t('Xác nhận giao dịch')}</span>
       </div>
 
       <div className="row-2-8 col" style={{ justifyContent: 'center', alignItems: 'stretch', gap: 14 }}>
         <div className="confirm-box">
           <div className="confirm-row">
-            <span className="confirm-label">Gửi đến</span>
+            <span className="confirm-label">{t('Gửi đến')}</span>
             <span className="confirm-value">{name || shortenAddr(address)}</span>
           </div>
           {name && (
             <div className="confirm-row">
-              <span className="confirm-label">Địa chỉ</span>
+              <span className="confirm-label">{t('Địa chỉ')}</span>
               <span className="confirm-value" style={{ fontSize: 'var(--fs-label)' }}>{shortenAddr(address)}</span>
             </div>
           )}
           <div className="confirm-row">
-            <span className="confirm-label">Số tiền</span>
+            <span className="confirm-label">{t('Số tiền')}</span>
             <span className="confirm-value num" style={{ fontWeight: 'var(--fw-bold)', color: 'var(--color-primary)' }}>
               {mainText}
             </span>
           </div>
           <div className="confirm-row">
-            <span className="confirm-label">Quy đổi</span>
+            <span className="confirm-label">{t('Quy đổi')}</span>
             <span className="confirm-value num" style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>
               {convText}
             </span>
           </div>
           {memo && (
             <div className="confirm-row">
-              <span className="confirm-label">Nội dung</span>
+              <span className="confirm-label">{t('Nội dung')}</span>
               <span className="confirm-value">{memo}</span>
             </div>
           )}
           <div className="confirm-row">
-            <span className="confirm-label">Phí mạng</span>
+            <span className="confirm-label">{t('Phí mạng')}</span>
             <span className="confirm-value num" style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>
-              {feeVnd === null ? 'Đang tính...' : feeVnd < 1 ? '< 1đ' : fmtVND(feeVnd)}
+              {feeVnd === null ? t('Đang tính...') : feeVnd < 1 ? '< 1đ' : fmtVND(feeVnd)}
             </span>
           </div>
         </div>
 
         <div className="warning-badge" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-          <Icon name="hint" size={16} color="var(--color-warning)" />Giao dịch không thể hoàn tác sau khi xác nhận
+          <Icon name="hint" size={16} color="var(--color-warning)" />{t('Giao dịch không thể hoàn tác sau khi xác nhận')}
         </div>
 
         {error && <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-error)', textAlign: 'center' }}>{error}</span>}
-        {loading && <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)', textAlign: 'center' }}>Đang mở xác nhận PIN...</span>}
+        {loading && <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)', textAlign: 'center' }}>{t('Đang mở xác nhận PIN...')}</span>}
       </div>
 
       <div className="row-10 row10-dual">
-        <button className="btn btn-secondary" disabled={loading} onClick={() => navigate('SendAmount', params)}>Sửa</button>
+        <button className="btn btn-secondary" disabled={loading} onClick={() => navigate('SendAmount', params)}>{t('Sửa')}</button>
         <button className="btn btn-primary" style={{ flex: 1 }}
           disabled={loading} onClick={handleConfirm}>
-          {loading ? 'Đang xử lý...' : 'Xác nhận · PIN'}
+          {loading ? t('Đang xử lý...') : t('Xác nhận · PIN')}
         </button>
       </div>
     </div>

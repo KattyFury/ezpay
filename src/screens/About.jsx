@@ -1,5 +1,6 @@
 import { useNav } from '../nav'
 import Icon from '../components/Icon'
+import { t } from '../i18n'
 
 const VERSION = '0.1.0'
 
@@ -22,20 +23,20 @@ export default function About() {
   return (
     <div className="screen">
       <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)' }}>
-        About
+        {t('About')}
       </div>
 
       <div className="row-2-9" style={{ gridRow: '2 / 9', justifyContent: 'flex-start', overflowY: 'auto' }}>
         {ITEMS.map(({ label, value, link }) => (
           link ? (
             <button key={label} className="menu-item" onClick={() => window.open(link, '_blank')}>
-              <span style={LABEL}>{label}</span>
+              <span style={LABEL}>{t(label)}</span>
               {value && <span style={VALUE}>{value}</span>}
               <Icon name="right2" size={15} color="var(--color-faint)" />
             </button>
           ) : (
             <div key={label} className="menu-item">
-              <span style={LABEL}>{label}</span>
+              <span style={LABEL}>{t(label)}</span>
               <span style={VALUE}>{value}</span>
             </div>
           )
@@ -43,7 +44,7 @@ export default function About() {
       </div>
 
       <div className="row-10 row10-single">
-        <button className="btn btn-primary" onClick={() => navigate('MenuScreen')}>Quay lại</button>
+        <button className="btn btn-primary" onClick={() => navigate('MenuScreen')}>{t('Quay lại')}</button>
       </div>
     </div>
   )

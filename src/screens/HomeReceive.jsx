@@ -6,6 +6,7 @@ import Icon from '../components/Icon'
 import NotifArea from '../components/NotifArea'
 import { useNav } from '../nav'
 import { getTokenBalances } from '../chain'
+import { t } from '../i18n'
 
 export default function HomeReceive() {
   const { navigate } = useNav()
@@ -53,10 +54,10 @@ export default function HomeReceive() {
       <div className="row-7-8" style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '2dvh' }}>
         <NotifArea fallback={
           <div className="tip-box" style={{ flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 8, textAlign: 'left', padding: '12px 16px' }}>
-            <div><span style={{ color: 'var(--color-content)' }}>QR mặc định</span> <span style={{ color: 'var(--color-muted)' }}>– Đây chính là địa chỉ ví của bạn</span></div>
-            <div><span style={{ color: 'var(--color-content)' }}>Chia sẻ</span> <span style={{ color: 'var(--color-muted)' }}>– Bấm để chia sẻ địa chỉ ví của bạn</span></div>
-            <div><span style={{ color: 'var(--color-content)' }}>Tạo QR</span> <span style={{ color: 'var(--color-muted)' }}>– Tạo mã QR nhận đúng số tiền bạn muốn</span></div>
-            <div><span style={{ color: 'var(--color-content)' }}>Kho QR</span> <span style={{ color: 'var(--color-muted)' }}>– Nơi bạn lưu trữ những QR hay dùng</span></div>
+            <div><span style={{ color: 'var(--color-content)' }}>{t('QR mặc định')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Đây chính là địa chỉ ví của bạn')}</span></div>
+            <div><span style={{ color: 'var(--color-content)' }}>{t('Chia sẻ')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Bấm để chia sẻ địa chỉ ví của bạn')}</span></div>
+            <div><span style={{ color: 'var(--color-content)' }}>{t('Tạo QR')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Tạo mã QR nhận đúng số tiền bạn muốn')}</span></div>
+            <div><span style={{ color: 'var(--color-content)' }}>{t('Kho QR')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Nơi bạn lưu trữ những QR hay dùng')}</span></div>
           </div>
         } />
       </div>
@@ -64,15 +65,15 @@ export default function HomeReceive() {
       <div className="row-9 action-grid">
         <button className="action-card" onClick={handleShare}>
           <Icon name="share" size={22} />
-          <span>{copied ? 'Đã copy!' : 'Chia sẻ'}</span>
+          <span>{copied ? t('Đã copy!') : t('Chia sẻ')}</span>
         </button>
         <button className="action-card primary" onClick={() => navigate('CreateQR')}>
           <Icon name="qr" size={22} color="var(--color-white)" />
-          <span>Tạo QR</span>
+          <span>{t('Tạo QR')}</span>
         </button>
         <button className="action-card" onClick={() => navigate('SavedQRList')}>
           <Icon name="download" size={22} />
-          <span>Kho QR</span>
+          <span>{t('Kho QR')}</span>
         </button>
       </div>
 

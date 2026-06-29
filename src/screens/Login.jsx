@@ -4,6 +4,7 @@ import { useNav } from '../nav'
 import React, { useState, useEffect } from 'react'
 import { W3SSdk } from '@circle-fin/w3s-pw-web-sdk'
 import { createSocialToken, initializeWallet, executeChallenge, getWalletAddress, GOOGLE_CLIENT_ID } from '../circle'
+import { t } from '../i18n'
 
 const APP_ID = '518fec6a-4680-5175-9de6-0810fb3dfd04'
 
@@ -125,7 +126,7 @@ export default function Login() {
       <div className="row-1-5 center col" style={{ gap: '3dvh' }}>
         <img src={logoLong} alt="ezwallet" style={{ width: '50%' }} />
         <span style={{ fontSize: 'var(--fs-body)', color: 'var(--color-muted)', textAlign: 'center' }}>
-          Tạo ví bằng email, gửi nhận tiền<br />một cách dễ dàng
+          {t('Tạo ví bằng email, gửi nhận tiền')}<br />{t('một cách dễ dàng')}
         </span>
       </div>
 
@@ -139,7 +140,7 @@ export default function Login() {
             disabled={disabled}
             onClick={disabled ? undefined : onClick}>
             {icon}
-            <span style={{ whiteSpace: 'nowrap' }}>{label}</span>
+            <span style={{ whiteSpace: 'nowrap' }}>{t(label)}</span>
           </button>
         ))}
       </div>

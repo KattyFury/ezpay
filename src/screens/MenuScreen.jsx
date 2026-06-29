@@ -4,6 +4,7 @@ import Icon from '../components/Icon'
 import { getTokenBalances } from '../chain'
 import { useState, useEffect } from 'react'
 import { useNav } from '../nav'
+import { t } from '../i18n'
 
 const ITEMS = [
   { id: 'TxHistory', icon: 'clock',  label: 'Lịch sử giao dịch' },
@@ -28,11 +29,11 @@ export default function MenuScreen() {
       {/* Row 3: Nạp / Rút */}
       <div className="row-3" style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
         <button className="btn btn-secondary" style={{ flex: 1, opacity: 0.4 }} disabled>
-          Rút tiền
+          {t('Rút tiền')}
         </button>
         <button className="btn btn-primary" style={{ flex: 1 }}
           onClick={() => window.open('https://faucet.circle.com/', '_blank')}>
-          Nạp tiền
+          {t('Nạp tiền')}
         </button>
       </div>
 
@@ -41,12 +42,21 @@ export default function MenuScreen() {
         <div key={id} className={`row-${i + 4}`} style={{ display: 'flex', alignItems: 'center' }}>
           <button className="menu-item" style={{ width: '100%' }} onClick={() => navigate(id, { title: label })}>
             <Icon name={icon} size={24} color="var(--color-content)" />
-            <span style={{ flex: 1, fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>{label}</span>
+            <span style={{ flex: 1, fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>{t(label)}</span>
             <Icon name="right2" size={15} color="var(--color-faint)" />
           </button>
         </div>
       ))}
-<NavBar active="MenuScreen" />
+
+      {/* Row 8: Đăng xuất */}
+      <div className="row-8" style={{ display: 'flex', alignItems: 'center' }}>
+        <button className="menu-item" style={{ width: '100%' }} onClick={() => { localStorage.clear(); window.location.reload() }}>
+          <Icon name="out" size={24} color="var(--color-error)" />
+          <span style={{ flex: 1, fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)', color: 'var(--color-error)' }}>{t('Đăng xuất')}</span>
+        </button>
+      </div>
+
+      <NavBar active="MenuScreen" />
     </div>
   )
 }

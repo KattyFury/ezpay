@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNav } from '../nav'
 import Numpad from '../components/Numpad'
 import Icon from '../components/Icon'
+import { t } from '../i18n'
 
 const CURRENCIES = ['VND', 'USDC', 'EURC']
 function fmtNum(n, cur) {
@@ -28,11 +29,11 @@ export default function CreateQR() {
   return (
     <div className="screen">
       <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)' }}>
-        Tạo QR nhận tiền
+        {t('Tạo QR nhận tiền')}
       </div>
 
       <div className="row-2 center">
-        <span style={{ fontSize: 'var(--fs-body)', color: 'var(--color-muted)' }}>Số tiền muốn nhận</span>
+        <span style={{ fontSize: 'var(--fs-body)', color: 'var(--color-muted)' }}>{t('Số tiền muốn nhận')}</span>
       </div>
 
       <div className="row-3-4 center col">
@@ -53,10 +54,10 @@ export default function CreateQR() {
           <Numpad onKey={handleKey} showComma={false} />
         </div>
         <div style={{ flex: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
-          <button className="btn btn-secondary" style={{ width: '44%' }} onClick={() => navigate('HomeReceive')}>Hủy</button>
+          <button className="btn btn-secondary" style={{ width: '44%' }} onClick={() => navigate('HomeReceive')}>{t('Hủy')}</button>
           <button className="btn btn-primary" style={{ width: '44%' }} disabled={amount <= 0}
             onClick={() => navigate('ShowQR', { amount, currency: cur })}>
-            Tạo QR
+            {t('Tạo QR')}
           </button>
         </div>
       </div>
@@ -65,7 +66,7 @@ export default function CreateQR() {
         <div onClick={() => setShowCur(false)}
           style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 100, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: '14dvh' }}>
           <div onClick={e => e.stopPropagation()} style={{ width: '70%', maxWidth: 300, background: 'var(--color-white)', borderRadius: 16, padding: 12, display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)', textAlign: 'center', padding: '6px 0' }}>Chọn tiền tệ</div>
+            <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)', textAlign: 'center', padding: '6px 0' }}>{t('Chọn tiền tệ')}</div>
             {CURRENCIES.map(c => (
               <button key={c} onClick={() => { setCur(c); setShowCur(false) }}
                 className={`btn ${c === cur ? 'btn-primary' : 'btn-secondary'}`} style={{ width: '100%' }}>{c}</button>

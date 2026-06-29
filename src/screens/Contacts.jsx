@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNav } from '../nav'
 import Icon from '../components/Icon'
+import { t } from '../i18n'
 
 function loadContacts() {
   try { return JSON.parse(localStorage.getItem('ez_contacts') || '[]') } catch { return [] }
@@ -80,7 +81,7 @@ function AvatarCropper({ src, onCancel, onDone }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
-      <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)' }}>Chỉnh ảnh</div>
+      <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)' }}>{t('Chỉnh ảnh')}</div>
       <div
         onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up}
         style={{ width: V, height: V, borderRadius: '50%', overflow: 'hidden', position: 'relative', background: '#000', touchAction: 'none', cursor: 'grab' }}
@@ -90,8 +91,8 @@ function AvatarCropper({ src, onCancel, onDone }) {
       </div>
       <input type="range" min={1} max={3} step={0.01} value={zoom} onChange={e => onZoom(parseFloat(e.target.value))} style={{ width: V }} />
       <div style={{ display: 'flex', gap: 8, width: '100%' }}>
-        <button className="btn btn-secondary" style={{ flex: 1 }} onClick={onCancel}>Hủy</button>
-        <button className="btn btn-primary" style={{ flex: 1 }} onClick={finish}>Xong</button>
+        <button className="btn btn-secondary" style={{ flex: 1 }} onClick={onCancel}>{t('Hủy')}</button>
+        <button className="btn btn-primary" style={{ flex: 1 }} onClick={finish}>{t('Xong')}</button>
       </div>
     </div>
   )
@@ -133,12 +134,12 @@ export default function Contacts() {
   return (
     <div className="screen">
       <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)' }}>
-        Danh bạ
+        {t('Danh bạ')}
       </div>
 
       <div className="row-2-8" style={{ width: '100%', overflowY: 'auto', justifyContent: contacts.length ? 'flex-start' : 'center' }}>
         {contacts.length === 0 ? (
-          <span style={{ fontSize: 'var(--fs-body)', color: 'var(--color-muted)' }}>Chưa có danh bạ</span>
+          <span style={{ fontSize: 'var(--fs-body)', color: 'var(--color-muted)' }}>{t('Chưa có danh bạ')}</span>
         ) : (
           contacts.map(c => {
             const av = avatar(c.name)
@@ -157,7 +158,7 @@ export default function Contacts() {
                 </div>
                 <button onClick={() => navigate('SendAmount', { address: c.address, name: c.name })}
                   className="btn btn-primary" style={{ height: 40, minHeight: 40, padding: '0 22px', fontSize: 'var(--fs-item)' }}>
-                  Gửi
+                  {t('Gửi')}
                 </button>
                 <button onClick={() => handleDelete(c.id)}
                   style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0 4px', flexShrink: 0, display: 'flex' }}>
@@ -170,9 +171,9 @@ export default function Contacts() {
       </div>
 
       <div className="row-10 row10-dual">
-        <button className="btn btn-secondary" onClick={() => navigate('HomeSend')}>Quay lại</button>
+        <button className="btn btn-secondary" onClick={() => navigate('HomeSend')}>{t('Quay lại')}</button>
         <button className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }} onClick={() => setAdding(true)}>
-          <Icon name="add" size={22} color="var(--color-white)" />Thêm
+          <Icon name="add" size={22} color="var(--color-white)" />{t('Thêm')}
         </button>
       </div>
 
@@ -189,18 +190,18 @@ export default function Contacts() {
               <AvatarCropper src={picked} onCancel={() => setPicked(null)} onDone={d => { setPfp(d); setPicked(null) }} />
             ) : (
               <>
-                <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)', textAlign: 'center' }}>Thêm danh bạ</div>
+                <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)', textAlign: 'center' }}>{t('Thêm danh bạ')}</div>
                 <button onClick={() => fileRef.current?.click()}
                   style={{ alignSelf: 'center', width: 80, height: 80, borderRadius: '50%', border: 'none', cursor: 'pointer', overflow: 'hidden', background: pfp ? 'transparent' : 'var(--color-gray)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>
                   {pfp
                     ? <img src={pfp} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     : <Icon name="add" size={30} color="var(--color-white)" />}
                 </button>
-                <input className="address-input" placeholder="Tên" value={name} onChange={e => setName(e.target.value)} autoFocus style={{ fontSize: 'var(--fs-body)' }} />
+                <input className="address-input" placeholder={t('Tên')} value={name} onChange={e => setName(e.target.value)} autoFocus style={{ fontSize: 'var(--fs-body)' }} />
                 <input className="address-input" placeholder="0x..." value={addr} onChange={e => setAddr(e.target.value)} style={{ fontSize: 'var(--fs-body)' }} />
                 <div style={{ display: 'flex', gap: 8 }}>
-                  <button className="btn btn-secondary" style={{ flex: 1 }} onClick={resetForm}>Hủy</button>
-                  <button className="btn btn-primary" style={{ flex: 1 }} disabled={!name.trim() || !isValid(addr)} onClick={handleAdd}>Lưu</button>
+                  <button className="btn btn-secondary" style={{ flex: 1 }} onClick={resetForm}>{t('Hủy')}</button>
+                  <button className="btn btn-primary" style={{ flex: 1 }} disabled={!name.trim() || !isValid(addr)} onClick={handleAdd}>{t('Lưu')}</button>
                 </div>
               </>
             )}

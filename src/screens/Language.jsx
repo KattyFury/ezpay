@@ -1,34 +1,32 @@
 import { useState } from 'react'
 import { useNav } from '../nav'
 import Icon from '../components/Icon'
+import { t, getLang, setLang as applyLang } from '../i18n'
 
+// 3 ngôn ngữ chính (tên hiển thị bằng chính ngôn ngữ đó)
 const LANGUAGES = [
-  { code: 'vi', short: 'Tiếng Việt',          label: 'Tiếng Việt' },
-  { code: 'en', short: 'Tiếng Anh',           label: 'English (Tiếng Anh)' },
-  { code: 'es', short: 'Tiếng Tây Ban Nha',   label: 'Español (Tiếng Tây Ban Nha)' },
-  { code: 'zh', short: 'Tiếng Trung',         label: '中文 (Tiếng Trung)' },
-  { code: 'ja', short: 'Tiếng Nhật',          label: '日本語 (Tiếng Nhật)' },
+  { code: 'en', label: 'English' },
+  { code: 'zh', label: '中文 (Tiếng Trung)' },
+  { code: 'vi', label: 'Tiếng Việt' },
 ]
 
-// Ưu tiên stablecoin: nước có stablecoin thì hiện stablecoin (USDC/EURC) thay vì USD/EUR
+// 4 tiền tệ: ưu tiên stablecoin (USDC/EURC) + tiền Trung/Việt
 const CURRENCIES = [
-  { code: 'VND', label: 'VND – Việt Nam Đồng' },
   { code: 'USDC', label: 'USDC – USD stablecoin' },
   { code: 'EURC', label: 'EURC – Euro stablecoin' },
-  { code: 'CNY', label: 'CNY – Nhân dân tệ' },
-  { code: 'JPY', label: 'JPY – Yên Nhật' },
+  { code: 'CNY', label: 'CNY – ' + t('Nhân dân tệ') },
+  { code: 'VND', label: 'VND – ' + t('Việt Nam Đồng') },
 ]
 
 export default function Language() {
   const { navigate } = useNav()
-  const [lang, setLang] = useState(() => localStorage.getItem('ez_lang') || 'vi')
-  const [currency, setCurrency] = useState(() => localStorage.getItem('ez_currency') || 'VND')
+  const lang = getLang()
+  const [currency, setCurrency] = useState(() => localStorage.getItem('ez_currency') || 'USDC')
   const [picker, setPicker] = useState(null) // 'lang' | 'currency' | null
 
-  const langLabel = LANGUAGES.find(l => l.code === lang)?.short || 'Tiếng Việt'
-  const curLabel = CURRENCIES.find(c => c.code === currency)?.code || 'VND'
+  const langLabel = LANGUAGES.find(l => l.code === lang)?.label || 'English'
 
-  function pickLang(code) { setLang(code); localStorage.setItem('ez_lang', code); setPicker(null) }
+  function pickLang(code) { setPicker(null); if (code !== lang) applyLang(code) /* reload */ }
   function pickCur(code) { setCurrency(code); localStorage.setItem('ez_currency', code); setPicker(null) }
 
   const Row = ({ label, value, onClick }) => (
@@ -46,27 +44,26 @@ export default function Language() {
   return (
     <div className="screen">
       <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)' }}>
-        Ngôn ngữ & tiền tệ
+        {t('Ngôn ngữ & tiền tệ')}
       </div>
 
       <div className="row-2" style={{ display: 'flex', alignItems: 'center' }}>
-        <Row label="Ngôn ngữ" value={langLabel} onClick={() => setPicker('lang')} />
+        <Row label={t('Ngôn ngữ')} value={langLabel} onClick={() => setPicker('lang')} />
       </div>
       <div className="row-3" style={{ display: 'flex', alignItems: 'center' }}>
-        <Row label="Tiền tệ" value={curLabel} onClick={() => setPicker('currency')} />
+        <Row label={t('Tiền tệ')} value={currency} onClick={() => setPicker('currency')} />
       </div>
 
       <div className="row-10 row10-single">
-        <button className="btn btn-primary" onClick={() => navigate('MenuScreen')}>Quay lại</button>
+        <button className="btn btn-primary" onClick={() => navigate('MenuScreen')}>{t('Quay lại')}</button>
       </div>
 
-      {/* Popup chọn ngôn ngữ / tiền tệ */}
       {picker && (
         <div onClick={() => setPicker(null)}
           style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
           <div onClick={e => e.stopPropagation()} style={{ width: '100%', maxWidth: 340, background: 'var(--color-white)', borderRadius: 16, padding: 16, display: 'flex', flexDirection: 'column', gap: 8, maxHeight: '80dvh', overflowY: 'auto' }}>
             <div className="screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)', textAlign: 'center', marginBottom: 4 }}>
-              {picker === 'lang' ? 'Chọn ngôn ngữ' : 'Chọn tiền tệ'}
+              {picker === 'lang' ? t('Chọn ngôn ngữ') : t('Chọn tiền tệ')}
             </div>
             {list.map(o => (
               <button key={o.code} onClick={() => onPick(o.code)}

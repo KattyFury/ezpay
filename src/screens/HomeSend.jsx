@@ -6,6 +6,7 @@ import { useNav } from '../nav'
 import { fmtVND } from '../data'
 import { getTokenBalances } from '../chain'
 import NotifArea from '../components/NotifArea'
+import { t } from '../i18n'
 
 export default function HomeSend() {
   const { navigate } = useNav()
@@ -29,15 +30,15 @@ export default function HomeSend() {
 
       <div className="row-3-5" style={{ display: 'grid', gridTemplateRows: 'repeat(3, 1fr)', overflowY: 'auto' }}>
         {loading ? (
-          <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-muted)', fontSize: 'var(--fs-body)', padding: '0 2px' }}>Đang tải...</div>
+          <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-muted)', fontSize: 'var(--fs-body)', padding: '0 2px' }}>{t('Đang tải...')}</div>
         ) : tokens.length === 0 ? (
           <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-muted)', fontSize: 'var(--fs-body)', padding: '0 2px' }}>
-            {localStorage.getItem('ez_wallet_addr') ? 'Chưa có token' : 'Ví chưa được tạo — nạp USDC để kích hoạt'}
+            {localStorage.getItem('ez_wallet_addr') ? t('Chưa có token') : t('Ví chưa được tạo — nạp USDC để kích hoạt')}
           </div>
-        ) : tokens.map(t => (
-          <div key={t.symbol} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '0 2px' }}>
+        ) : tokens.map(tk => (
+          <div key={tk.symbol} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '0 2px' }}>
             <img
-              src={`/tokens/${t.symbol.toLowerCase()}.png`}
+              src={`/tokens/${tk.symbol.toLowerCase()}.png`}
               alt=""
               style={{ width: 34, height: 34, borderRadius: '50%', flexShrink: 0 }}
               onError={e => {
@@ -45,36 +46,36 @@ export default function HomeSend() {
                 e.target.nextSibling.style.display = 'flex'
               }}
             />
-            <div className="token-icon" style={{ background: t.color, flexShrink: 0, display: 'none' }}>{t.symbol.slice(0, 2)}</div>
+            <div className="token-icon" style={{ background: tk.color, flexShrink: 0, display: 'none' }}>{tk.symbol.slice(0, 2)}</div>
             <span className="num" style={{ fontSize: 'var(--fs-num)', fontWeight: 'var(--fw-semibold)' }}>
-              {t.amount.toFixed(t.symbol === 'cirBTC' ? 4 : 2)} {t.symbol}
+              {tk.amount.toFixed(tk.symbol === 'cirBTC' ? 4 : 2)} {tk.symbol}
             </span>
             <Icon name="check" size={20} color="var(--color-primary)" />
-            <span className="num" style={{ marginLeft: 'auto', fontSize: 'var(--fs-num)', fontWeight: 'var(--fw-normal)' }}>{fmtVND(t.vnd)}</span>
+            <span className="num" style={{ marginLeft: 'auto', fontSize: 'var(--fs-num)', fontWeight: 'var(--fw-normal)' }}>{fmtVND(tk.vnd)}</span>
           </div>
         ))}
       </div>
 
       <div className="row-7-8" style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '2dvh' }}>
         <NotifArea fallback={
-          !loading && (tokens.find(t => t.symbol === 'USDC')?.amount ?? 0) <= 1 ? (
+          !loading && (tokens.find(tk => tk.symbol === 'USDC')?.amount ?? 0) <= 1 ? (
             <div className="tip-box" style={{ borderColor: 'var(--color-warning)', color: 'var(--color-warning)' }}>
-              <Icon name="hint" size={16} color="var(--color-warning)" style={{ marginRight: 6 }} />Hết USDC — cần USDC để thanh toán phí giao dịch. Vào <b>Đổi tiền</b> để swap.
+              <Icon name="hint" size={16} color="var(--color-warning)" style={{ marginRight: 6 }} />{t('Hết USDC — cần USDC để thanh toán phí giao dịch. Vào')} <b>{t('Đổi tiền')}</b> {t('để swap.')}
             </div>
           ) : (
             <div className="tip-box" style={{ flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 8, textAlign: 'left', padding: '12px 16px' }}>
-              <div><span style={{ color: 'var(--color-content)' }}>Danh bạ</span> <span style={{ color: 'var(--color-muted)' }}>– Nơi bạn lưu địa chỉ ví của người quen</span></div>
-              <div><span style={{ color: 'var(--color-content)' }}>Quét QR</span> <span style={{ color: 'var(--color-muted)' }}>– Bấm để quét mã QR của người nhận</span></div>
-              <div><span style={{ color: 'var(--color-content)' }}>Dán để gửi</span> <span style={{ color: 'var(--color-muted)' }}>– Bấm để dán địa chỉ ví của người nhận</span></div>
+              <div><span style={{ color: 'var(--color-content)' }}>{t('Danh bạ')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Nơi bạn lưu địa chỉ ví của người quen')}</span></div>
+              <div><span style={{ color: 'var(--color-content)' }}>{t('Quét QR')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Bấm để quét mã QR của người nhận')}</span></div>
+              <div><span style={{ color: 'var(--color-content)' }}>{t('Dán để gửi')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Bấm để dán địa chỉ ví của người nhận')}</span></div>
             </div>
           )
         } />
       </div>
 
       <div className="row-9 action-grid">
-        <button className="action-card" onClick={() => navigate('Contacts')}><Icon name="human" size={22} /><span>Danh bạ</span></button>
-        <button className="action-card primary" onClick={() => navigate('QRScanner')}><Icon name="scan" size={22} color="var(--color-white)" /><span>Quét QR</span></button>
-        <button className="action-card" onClick={() => navigate('PasteAddress')}><Icon name="copy" size={22} /><span>Dán để gửi</span></button>
+        <button className="action-card" onClick={() => navigate('Contacts')}><Icon name="human" size={22} /><span>{t('Danh bạ')}</span></button>
+        <button className="action-card primary" onClick={() => navigate('QRScanner')}><Icon name="scan" size={22} color="var(--color-white)" /><span>{t('Quét QR')}</span></button>
+        <button className="action-card" onClick={() => navigate('PasteAddress')}><Icon name="copy" size={22} /><span>{t('Dán để gửi')}</span></button>
       </div>
 
       <NavBar active="HomeSend" />
