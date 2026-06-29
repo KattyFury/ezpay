@@ -53,19 +53,19 @@ const VI = {
     link: 'Tìm hiểu thêm',
   },
   securityQuestions: {
-    title: 'Từ bí mật',
+    title: 'Câu hỏi bảo mật',
     questionHeader: 'Câu hỏi',
     questionPlaceholder: 'Chọn câu hỏi',
     requiredMark: '*',
-    answerHeader: 'Từ bí mật của bạn',
-    answerPlaceholder: 'VD: tên thú cưng, địa danh, ngày đặc biệt...',
+    answerHeader: 'Câu trả lời',
+    answerPlaceholder: 'Nhập câu trả lời (nhớ viết hoa/thường đúng)',
     answerHintHeader: 'Gợi ý (tuỳ chọn)',
-    answerHintPlaceholder: 'Ghi ý để bạn nhớ lại sau',
+    answerHintPlaceholder: 'Ghi gợi ý để nhớ lại sau',
   },
   securityConfirm: {
-    title: 'Nhập lại từ bí mật',
-    headline: 'Nhập lại từ bí mật vừa điền',
-    inputHeadline: 'Từ bí mật',
+    title: 'Xác nhận câu trả lời',
+    headline: 'Nhập lại câu trả lời câu hỏi trên',
+    inputHeadline: 'Câu trả lời',
     inputPlaceholder: 'Nhập lại y chang (phân biệt hoa/thường)',
     inputMatch: 'Khớp ✓',
   },
@@ -86,12 +86,8 @@ export function getSDK() {
   if (!sdk) {
     sdk = new W3SSdk({ appSettings: { appId: '518fec6a-4680-5175-9de6-0810fb3dfd04' } })
     sdk.setLocalizations(VI)
-    // 1 câu hỏi cố định do mình đặt: user luôn biết đang xác nhận cái gì
-    sdk.setCustomSecurityQuestions(
-      [{ question: 'Từ bí mật để khôi phục PIN của bạn', type: 'TEXT' }],
-      1,
-      SECURITY_CONFIRM_ITEMS
-    )
+    // Circle default questions + chỉ 1 câu (custom question gây bug PC matching)
+    sdk.setCustomSecurityQuestions(null, 1, SECURITY_CONFIRM_ITEMS)
     // Đổi màu Circle SDK → xanh lá thay cho tím/xanh mặc định
     sdk.setThemeColor({
       mainBtnBg:         '#16A34A',
