@@ -140,6 +140,7 @@
 **❌ Blocked (đã disable trong UI, chờ Circle):**
 - **Swap execute:** App Kit/Swap Kit KHÔNG có adapter cho User-Controlled Wallet (chỉ có viem private-key / browser / circle-wallets dev-controlled). Manual instruction-replay fail on-chain. → Tab "Đổi tiền" trên nav bar đã disable; giữ estimate. Đã gửi bug report Circle.
 - **Google/Facebook login:** iframe `pw-auth.circle.com/social/verify-token` không post back → `onLoginComplete` không fire. → disable, chờ Circle. Bật lại: đổi `disabled: true→false` trong `src/screens/Login.jsx`.
+- **securityConfirm button không activate trên PC desktop (Chrome):** Bug trong Circle's hosted iframe tại `pw-auth.circle.com`. Nút "Tiếp tục" ở bước xác nhận câu hỏi bảo mật không sáng dù nhập đúng câu trả lời. Đã thử mọi config của `setCustomSecurityQuestions` — đều fail trên PC. Mobile (Safari/Chrome) hoạt động bình thường. **Workaround: tạo ví lần đầu trên mobile, sau đó dùng PC bình thường.** Chờ Circle fix từ phía server (`pw-auth.circle.com`).
 
 ---
 
