@@ -9,48 +9,66 @@ const VI = {
     sign: 'Ký',
     retry: 'Thử lại',
   },
+  // Tạo PIN lần đầu (khi khởi tạo ví)
+  initPincode: {
+    headline: 'Tạo mã PIN',
+    headline2: '',
+    subhead: 'Mã PIN 6 chữ số bảo vệ ví của bạn',
+  },
+  confirmInitPincode: {
+    headline: 'Nhập lại mã PIN',
+    headline2: '',
+    subhead: 'Nhập lại để xác nhận',
+  },
+  // Đổi PIN (từ màn Bảo mật)
+  newPincode: {
+    headline: 'Tạo mã PIN mới',
+    headline2: '',
+    subhead: 'Mã PIN 6 chữ số bảo vệ ví của bạn',
+  },
+  confirmNewPincode: {
+    headline: 'Nhập lại mã PIN mới',
+    headline2: '',
+    subhead: 'Nhập lại để xác nhận',
+  },
   enterPincode: {
     headline: 'Xác nhận giao dịch',
     headline2: '',
     subhead: 'Nhập mã PIN 6 chữ số của bạn',
     forgotPin: 'Quên PIN?',
   },
-  newPincode: {
-    headline: 'Tạo mã PIN',
-    headline2: 'Xác nhận mã PIN',
-    subhead: 'Mã PIN 6 chữ số bảo vệ ví của bạn',
-  },
   recoverPincode: {
     headline: 'Khôi phục PIN',
-    headline2: 'Trả lời câu hỏi bảo mật',
-    subhead: 'Nhập câu trả lời để đặt lại PIN',
+    headline2: '',
+    subhead: 'Nhập câu trả lời bảo mật để đặt lại PIN',
     answerInputHeader: 'Câu trả lời',
     answerInputPlaceholder: 'Nhập câu trả lời',
   },
   securityIntros: {
-    headline: 'Thiết lập bảo mật',
-    headline2: '',  // để trống tránh dính chữ với headline
-    description: 'Chọn câu hỏi bảo mật để khôi phục PIN khi cần.',
+    headline: 'Câu hỏi bảo mật',
+    headline2: '',
+    description: 'Dùng để khôi phục PIN nếu bạn quên. Ghi nhớ câu trả lời.',
     link: 'Tìm hiểu thêm',
   },
   securityQuestions: {
     title: 'Câu hỏi bảo mật',
     questionHeader: 'Câu hỏi',
     questionPlaceholder: 'Chọn câu hỏi',
+    requiredMark: '*',
     answerHeader: 'Câu trả lời',
-    answerPlaceholder: 'Nhập câu trả lời (ghi nhớ chính xác)',
+    answerPlaceholder: 'Nhập câu trả lời (phân biệt hoa/thường)',
     answerHintHeader: 'Gợi ý (tuỳ chọn)',
-    answerHintPlaceholder: 'Nhập gợi ý',
+    answerHintPlaceholder: 'Nhập gợi ý để nhớ câu trả lời',
   },
   securityConfirm: {
-    title: 'Xác nhận bảo mật',
-    headline: 'Nhập lại đúng câu trả lời',
+    title: 'Xác nhận câu trả lời',
+    headline: 'Nhập lại câu trả lời ở trên',
     inputHeadline: 'Câu trả lời',
-    inputPlaceholder: 'Nhập lại chính xác câu trả lời',
-    inputMatch: 'Câu trả lời khớp ✓',
+    inputPlaceholder: 'Nhập lại y chang câu trả lời vừa điền',
+    inputMatch: 'Khớp ✓',
   },
   securitySummary: {
-    title: 'Tóm tắt bảo mật',
+    title: 'Hoàn tất',
     question: 'Câu hỏi',
   },
 }
@@ -66,8 +84,8 @@ export function getSDK() {
   if (!sdk) {
     sdk = new W3SSdk({ appSettings: { appId: '518fec6a-4680-5175-9de6-0810fb3dfd04' } })
     sdk.setLocalizations(VI)
-    // Dịch 3 bullet tiếng Anh trên màn xác nhận câu hỏi bảo mật
-    sdk.setCustomSecurityQuestions(null, undefined, SECURITY_CONFIRM_ITEMS)
+    // 1 câu hỏi bảo mật thay vì 2 (đủ để khôi phục PIN, bớt rườm rà)
+    sdk.setCustomSecurityQuestions(null, 1, SECURITY_CONFIRM_ITEMS)
     // Đổi màu Circle SDK → xanh lá thay cho tím/xanh mặc định
     sdk.setThemeColor({
       mainBtnBg:         '#16A34A',
