@@ -63,7 +63,7 @@ export default function Onboarding() {
         <span style={{ fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>{l.langLabel}</span>
         <button style={chipStyle} onClick={() => setPicker('lang')}>
           {langLabel}
-          <Icon name="down2" size={13} color="var(--color-muted)" />
+          <Icon name="right2" size={13} color="var(--color-muted)" />
         </button>
       </div>
 
@@ -72,7 +72,7 @@ export default function Onboarding() {
         <span style={{ fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>{l.curLabel}</span>
         <button style={chipStyle} onClick={() => setPicker('currency')}>
           {curLabel}
-          <Icon name="down2" size={13} color="var(--color-muted)" />
+          <Icon name="right2" size={13} color="var(--color-muted)" />
         </button>
       </div>
 
