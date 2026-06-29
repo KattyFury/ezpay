@@ -3,6 +3,12 @@ import { W3SSdk } from '@circle-fin/w3s-pw-web-sdk'
 let sdk = null
 
 const VI = {
+  common: {
+    continue: 'Tiếp tục',
+    confirm: 'Xác nhận',
+    sign: 'Ký',
+    retry: 'Thử lại',
+  },
   enterPincode: {
     headline: 'Xác nhận giao dịch',
     headline2: '',
@@ -23,8 +29,8 @@ const VI = {
   },
   securityIntros: {
     headline: 'Thiết lập bảo mật',
-    headline2: 'Bảo vệ tài khoản của bạn',
-    description: 'Chọn câu hỏi bảo mật để khôi phục PIN khi cần',
+    headline2: '',  // để trống tránh dính chữ với headline
+    description: 'Chọn câu hỏi bảo mật để khôi phục PIN khi cần.',
     link: 'Tìm hiểu thêm',
   },
   securityQuestions: {
@@ -32,15 +38,15 @@ const VI = {
     questionHeader: 'Câu hỏi',
     questionPlaceholder: 'Chọn câu hỏi',
     answerHeader: 'Câu trả lời',
-    answerPlaceholder: 'Nhập câu trả lời',
+    answerPlaceholder: 'Nhập câu trả lời (ghi nhớ chính xác)',
     answerHintHeader: 'Gợi ý (tuỳ chọn)',
     answerHintPlaceholder: 'Nhập gợi ý',
   },
   securityConfirm: {
     title: 'Xác nhận bảo mật',
-    headline: 'Xác nhận câu trả lời',
-    inputHeadline: 'Nhập lại câu trả lời',
-    inputPlaceholder: 'Xác nhận câu trả lời',
+    headline: 'Nhập lại đúng câu trả lời',
+    inputHeadline: 'Câu trả lời',
+    inputPlaceholder: 'Nhập lại chính xác câu trả lời',
     inputMatch: 'Câu trả lời khớp ✓',
   },
   securitySummary: {
@@ -49,10 +55,27 @@ const VI = {
   },
 }
 
+// 3 điểm lưu ý trên màn xác nhận câu hỏi bảo mật
+const SECURITY_CONFIRM_ITEMS = [
+  'Đây là cách duy nhất để khôi phục quyền truy cập tài khoản.',
+  'Circle không lưu câu trả lời — bạn có trách nhiệm ghi nhớ.',
+  'Quên câu trả lời đồng nghĩa mất quyền truy cập ví và tài sản.',
+]
+
 export function getSDK() {
   if (!sdk) {
     sdk = new W3SSdk({ appSettings: { appId: '518fec6a-4680-5175-9de6-0810fb3dfd04' } })
     sdk.setLocalizations(VI)
+    // Dịch 3 bullet tiếng Anh trên màn xác nhận câu hỏi bảo mật
+    sdk.setCustomSecurityQuestions(null, undefined, SECURITY_CONFIRM_ITEMS)
+    // Đổi màu Circle SDK → xanh lá thay cho tím/xanh mặc định
+    sdk.setThemeColor({
+      mainBtnBg:         '#16A34A',
+      mainBtnBgOnHover:  '#15803D',
+      mainBtnBgDisabled: '#86EFAC',
+      inputBorderFocused: '#16A34A',
+      titleGradients:    ['#16A34A', '#16A34A'],  // bỏ gradient 7 màu
+    })
   }
   return sdk
 }
