@@ -51,20 +51,20 @@ const VI = {
     link: 'Tìm hiểu thêm',
   },
   securityQuestions: {
-    title: 'Câu hỏi bảo mật',
+    title: 'Từ bí mật',
     questionHeader: 'Câu hỏi',
     questionPlaceholder: 'Chọn câu hỏi',
     requiredMark: '*',
-    answerHeader: 'Câu trả lời',
-    answerPlaceholder: 'Nhập câu trả lời (phân biệt hoa/thường)',
+    answerHeader: 'Từ bí mật của bạn',
+    answerPlaceholder: 'VD: tên thú cưng, địa danh, ngày đặc biệt...',
     answerHintHeader: 'Gợi ý (tuỳ chọn)',
-    answerHintPlaceholder: 'Nhập gợi ý để nhớ câu trả lời',
+    answerHintPlaceholder: 'Ghi ý để bạn nhớ lại sau',
   },
   securityConfirm: {
-    title: 'Xác nhận câu trả lời',
-    headline: 'Nhập lại câu trả lời ở trên',
-    inputHeadline: 'Câu trả lời',
-    inputPlaceholder: 'Nhập lại y chang câu trả lời vừa điền',
+    title: 'Nhập lại từ bí mật',
+    headline: 'Nhập lại từ bí mật vừa điền',
+    inputHeadline: 'Từ bí mật',
+    inputPlaceholder: 'Nhập lại y chang (phân biệt hoa/thường)',
     inputMatch: 'Khớp ✓',
   },
   securitySummary: {
@@ -84,8 +84,12 @@ export function getSDK() {
   if (!sdk) {
     sdk = new W3SSdk({ appSettings: { appId: '518fec6a-4680-5175-9de6-0810fb3dfd04' } })
     sdk.setLocalizations(VI)
-    // 1 câu hỏi bảo mật thay vì 2 (đủ để khôi phục PIN, bớt rườm rà)
-    sdk.setCustomSecurityQuestions(null, 1, SECURITY_CONFIRM_ITEMS)
+    // 1 câu hỏi cố định do mình đặt: user luôn biết đang xác nhận cái gì
+    sdk.setCustomSecurityQuestions(
+      [{ question: 'Từ bí mật để khôi phục PIN của bạn', type: 'TEXT' }],
+      1,
+      SECURITY_CONFIRM_ITEMS
+    )
     // Đổi màu Circle SDK → xanh lá thay cho tím/xanh mặc định
     sdk.setThemeColor({
       mainBtnBg:         '#16A34A',
