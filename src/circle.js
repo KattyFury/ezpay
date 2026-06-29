@@ -8,6 +8,8 @@ const VI = {
     confirm: 'Xác nhận',
     sign: 'Ký',
     retry: 'Thử lại',
+    showPin: 'Hiện PIN',
+    hidePin: 'Ẩn PIN',
   },
   // Tạo PIN lần đầu (khi khởi tạo ví)
   initPincode: {
