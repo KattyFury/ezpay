@@ -1,11 +1,11 @@
 # HANDOFF — EZwallet
 
-**Cập nhật:** 2026-06-27
+**Cập nhật:** 2026-06-29
 **Repo:** https://github.com/KattyFury/ezwallet
 **Local:** `D:\Files\Claude_laptop\Build_on_Arc\ezwallet`
 **Live:** https://ezwallet.pages.dev (Cloudflare Pages, auto-deploy từ GitHub `main`)
 
-> App ví stablecoin cho người dùng phổ thông / người già. UX phải đơn giản, rõ ràng, mobile-first. Chỉ hiển thị VND.
+> App ví stablecoin cho người dùng phổ thông / người già. UX phải đơn giản, rõ ràng, mobile-first. Đa ngôn ngữ (VI/EN/ZH), mặc định theo trình duyệt.
 > Nguyên tắc: **CHẠY TECH CHUẨN của Circle, đọc docs trước khi làm, không đoán.**
 
 ---
@@ -83,7 +83,7 @@
 
 **Brand assets (design/, dùng nguyên — KHÔNG ép currentColor):** `logo.svg` (logo màn Login), `icon.svg` (favicon vuông, → `public/icon.svg`), `pfp.svg` (app-icon tròn Apple/Android, → `public/pfp.svg`). index.html: favicon = `/icon.svg`, apple-touch-icon = `/pfp.svg`. ⚠️ **pfp/app-icon nên nền TRẮNG đặc, KHÔNG transparent** (iOS hiện nền đen sau transparent); apple-touch-icon lý tưởng là PNG 180×180 (SVG iOS hỗ trợ kém — cân nhắc export PNG sau). `x.svg` = dấu X (nút xóa Contacts/Kho QR).
 
-**Onboarding sau tạo ví (CHƯA làm, đã chốt LÀM):** màn chọn ngôn ngữ/tiền tệ mặc định + hướng dẫn sử dụng ngắn cho người già — thêm vào flow sau EnterEmail tạo ví lần đầu.
+**Onboarding sau tạo ví (GÁC LẠI — 2026-06-29):** user thấy ví đã đủ dễ dùng, tạm không làm màn onboarding (chọn ngôn ngữ/tiền tệ + hướng dẫn). Có thể làm lại sau nếu cần.
 
 **Icon system:** dùng `<Icon name="..." size={} color={} />` ([src/components/Icon.jsx](src/components/Icon.jsx)) — nhúng SVG qua `?raw` + `currentColor` → recolor bằng token. Thêm icon mới: bỏ SVG vào `icon/`, chuẩn hóa `stroke/fill="black"→currentColor` + `width/height 100%→`, rồi import vào Icon.jsx. KHÔNG dùng emoji (iOS render icon Apple xấu).
 
@@ -113,8 +113,9 @@
 - **CreateQR:** **đồng bộ SendAmount** (số to + VND + numpad 2.5 + nút). **ShowQR:** QR giữa + tự lưu vào Kho QR + 2 nút h9-10 [Lưu vào kho ảnh] (tải PNG) / [Quay lại]. **SavedQRList (Kho QR):** lưới 3 cột (tối đa 9 ô h2-7, scroll), bấm → ShowQR.
 - **TxHistory:** hiện **tên danh bạ** nếu lưu; bấm dòng → **popup chi tiết** (loại/người/địa chỉ/số tiền/quy đổi/thời gian/memo nếu có/link ArcScan); nút lọc "Chỉ gửi"/"Chỉ nhận" (active xanh); "Quay lại" xanh.
 - **MenuScreen:** Rút (trắng, khóa, trái) / Nạp (xanh, phải); menu items icon SVG (clock/globe/shield/info).
-- **Sub-screen template ĐỒNG BỘ (Language/Security/About):** header screen-title h1; nội dung gridRow 2/9 dùng **hàng `.menu-item`** (label trái fs-body, value/chevron phải, divider rgba nhạt); nút **Quay lại = primary xanh** row10-single. Value hiển thị trong **box viền** (Language) hoặc text muted (Security/About). Chevron = **right2.svg** (▶ đặc). Đăng xuất = icon `out` đỏ.
-- **Language:** Ngôn ngữ (Việt/Anh/TBN/Trung/Nhật) + Tiền tệ (VND/USDC/EURC/CNY/JPY, ưu tiên stablecoin) → popup chọn.
+- **Sub-screen template ĐỒNG BỘ (Language/Security/About):** header screen-title h1; nội dung gridRow 2/9 dùng **hàng `.menu-item`** (label trái fs-body, value/chevron phải, divider rgba nhạt); nút **Quay lại = primary xanh** row10-single. Value hiển thị trong **box viền** (Language) hoặc text muted (Security/About). Chevron = **right2.svg** (▶ đặc).
+- **Language:** Ngôn ngữ (Tiếng Việt / English / 中文) + Tiền tệ (USDC/EURC/CNY/VND) → popup chọn. Đổi ngôn ngữ = reload áp dụng (`setLang` lưu `ez_lang`).
+- **MenuScreen:** Đăng xuất = hàng `.menu-item` icon `out` đỏ (đã chuyển từ Security ra Menu, 2026-06-29).
 - **TxHistory:** NGOẠI LỆ — bottom có 3 nút (Chỉ gửi/Chỉ nhận/Quay lại) thay vì 1.
 - **Contacts:** list to (avatar 52, tên 20px); popup Thêm có avatar cropper (zoom/pan tròn); nút Gửi nhỏ hơn (phụ).
 - **QRScanner:** ô camera giữa h1-5 (bỏ khung 4 góc); quét bằng **jsQR** (iOS không có BarcodeDetector); h10 "Ảnh QR"/"Quay lại".
@@ -134,6 +135,7 @@
 - **Thông báo in-app ✅** — `src/notif.js` + `components/NotifArea.jsx` (dùng chung HomeSend + HomeReceive, vùng hàng 7-8): gửi xong → "Đã gửi", nhận tiền (poll ArcScan) → "Đã nhận" (xanh), lỗi gửi → đỏ. Click thông báo → mở chi tiết giao dịch (TxHistory openHash). Hết thông báo → hiện hint.
 - **Session-restore ✅** — App.jsx: có `ez_user_token`+`ez_wallet_addr` → vào thẳng HomeSend.
 - **Lưu ảnh vào Kho ảnh ✅** — `saveImage.js` dùng Web Share API (iOS lưu Photos, không phải Files) cho biên lai + QR.
+- **i18n (đa ngôn ngữ) ✅ (2026-06-29):** `src/i18n.js` — key = chuỗi tiếng Việt gốc, từ điển EN + ZH (giản thể). `detect()` theo `navigator.language` (vi/zh, còn lại → en), nhớ `ez_lang`. `t(s)` tra dict; vi → trả nguyên; thiếu key → fallback EN → gốc. Đổi ngôn ngữ = `setLang()` reload. **Đã bọc `t()` toàn bộ màn** (chuỗi chưa dịch tự fallback về VI, không vỡ UI). ⚠️ Build pass; chưa chạy thử runtime trên trình duyệt.
 
 **❌ Blocked (đã disable trong UI, chờ Circle):**
 - **Swap execute:** App Kit/Swap Kit KHÔNG có adapter cho User-Controlled Wallet (chỉ có viem private-key / browser / circle-wallets dev-controlled). Manual instruction-replay fail on-chain. → Tab "Đổi tiền" trên nav bar đã disable; giữ estimate. Đã gửi bug report Circle.
@@ -172,9 +174,12 @@
 
 ## Pending / TODO
 
-**Hoãn tới khi dự án hoàn thiện (theo ý user, làm theo THỨ TỰ):**
-1. **i18n (đa ngôn ngữ) — LÀM TRƯỚC** — app đang 100% hardcode tiếng Việt; nút "Ngôn ngữ" mới lưu `ez_lang` chứ chưa dịch. Cần tách chuỗi → vi/en/... + áp theo `ez_lang`/`navigator.language`. **User: làm khi dự án xong.**
-2. **Onboarding sau tạo ví — LÀM SAU i18n** — màn chọn ngôn ngữ/tiền tệ mặc định + hướng dẫn ngắn cho người già (sau EnterEmail tạo ví lần đầu). User chốt: làm, nhưng sau khi có i18n.
+**Đã xong (2026-06-29):**
+- ~~i18n (đa ngôn ngữ)~~ ✅ — VI/EN/ZH, mặc định theo trình duyệt (xem phần "Chạy thật").
+- ~~Đưa nút Đăng xuất ra Menu~~ ✅.
+
+**Gác lại (user thấy ví đủ dễ dùng — 2026-06-29):**
+- **Onboarding sau tạo ví** — màn chọn ngôn ngữ/tiền tệ mặc định + hướng dẫn ngắn. Tạm không làm; làm lại sau nếu cần.
 
 **Còn lại:**
 3. **#4 Trạng thái giao dịch thật** — poll txHash → "✓ đã lên blockchain" (Arc finality <1s).
@@ -183,3 +188,4 @@
 6. **Blocked (chờ Circle):** Google/Facebook login (verify-token iframe hang) + Swap execute (App Kit không có adapter UCW). Swap UI đã de-unicode nhưng vẫn estimate-only.
 
 > Đã xong session này: memo integration, tỷ giá VND live, số dư+phí thật ở SendAmount/SendConfirm, jsQR (iOS), fix MOCK_ADDR ở Custom/Saved QR, fix layout 3/4-trái, đồng bộ cụm số dư 3 màn, avatar cropper danh bạ, share chỉ địa chỉ.
+> Đã xong 2026-06-29: i18n VI/EN/ZH (auto theo trình duyệt, fallback EN, `src/i18n.js`), bọc `t()` toàn bộ màn, đưa Đăng xuất ra Menu, click thông báo mở chi tiết giao dịch. Onboarding gác lại.
