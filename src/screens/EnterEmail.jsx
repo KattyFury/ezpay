@@ -61,7 +61,7 @@ export default function EnterEmail() {
       if (walletInfo?.walletId) localStorage.setItem('ez_wallet_id', walletInfo.walletId)
 
       saveEmailHistory(email.trim())
-      navigate('HomeSend')
+      navigate(localStorage.getItem('ez_onboarded') ? 'HomeSend' : 'Onboarding')
     } catch (e) {
       setError(e.message || 'Có lỗi xảy ra')
     } finally {

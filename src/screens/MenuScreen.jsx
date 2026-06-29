@@ -50,9 +50,12 @@ export default function MenuScreen() {
 
       {/* Row 8: Đăng xuất */}
       <div className="row-8" style={{ display: 'flex', alignItems: 'center' }}>
-        <button className="menu-item" style={{ width: '100%' }} onClick={() => { localStorage.clear(); window.location.reload() }}>
+        <button className="menu-item" style={{ width: '100%' }} onClick={() => {
+          ['ez_user_token','ez_wallet_addr','ez_wallet_id','ez_encryption_key','ez_email','ez_notifs','ez_last_recv_ts','ez_email_history'].forEach(k => localStorage.removeItem(k))
+          window.location.reload()
+        }}>
           <Icon name="out" size={24} color="var(--color-error)" />
-          <span style={{ flex: 1, fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)', color: 'var(--color-error)' }}>{t('Đăng xuất')}</span>
+          <span style={{ flex: 1, fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)', color: 'var(--color-error)', WebkitTextFillColor: 'var(--color-error)' }}>{t('Đăng xuất')}</span>
         </button>
       </div>
 

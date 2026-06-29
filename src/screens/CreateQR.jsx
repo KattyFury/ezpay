@@ -4,7 +4,7 @@ import Numpad from '../components/Numpad'
 import Icon from '../components/Icon'
 import { t } from '../i18n'
 
-const CURRENCIES = ['VND', 'USDC', 'EURC']
+const CURRENCIES = ['VND', 'USDC', 'EURC', 'CNY']
 function fmtNum(n, cur) {
   if (cur === 'VND') return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
   return String(n)
@@ -13,7 +13,7 @@ function fmtNum(n, cur) {
 export default function CreateQR() {
   const { navigate } = useNav()
   const [digits, setDigits] = useState('')
-  const [cur, setCur] = useState('VND')
+  const [cur, setCur] = useState(localStorage.getItem('ez_currency') || 'VND')
   const [showCur, setShowCur] = useState(false)
 
   const amount = parseInt(digits || '0')
@@ -56,7 +56,7 @@ export default function CreateQR() {
         <div style={{ flex: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
           <button className="btn btn-secondary" style={{ width: '44%' }} onClick={() => navigate('HomeReceive')}>{t('Hủy')}</button>
           <button className="btn btn-primary" style={{ width: '44%' }} disabled={amount <= 0}
-            onClick={() => navigate('ShowQR', { amount, currency: cur })}>
+            onClick={() => navigate('ShowQR', { amount, currency: cur, from: 'CreateQR' })}>
             {t('Tạo QR')}
           </button>
         </div>

@@ -93,6 +93,7 @@ const EN = {
   'Tạo QR nhận đúng số tiền bạn muốn': 'Create a QR for the exact amount you want',
   'Cho người gửi quét mã này': 'Have the sender scan this code',
   'Lưu vào kho ảnh': 'Save to Photos',
+  'Lưu vào thư viện': 'Save to library',
   'Chưa có QR nào': 'No saved QRs yet',
   // TxHistory
   'Lịch sử giao dịch': 'Transaction history',
@@ -192,7 +193,7 @@ const ZH = {
   'Không đọc được ảnh': '无法读取图片', 'Không đọc được ảnh QR': '无法读取二维码图片', 'Ảnh QR': '二维码图片',
   'Tạo QR nhận tiền': '创建收款二维码', 'Số tiền muốn nhận': '想收到的金额',
   'Tạo QR nhận đúng số tiền bạn muốn': '创建指定金额的收款二维码',
-  'Cho người gửi quét mã này': '让付款人扫描此码', 'Lưu vào kho ảnh': '保存到相册', 'Chưa có QR nào': '暂无二维码',
+  'Cho người gửi quét mã này': '让付款人扫描此码', 'Lưu vào kho ảnh': '保存到相册', 'Lưu vào thư viện': '保存到库', 'Chưa có QR nào': '暂无二维码',
   'Lịch sử giao dịch': '交易记录', 'Chưa có giao dịch nào': '暂无交易',
   'Chưa có giao dịch gửi': '暂无发送交易', 'Chưa có giao dịch nhận': '暂无接收交易',
   'Chỉ gửi': '仅发送', 'Chỉ nhận': '仅接收', 'Chi tiết giao dịch': '交易详情',

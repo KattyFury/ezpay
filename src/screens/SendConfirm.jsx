@@ -14,24 +14,29 @@ function shortenAddr(addr) {
 export default function SendConfirm() {
   const { navigate, params } = useNav()
   const { address, name, amount, memo, currency = 'VND' } = params
-  const [rates, setRates] = useState({ USDC: 25000, EURC: 27000 })
+  const [rates, setRates] = useState({ USDC: 25000, EURC: 27000, CNY: 3448 })
   const [feeVnd, setFeeVnd] = useState(null)      // phí gas thật (null = đang tính)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    Promise.all([getVndRate('USDC'), getVndRate('EURC')]).then(([u, e]) => setRates({ USDC: u, EURC: e })).catch(() => {})
+    Promise.all([getVndRate('USDC'), getVndRate('EURC')])
+      .then(([u, e]) => setRates({ USDC: u, EURC: e, CNY: Math.round(u / 7.25) })).catch(() => {})
     // memo đi qua Memo contract → tốn gas hơn (~110k) so với transfer thường (~65k)
     estimateFeeVnd(memo && memo.trim() ? 110000 : 65000).then(setFeeVnd).catch(() => setFeeVnd(0))
   }, [memo])
 
-  // VND → gửi USDC (quy đổi); USDC/EURC → gửi đúng token đó
+  // VND/CNY → gửi USDC (quy đổi); USDC/EURC → gửi đúng token đó
   const token = currency === 'EURC' ? 'EURC' : 'USDC'
-  const sendAmount = currency === 'VND' ? amount / rates.USDC : amount
-  const sendAmountStr = sendAmount.toFixed(currency === 'VND' ? 4 : 2)
-  const mainText = currency === 'VND' ? fmtVND(amount) : `${amount} ${currency}`
-  const vndEquiv = currency === 'VND' ? amount : Math.round(amount * (rates[currency] || 1))
-  const convText = currency === 'VND' ? `${sendAmountStr} USDC` : fmtVND(vndEquiv)
+  const sendAmount = currency === 'VND' ? amount / rates.USDC
+                   : currency === 'CNY' ? (amount * rates.CNY) / rates.USDC
+                   : amount
+  const sendAmountStr = (currency === 'VND' || currency === 'CNY') ? sendAmount.toFixed(4) : sendAmount.toFixed(2)
+  const mainText = (currency === 'VND' || currency === 'USDC' || currency === 'EURC') ? (currency === 'VND' ? fmtVND(amount) : `${amount} ${currency}`) : `${amount} CNY`
+  const vndEquiv = currency === 'VND' ? amount
+                 : currency === 'CNY' ? Math.round(amount * rates.CNY)
+                 : Math.round(amount * (rates[currency] || 1))
+  const convText = (currency === 'VND' || currency === 'CNY') ? `${sendAmountStr} USDC` : fmtVND(vndEquiv)
 
   async function handleConfirm() {
     setLoading(true); setError('')

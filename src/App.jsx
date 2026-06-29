@@ -20,6 +20,7 @@ import TxHistory from './screens/TxHistory'
 import Language from './screens/Language'
 import Security from './screens/Security'
 import About from './screens/About'
+import Onboarding from './screens/Onboarding'
 
 const SCREENS = {
   Login,
@@ -32,6 +33,7 @@ const SCREENS = {
   Security,
   About,
   ComingSoon,
+  Onboarding,
 }
 
 export default function App() {

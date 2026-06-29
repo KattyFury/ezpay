@@ -2,7 +2,11 @@
 const KEY = 'ez_notifs'
 
 export function getNotifs() {
-  try { return JSON.parse(localStorage.getItem(KEY) || '[]') } catch { return [] }
+  try {
+    const all = JSON.parse(localStorage.getItem(KEY) || '[]')
+    const cutoff = Date.now() - 2 * 60 * 60 * 1000  // tự ẩn sau 2 tiếng
+    return all.filter(n => !n.ts || n.ts > cutoff)
+  } catch { return [] }
 }
 
 export function addNotif(text, type = 'info', hash = null) {

@@ -17,7 +17,7 @@ function findContactName(addr) {
   } catch { return null }
 }
 
-const CURRENCIES = ['VND', 'USDC', 'EURC']
+const CURRENCIES = ['VND', 'USDC', 'EURC', 'CNY']
 // định dạng số theo tiền tệ: VND có dấu chấm ngăn nghìn; token để nguyên
 function fmtNum(n, cur) {
   if (cur === 'VND') return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
@@ -30,17 +30,17 @@ export default function SendAmount() {
   const name = params.name || findContactName(address)
   const [digits, setDigits] = useState(() => params.amount ? String(params.amount) : '')
   const [memo, setMemo] = useState(params.memo || '')
-  const [cur, setCur] = useState(params.currency || 'VND')
+  const [cur, setCur] = useState(params.currency || localStorage.getItem('ez_currency') || 'VND')
   const [showCur, setShowCur] = useState(false)
   const [availableVND, setAvailableVND] = useState(null) // số dư USDC quy ra VND
-  const [rates, setRates] = useState({ VND: 1, USDC: 25000, EURC: 27000 })
+  const [rates, setRates] = useState({ VND: 1, USDC: 25000, EURC: 27000, CNY: 3448 })
 
   useEffect(() => {
     const addr = localStorage.getItem('ez_wallet_addr')
     if (addr) getTokenInfo(addr, 'USDC').then(i => setAvailableVND(i.vnd)).catch(() => setAvailableVND(0))
     else setAvailableVND(0)
     Promise.all([getVndRate('USDC'), getVndRate('EURC')])
-      .then(([u, e]) => setRates({ VND: 1, USDC: u, EURC: e }))
+      .then(([u, e]) => setRates({ VND: 1, USDC: u, EURC: e, CNY: Math.round(u / 7.25) }))
       .catch(() => {})
   }, [])
 

@@ -1,35 +1,39 @@
-import { useRef, useEffect } from 'react'
+import { useRef } from 'react'
 import { useNav } from '../nav'
 import { QRCodeCanvas } from 'qrcode.react'
 import { fmtVND } from '../data'
 import { saveImageToPhotos } from '../saveImage'
 import { t } from '../i18n'
 
-function savedQRs() {
+function loadQRs() {
   try { return JSON.parse(localStorage.getItem('ez_saved_qrs') || '[]') } catch { return [] }
 }
 
 export default function ShowQR() {
   const { navigate, params } = useNav()
-  const { amount, currency = 'VND' } = params
+  const { amount, currency = 'VND', from } = params
   const walletAddr = localStorage.getItem('ez_wallet_addr') || ''
   const qrValue = `ezwallet:${walletAddr}?amount=${amount}&cur=${currency}`
   const amountText = currency === 'VND' ? fmtVND(amount) : `${amount} ${currency}`
   const wrapRef = useRef(null)
 
-  // Tự lưu vào Kho QR (nếu chưa có)
-  useEffect(() => {
-    const list = savedQRs()
-    if (!list.some(q => q.amount === amount && (q.currency || 'VND') === currency)) {
-      list.push({ id: Date.now(), amount, currency, createdAt: new Date().toISOString() })
-      localStorage.setItem('ez_saved_qrs', JSON.stringify(list))
-    }
-  }, [amount, currency])
+  // Từ CreateQR → "Lưu vào thư viện" (lưu vào kho QR)
+  // Từ SavedQRList → "Lưu vào kho ảnh" (lưu ra Photos)
+  const fromLibrary = from === 'SavedQRList'
 
   function saveToPhotos() {
     const canvas = wrapRef.current?.querySelector('canvas')
     if (!canvas) return
     saveImageToPhotos(canvas, `ezwallet-qr-${amount}.png`)
+  }
+
+  function saveToLibrary() {
+    const list = loadQRs()
+    if (!list.some(q => q.amount === amount && (q.currency || 'VND') === currency)) {
+      list.push({ id: Date.now(), amount, currency, createdAt: new Date().toISOString() })
+      localStorage.setItem('ez_saved_qrs', JSON.stringify(list))
+    }
+    navigate('SavedQRList')
   }
 
   return (
@@ -45,8 +49,12 @@ export default function ShowQR() {
       </div>
 
       <div className="row10-dual">
-        <button className="btn btn-secondary" onClick={saveToPhotos}>{t('Lưu vào kho ảnh')}</button>
-        <button className="btn btn-primary" onClick={() => navigate(params.from || 'HomeReceive')}>{t('Quay lại')}</button>
+        {fromLibrary ? (
+          <button className="btn btn-secondary" onClick={saveToPhotos}>{t('Lưu vào kho ảnh')}</button>
+        ) : (
+          <button className="btn btn-secondary" onClick={saveToLibrary}>{t('Lưu vào thư viện')}</button>
+        )}
+        <button className="btn btn-primary" onClick={() => navigate(from === 'SavedQRList' ? 'SavedQRList' : 'HomeReceive')}>{t('Quay lại')}</button>
       </div>
     </div>
   )

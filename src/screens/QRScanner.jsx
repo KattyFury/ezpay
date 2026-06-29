@@ -107,7 +107,7 @@ export default function QRScanner() {
         ) : (
           <>
             {/* Ô vuông quét QR — trung tâm hàng 1-5 */}
-            <div style={{ position: 'relative', width: '62%', aspectRatio: '1', borderRadius: 16, overflow: 'hidden', background: '#000' }}>
+            <div style={{ position: 'relative', width: '85%', aspectRatio: '1', borderRadius: 16, overflow: 'hidden', background: '#000' }}>
               <video ref={videoRef} autoPlay playsInline muted
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>

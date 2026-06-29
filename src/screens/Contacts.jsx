@@ -183,7 +183,7 @@ export default function Contacts() {
       {adding && (
         <div
           onClick={resetForm}
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 100, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: '8dvh' }}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 100, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: 60 }}
         >
           <div onClick={e => e.stopPropagation()} style={{ width: '88%', maxWidth: 360, background: 'var(--color-white)', borderRadius: 16, padding: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
             {picked ? (
@@ -197,7 +197,7 @@ export default function Contacts() {
                     ? <img src={pfp} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     : <Icon name="add" size={30} color="var(--color-white)" />}
                 </button>
-                <input className="address-input" placeholder={t('Tên')} value={name} onChange={e => setName(e.target.value)} autoFocus style={{ fontSize: 'var(--fs-body)' }} />
+                <input className="address-input" placeholder={t('Tên')} value={name} onChange={e => setName(e.target.value)} style={{ fontSize: 'var(--fs-body)' }} />
                 <input className="address-input" placeholder="0x..." value={addr} onChange={e => setAddr(e.target.value)} style={{ fontSize: 'var(--fs-body)' }} />
                 <div style={{ display: 'flex', gap: 8 }}>
                   <button className="btn btn-secondary" style={{ flex: 1 }} onClick={resetForm}>{t('Hủy')}</button>

@@ -21,7 +21,7 @@ const CURRENCIES = [
 export default function Language() {
   const { navigate } = useNav()
   const lang = getLang()
-  const [currency, setCurrency] = useState(() => localStorage.getItem('ez_currency') || 'USDC')
+  const [currency, setCurrency] = useState(() => localStorage.getItem('ez_currency') || 'VND')
   const [picker, setPicker] = useState(null) // 'lang' | 'currency' | null
 
   const langLabel = LANGUAGES.find(l => l.code === lang)?.label || 'English'
