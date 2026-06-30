@@ -83,9 +83,9 @@ export default function HomeSend() {
             <div style={{ width: '100%', background: 'var(--color-warning-soft)', borderRadius: 12, padding: '12px 14px', display: 'flex', gap: 10, alignItems: 'center' }}>
               <Icon name="hint" size={18} color="var(--color-warning)" style={{ flexShrink: 0 }} />
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 'var(--fs-label)', textAlign: 'left', color: 'var(--color-content)' }}>
-                <div><span style={{ fontWeight: 'var(--fw-semibold)' }}>{t('Danh bạ')}</span> – {t('Nơi bạn lưu địa chỉ ví của người quen')}</div>
-                <div><span style={{ fontWeight: 'var(--fw-semibold)' }}>{t('Quét QR')}</span> – {t('Bấm để quét mã QR của người nhận')}</div>
-                <div><span style={{ fontWeight: 'var(--fw-semibold)' }}>{t('Dán để gửi')}</span> – {t('Bấm để dán địa chỉ ví của người nhận')}</div>
+                <div>{t('Danh bạ: Nơi lưu địa chỉ ví của người quen')}</div>
+                <div>{t('Quét QR: Bấm để quét QR của người nhận')}</div>
+                <div>{t('Dán để gửi: Bấm để dán địa chỉ ví của người nhận')}</div>
               </div>
             </div>
           )

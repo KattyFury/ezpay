@@ -41,7 +41,7 @@ export default function HomeReceive() {
 
       <div className="row-3-5 center col" style={{ gap: 14 }}>
         <QRCodeSVG value={walletAddr || '0x'} size={200} level="M" />
-        <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)', textAlign: 'center' }}>
+        <span style={{ fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)', color: 'var(--color-content)', textAlign: 'center' }}>
           {t('Cho người khác quét để nhận tiền')}
         </span>
       </div>
