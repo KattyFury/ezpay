@@ -6,14 +6,21 @@ import Icon from '../components/Icon'
 import NotifArea from '../components/NotifArea'
 import { useNav } from '../nav'
 import { getTokenBalances } from '../chain'
+import { ensureWalletAddress } from '../circle'
 import { t } from '../i18n'
 
 export default function HomeReceive() {
   const { navigate } = useNav()
   const [copied, setCopied] = useState(false)
   const [totalVND, setTotalVND] = useState(0)
-  const walletAddr = localStorage.getItem('ez_wallet_addr') || ''
+  const [walletAddr, setWalletAddr] = useState(localStorage.getItem('ez_wallet_addr') || '')
   const shortAddr = walletAddr ? walletAddr.slice(0, 6) + '...' + walletAddr.slice(-4) : '…'
+
+  // Lấy lại địa chỉ ví nếu thiếu (tạo ví xong nhưng Circle provision chậm)
+  useEffect(() => {
+    if (walletAddr) return
+    ensureWalletAddress().then(a => { if (a) setWalletAddr(a) })
+  }, [])
 
   useEffect(() => {
     if (!walletAddr) return
@@ -53,11 +60,14 @@ export default function HomeReceive() {
 
       <div className="row-7-8" style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '2dvh' }}>
         <NotifArea fallback={
-          <div className="tip-box" style={{ flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 8, textAlign: 'left', padding: '12px 16px' }}>
-            <div><span style={{ color: 'var(--color-content)' }}>{t('QR mặc định')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Đây chính là địa chỉ ví của bạn')}</span></div>
-            <div><span style={{ color: 'var(--color-content)' }}>{t('Chia sẻ')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Bấm để chia sẻ địa chỉ ví của bạn')}</span></div>
-            <div><span style={{ color: 'var(--color-content)' }}>{t('Tạo QR')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Tạo mã QR nhận đúng số tiền bạn muốn')}</span></div>
-            <div><span style={{ color: 'var(--color-content)' }}>{t('Kho QR')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Nơi bạn lưu trữ những QR hay dùng')}</span></div>
+          <div style={{ width: '100%', background: 'var(--color-warning-soft)', borderRadius: 12, padding: '12px 14px', display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+            <Icon name="hint" size={18} color="var(--color-warning)" style={{ flexShrink: 0, marginTop: 2 }} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 'var(--fs-label)', textAlign: 'left' }}>
+              <div><span style={{ color: 'var(--color-content)' }}>{t('QR mặc định')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Đây chính là địa chỉ ví của bạn')}</span></div>
+              <div><span style={{ color: 'var(--color-content)' }}>{t('Chia sẻ')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Bấm để chia sẻ địa chỉ ví của bạn')}</span></div>
+              <div><span style={{ color: 'var(--color-content)' }}>{t('Tạo QR')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Tạo mã QR nhận đúng số tiền bạn muốn')}</span></div>
+              <div><span style={{ color: 'var(--color-content)' }}>{t('Kho QR')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Nơi bạn lưu trữ những QR hay dùng')}</span></div>
+            </div>
           </div>
         } />
       </div>

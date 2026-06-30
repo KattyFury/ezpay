@@ -5,6 +5,7 @@ import Icon from '../components/Icon'
 import { useNav } from '../nav'
 import { getDisplayCurrency, fmtDisplay } from '../data'
 import { getTokenBalances, getDisplayRates } from '../chain'
+import { ensureWalletAddress } from '../circle'
 import NotifArea from '../components/NotifArea'
 import { t } from '../i18n'
 
@@ -16,12 +17,13 @@ export default function HomeSend() {
   const [rates, setRates] = useState(cur === 'VND' ? { VND: 1 } : null)
 
   useEffect(() => {
-    const addr = localStorage.getItem('ez_wallet_addr')
-    if (!addr) { setLoading(false); return }
-    getTokenBalances(addr)
-      .then(setTokens)
-      .catch(console.error)
-      .finally(() => setLoading(false))
+    ensureWalletAddress().then(addr => {
+      if (!addr) { setLoading(false); return }
+      getTokenBalances(addr)
+        .then(setTokens)
+        .catch(console.error)
+        .finally(() => setLoading(false))
+    })
     if (cur !== 'VND') getDisplayRates().then(setRates).catch(() => setRates({ VND: 1 }))
   }, [])
 
@@ -72,13 +74,19 @@ export default function HomeSend() {
                 <Icon name="warning" size={18} color="var(--color-warning)" style={{ flexShrink: 0 }} />
                 {t('Hết USDC để trả phí giao dịch')}
               </span>
-              <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-warning)', textDecoration: 'underline', paddingLeft: 26 }}>{t('Bấm để nhận USDC testnet từ Faucet')}</span>
+              <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-content)', paddingLeft: 26 }}>
+                {t('Bấm để nhận USDC testnet từ')}{' '}
+                <span style={{ color: 'var(--color-warning)', textDecoration: 'underline' }}>Faucet</span>
+              </span>
             </div>
           ) : (
-            <div className="tip-box" style={{ flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 8, textAlign: 'left', padding: '12px 16px' }}>
-              <div><span style={{ color: 'var(--color-content)' }}>{t('Danh bạ')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Nơi bạn lưu địa chỉ ví của người quen')}</span></div>
-              <div><span style={{ color: 'var(--color-content)' }}>{t('Quét QR')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Bấm để quét mã QR của người nhận')}</span></div>
-              <div><span style={{ color: 'var(--color-content)' }}>{t('Dán để gửi')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Bấm để dán địa chỉ ví của người nhận')}</span></div>
+            <div style={{ width: '100%', background: 'var(--color-warning-soft)', borderRadius: 12, padding: '12px 14px', display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+              <Icon name="hint" size={18} color="var(--color-warning)" style={{ flexShrink: 0, marginTop: 2 }} />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 'var(--fs-label)', textAlign: 'left' }}>
+                <div><span style={{ color: 'var(--color-content)' }}>{t('Danh bạ')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Nơi bạn lưu địa chỉ ví của người quen')}</span></div>
+                <div><span style={{ color: 'var(--color-content)' }}>{t('Quét QR')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Bấm để quét mã QR của người nhận')}</span></div>
+                <div><span style={{ color: 'var(--color-content)' }}>{t('Dán để gửi')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Bấm để dán địa chỉ ví của người nhận')}</span></div>
+              </div>
             </div>
           )
         } />

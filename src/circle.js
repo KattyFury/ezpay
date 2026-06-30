@@ -95,6 +95,24 @@ export async function initializeWallet(userToken) {
   return data
 }
 
+// Đảm bảo có địa chỉ ví: nếu localStorage thiếu (Circle provision chậm lúc tạo ví),
+// tự lấy lại từ userToken rồi lưu. Ví KHÔNG cần USDC vẫn có địa chỉ để nhận tiền.
+export async function ensureWalletAddress() {
+  let addr = localStorage.getItem('ez_wallet_addr')
+  if (addr) return addr
+  const userToken = localStorage.getItem('ez_user_token')
+  if (!userToken) return null
+  try {
+    const info = await getWalletAddress(userToken)
+    if (info?.address) {
+      localStorage.setItem('ez_wallet_addr', info.address)
+      if (info.walletId) localStorage.setItem('ez_wallet_id', info.walletId)
+      return info.address
+    }
+  } catch {}
+  return null
+}
+
 export async function getWalletAddress(userToken) {
   try {
     const res = await fetch('/api/wallet', {

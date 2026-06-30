@@ -38,8 +38,9 @@ const SCREENS = {
 
 export default function App() {
   const [nav, setNav] = useState(() => {
-    // Đã đăng nhập (còn session + ví) → vào thẳng HomeSend, khỏi login lại
-    const hasSession = localStorage.getItem('ez_user_token') && localStorage.getItem('ez_wallet_addr')
+    // Còn session (userToken) → vào thẳng HomeSend; địa chỉ ví tự lấy lại nếu thiếu
+    // (KHÔNG ép phải có ez_wallet_addr — Circle provision chậm sẽ tự heal sau).
+    const hasSession = localStorage.getItem('ez_user_token')
     return { screen: hasSession ? 'HomeSend' : 'Login', params: {} }
   })
 

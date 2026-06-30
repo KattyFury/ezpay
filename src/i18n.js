@@ -21,7 +21,7 @@ const EN = {
   'Bấm để quét mã QR của người nhận': "Tap to scan the recipient's QR code",
   'Bấm để dán địa chỉ ví của người nhận': "Tap to paste the recipient's wallet address",
   'Hết USDC để trả phí giao dịch': 'Out of USDC for transaction fees',
-  'Bấm để nhận USDC testnet từ Faucet': 'Tap to get testnet USDC from the Faucet',
+  'Bấm để nhận USDC testnet từ': 'Tap to get testnet USDC from',
   'Đổi tiền': 'Swap',
   // HomeReceive
   'QR mặc định': 'Default QR',
@@ -165,7 +165,7 @@ const ZH = {
   'Bấm để dán địa chỉ ví của người nhận': '点击粘贴收款人钱包地址',
   'Đổi tiền': '兑换',
   'Hết USDC để trả phí giao dịch': 'USDC 不足以支付手续费',
-  'Bấm để nhận USDC testnet từ Faucet': '点击从水龙头领取测试网 USDC',
+  'Bấm để nhận USDC testnet từ': '点击领取测试网 USDC，来自',
   'QR mặc định': '默认二维码', 'Đây chính là địa chỉ ví của bạn': '这是您的钱包地址',
   'Chia sẻ': '分享', 'Đã copy!': '已复制！',
   'Bấm để chia sẻ địa chỉ ví của bạn': '点击分享您的钱包地址',
