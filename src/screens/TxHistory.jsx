@@ -4,15 +4,15 @@ import { fmtVND } from '../data'
 import { TOKENS, getTxMemo } from '../chain'
 import Icon from '../components/Icon'
 import { t } from '../i18n'
+import { loadContacts } from '../store'
 
 const ARCSCAN = 'https://testnet.arcscan.app'
 const TOKEN_MAP = Object.fromEntries(TOKENS.map(t => [t.address.toLowerCase(), t]))
 
 function loadContactMap() {
   try {
-    const list = JSON.parse(localStorage.getItem('ez_contacts') || '[]')
     const m = {}
-    list.forEach(c => { if (c.address) m[c.address.toLowerCase()] = c.name })
+    loadContacts().forEach(c => { if (c.address) m[c.address.toLowerCase()] = c.name })
     return m
   } catch { return {} }
 }

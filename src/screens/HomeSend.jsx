@@ -3,8 +3,8 @@ import NavBar from '../components/NavBar'
 import BalanceHeader from '../components/BalanceHeader'
 import Icon from '../components/Icon'
 import { useNav } from '../nav'
-import { fmtVND } from '../data'
-import { getTokenBalances } from '../chain'
+import { getDisplayCurrency, fmtDisplay } from '../data'
+import { getTokenBalances, getDisplayRates } from '../chain'
 import NotifArea from '../components/NotifArea'
 import { t } from '../i18n'
 
@@ -12,6 +12,8 @@ export default function HomeSend() {
   const { navigate } = useNav()
   const [tokens, setTokens] = useState([])
   const [loading, setLoading] = useState(true)
+  const cur = getDisplayCurrency()
+  const [rates, setRates] = useState(cur === 'VND' ? { VND: 1 } : null)
 
   useEffect(() => {
     const addr = localStorage.getItem('ez_wallet_addr')
@@ -20,6 +22,7 @@ export default function HomeSend() {
       .then(setTokens)
       .catch(console.error)
       .finally(() => setLoading(false))
+    if (cur !== 'VND') getDisplayRates().then(setRates).catch(() => setRates({ VND: 1 }))
   }, [])
 
   const totalVND = tokens.reduce((s, t) => s + t.vnd, 0)
@@ -50,8 +53,12 @@ export default function HomeSend() {
             <span className="num" style={{ fontSize: 'var(--fs-num)', fontWeight: 'var(--fw-semibold)' }}>
               {tk.amount.toFixed(tk.symbol === 'cirBTC' ? 4 : 2)} {tk.symbol}
             </span>
-            <Icon name="check" size={20} color="var(--color-primary)" />
-            <span className="num" style={{ marginLeft: 'auto', fontSize: 'var(--fs-num)', fontWeight: 'var(--fw-normal)' }}>{fmtVND(tk.vnd)}</span>
+            {/* Quy đổi sang tiền tệ mặc định; ẩn nếu token CHÍNH LÀ tiền tệ đang hiển thị */}
+            {tk.symbol !== cur && (
+              <span className="num" style={{ marginLeft: 'auto', fontSize: 'var(--fs-num)', fontWeight: 'var(--fw-normal)', color: 'var(--color-muted)' }}>
+                {rates ? fmtDisplay(tk.vnd, cur, rates) : '…'}
+              </span>
+            )}
           </div>
         ))}
       </div>
@@ -60,8 +67,8 @@ export default function HomeSend() {
         <NotifArea fallback={
           !loading && (tokens.find(tk => tk.symbol === 'USDC')?.amount ?? 0) <= 1 ? (
             <div className="tip-box" onClick={() => window.open('https://faucet.circle.com/', '_blank')}
-              style={{ borderColor: 'var(--color-warning)', color: 'var(--color-warning)', cursor: 'pointer' }}>
-              <Icon name="hint" size={16} color="var(--color-warning)" style={{ marginRight: 6 }} />{t('Hết USDC để trả phí giao dịch — bấm để nhận USDC miễn phí từ Faucet')}
+              style={{ borderColor: 'var(--color-warning)', color: 'var(--color-warning)', cursor: 'pointer', justifyContent: 'flex-start', textAlign: 'left', gap: 8 }}>
+              <Icon name="warning" size={18} color="var(--color-warning)" style={{ flexShrink: 0 }} />{t('Hết USDC để trả phí giao dịch — bấm để nhận USDC miễn phí từ Faucet')}
             </div>
           ) : (
             <div className="tip-box" style={{ flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 8, textAlign: 'left', padding: '12px 16px' }}>

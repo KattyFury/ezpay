@@ -78,6 +78,12 @@ export async function getVndRate(symbol = 'USDC') {
   return prices[symbol] ?? token?.vndRate ?? 25000
 }
 
+// Tỷ giá cho tiền tệ hiển thị: VND mỗi 1 đơn vị {USDC, EURC, CNY}. CNY suy từ USDC/7.25.
+export async function getDisplayRates() {
+  const [u, e] = await Promise.all([getVndRate('USDC'), getVndRate('EURC')])
+  return { VND: 1, USDC: u, EURC: e, CNY: Math.round(u / 7.25) }
+}
+
 // Số dư 1 token + tỷ giá (USDC = token dùng để gửi)
 export async function getTokenInfo(addr, symbol = 'USDC') {
   const [balances, rate] = await Promise.all([getTokenBalances(addr), getVndRate(symbol)])

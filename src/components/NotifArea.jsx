@@ -5,6 +5,15 @@ import { getNotifs, dismissNotif, addNotif } from '../notif'
 import { t } from '../i18n'
 
 // Phát hiện tiền vào (poll ArcScan) → tạo thông báo "đã nhận" (dùng chung mọi màn có NotifArea)
+// Chống trùng: mỗi tx hash chỉ thông báo MỘT lần (lưu set hash đã thông báo).
+function notifiedHashes() {
+  try { return new Set(JSON.parse(localStorage.getItem('ez_notified_hashes') || '[]')) } catch { return new Set() }
+}
+function markNotified(hash) {
+  const s = notifiedHashes(); s.add(hash)
+  localStorage.setItem('ez_notified_hashes', JSON.stringify([...s].slice(-100)))
+}
+
 function pollIncoming(after) {
   const addr = localStorage.getItem('ez_wallet_addr')
   if (!addr) return
@@ -14,9 +23,11 @@ function pollIncoming(after) {
       const lastSeen = parseInt(localStorage.getItem('ez_last_recv_ts') || '0')
       if (recv[0]) localStorage.setItem('ez_last_recv_ts', recv[0].timeStamp)
       if (lastSeen) {
-        recv.filter(tx => parseInt(tx.timeStamp) > lastSeen).reverse().forEach(tx => {
+        const seen = notifiedHashes()
+        recv.filter(tx => parseInt(tx.timeStamp) > lastSeen && !seen.has(tx.hash)).reverse().forEach(tx => {
           const amt = (parseFloat(tx.value) / Math.pow(10, parseInt(tx.tokenDecimal || 6))).toFixed(2)
           addNotif(`${t('Đã nhận')} ${amt} ${tx.tokenSymbol || 'USDC'} ${t('từ')} ${tx.from.slice(0, 6)}...${tx.from.slice(-4)}`, 'received', tx.hash)
+          markNotified(tx.hash)
         })
         after()
       }

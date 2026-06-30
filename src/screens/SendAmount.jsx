@@ -4,17 +4,10 @@ import Numpad from '../components/Numpad'
 import Icon from '../components/Icon'
 import { getTokenInfo, getVndRate } from '../chain'
 import { t } from '../i18n'
+import { findContactName } from '../store'
 
 function shortenAddr(addr) {
   return addr ? addr.slice(0, 6) + '…' + addr.slice(-4) : ''
-}
-
-// tra tên trong danh bạ theo địa chỉ ví
-function findContactName(addr) {
-  try {
-    const list = JSON.parse(localStorage.getItem('ez_contacts') || '[]')
-    return list.find(c => c.address?.toLowerCase() === addr?.toLowerCase())?.name || null
-  } catch { return null }
 }
 
 const CURRENCIES = ['VND', 'USDC', 'EURC', 'CNY']

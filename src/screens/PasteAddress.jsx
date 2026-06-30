@@ -13,8 +13,15 @@ export default function PasteAddress() {
   const valid = isValid(trimmed)
   const showError = dirty && address && !valid
 
-  function handleDan() {
-    if (isValid(trimmed)) navigate('SendAmount', { address: trimmed, name: null })
+  // Nút "Dán": đọc clipboard → điền ô → nếu hợp lệ đi tiếp luôn. Nếu ô đã có sẵn địa chỉ
+  // hợp lệ (anh tự gõ) thì đi tiếp. Clipboard fail (chặn quyền) → dùng nội dung đang gõ.
+  async function handleDan() {
+    let a = trimmed
+    try {
+      const txt = await navigator.clipboard.readText()
+      if (txt && txt.trim()) { a = txt.trim(); setAddress(a); setDirty(true) }
+    } catch {}
+    if (isValid(a)) navigate('SendAmount', { address: a, name: null })
     else setDirty(true)
   }
 
@@ -30,7 +37,6 @@ export default function PasteAddress() {
           placeholder="0x..."
           value={address}
           onChange={e => { setAddress(e.target.value); setDirty(true) }}
-          autoFocus
           style={{ width: '100%', height: 48, fontSize: 'var(--fs-body)' }}
         />
         {showError && (
@@ -42,7 +48,7 @@ export default function PasteAddress() {
 
       <div className="row-10 row10-dual">
         <button className="btn btn-secondary" onClick={() => navigate('HomeSend')}>{t('Quay lại')}</button>
-        <button className="btn btn-primary" disabled={!valid} onClick={handleDan}>{t('Tiếp tục')}</button>
+        <button className="btn btn-primary" onClick={handleDan}>{t('Dán')}</button>
       </div>
     </div>
   )

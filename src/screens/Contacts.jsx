@@ -2,14 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useNav } from '../nav'
 import Icon from '../components/Icon'
 import { t } from '../i18n'
-
-function loadContacts() {
-  try { return JSON.parse(localStorage.getItem('ez_contacts') || '[]') } catch { return [] }
-}
-
-function saveContacts(list) {
-  localStorage.setItem('ez_contacts', JSON.stringify(list))
-}
+import { loadContacts, saveContacts } from '../store'
 
 function isValid(addr) { return /^0x[0-9a-fA-F]{40}$/.test(addr.trim()) }
 
@@ -106,7 +99,14 @@ export default function Contacts() {
   const [addr, setAddr] = useState('')
   const [pfp, setPfp] = useState(null)        // ảnh đã cắt
   const [picked, setPicked] = useState(null)  // ảnh thô đang chỉnh
+  const [copiedId, setCopiedId] = useState(null) // contact vừa copy địa chỉ
   const fileRef = useRef(null)
+
+  function copyAddr(c) {
+    navigator.clipboard?.writeText(c.address).catch(() => {})
+    setCopiedId(c.id)
+    setTimeout(() => setCopiedId(null), 1200)
+  }
 
   function resetForm() { setAdding(false); setName(''); setAddr(''); setPfp(null); setPicked(null) }
 
@@ -154,7 +154,13 @@ export default function Contacts() {
                 )}
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 20, fontWeight: 'var(--fw-medium)' }}>{c.name}</div>
-                  <div style={{ fontSize: 'var(--fs-item)', color: 'var(--color-muted)' }}>{c.address.slice(0, 8)}...{c.address.slice(-6)}</div>
+                  <button onClick={() => copyAddr(c)}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit' }}>
+                    <span style={{ fontSize: 'var(--fs-item)', color: 'var(--color-muted)' }}>
+                      {c.address.slice(0, 6)}...{c.address.slice(-4)}
+                    </span>
+                    <Icon name={copiedId === c.id ? 'check' : 'copy'} size={14} color={copiedId === c.id ? 'var(--color-primary)' : 'var(--color-muted)'} />
+                  </button>
                 </div>
                 <button onClick={() => navigate('SendAmount', { address: c.address, name: c.name })}
                   className="btn btn-primary" style={{ height: 40, minHeight: 40, padding: '0 22px', fontSize: 'var(--fs-item)' }}>

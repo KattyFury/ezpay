@@ -4,21 +4,18 @@ import { QRCodeSVG } from 'qrcode.react'
 import Icon from '../components/Icon'
 import { fmtVND } from '../data'
 import { t } from '../i18n'
-
-function loadQRs() {
-  try { return JSON.parse(localStorage.getItem('ez_saved_qrs') || '[]') } catch { return [] }
-}
+import { loadSavedQRs, saveSavedQRs } from '../store'
 
 export default function SavedQRList() {
   const { navigate } = useNav()
-  const [list, setList] = useState(loadQRs)
+  const [list, setList] = useState(loadSavedQRs)
   const walletAddr = localStorage.getItem('ez_wallet_addr') || ''
 
   function handleDelete(id, e) {
     e.stopPropagation()
     const updated = list.filter(q => q.id !== id)
     setList(updated)
-    localStorage.setItem('ez_saved_qrs', JSON.stringify(updated))
+    saveSavedQRs(updated)
   }
 
   return (

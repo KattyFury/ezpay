@@ -4,10 +4,7 @@ import { QRCodeCanvas } from 'qrcode.react'
 import { fmtVND } from '../data'
 import { saveImageToPhotos } from '../saveImage'
 import { t } from '../i18n'
-
-function loadQRs() {
-  try { return JSON.parse(localStorage.getItem('ez_saved_qrs') || '[]') } catch { return [] }
-}
+import { loadSavedQRs, saveSavedQRs } from '../store'
 
 export default function ShowQR() {
   const { navigate, params } = useNav()
@@ -28,10 +25,10 @@ export default function ShowQR() {
   }
 
   function saveToLibrary() {
-    const list = loadQRs()
+    const list = loadSavedQRs()
     if (!list.some(q => q.amount === amount && (q.currency || 'VND') === currency)) {
       list.push({ id: Date.now(), amount, currency, createdAt: new Date().toISOString() })
-      localStorage.setItem('ez_saved_qrs', JSON.stringify(list))
+      saveSavedQRs(list)
     }
     navigate('SavedQRList')
   }

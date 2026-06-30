@@ -48,7 +48,9 @@ const JSON_HEADERS = { 'Content-Type': 'application/json', 'Access-Control-Allow
 
 export async function onRequestPost(ctx) {
   const apiKey = ctx.env.API_KEY || ctx.env.CIRCLE_API_KEY
-  const { userToken, walletId, toAddress, token, amountDecimal, memo } = await ctx.request.json()
+  const { userToken, walletId, toAddress, token, amountDecimal, memo, idempotencyKey } = await ctx.request.json()
+  // idempotencyKey cố định từ client → Circle dedupe, không tạo 2 giao dịch khi gọi lại
+  const idemKey = idempotencyKey || crypto.randomUUID()
 
   if (!userToken || !walletId || !toAddress || !token || !amountDecimal) {
     return new Response(JSON.stringify({ error: 'missing params' }), { status: 400, headers: JSON_HEADERS })
@@ -66,7 +68,7 @@ export async function onRequestPost(ctx) {
     // Có nội dung → gửi qua Memo contract (Arc Transaction Memos)
     const transferData = encodeTransfer(toAddress, amountRaw)
     execBody = {
-      idempotencyKey: crypto.randomUUID(),
+      idempotencyKey: idemKey,
       walletId,
       contractAddress: MEMO_CONTRACT,
       abiFunctionSignature: MEMO_SIG,
@@ -76,7 +78,7 @@ export async function onRequestPost(ctx) {
   } else {
     // Không nội dung → transfer trực tiếp (đường đã verify on-chain)
     execBody = {
-      idempotencyKey: crypto.randomUUID(),
+      idempotencyKey: idemKey,
       walletId,
       contractAddress: tokenInfo.address,
       abiFunctionSignature: TRANSFER_SIG,

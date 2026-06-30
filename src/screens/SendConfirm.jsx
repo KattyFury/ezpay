@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Icon from '../components/Icon'
 import { addNotif } from '../notif'
 import { useNav } from '../nav'
 import { t } from '../i18n'
-import { fmtVND } from '../data'
+import { fmtVND, getDisplayCurrency } from '../data'
 import { getVndRate, estimateFeeVnd } from '../chain'
 import { getSDK, executeChallenge } from '../circle'
 
@@ -17,7 +17,10 @@ export default function SendConfirm() {
   const [rates, setRates] = useState({ USDC: 25000, EURC: 27000, CNY: 3448 })
   const [feeVnd, setFeeVnd] = useState(null)      // phí gas thật (null = đang tính)
   const [loading, setLoading] = useState(false)
+  const [done, setDone] = useState(false)         // đã gửi thành công → khóa, không gửi lại
   const [error, setError] = useState('')
+  // idempotencyKey CỐ ĐỊNH cho 1 lần mở màn xác nhận → bấm/retry không tạo 2 giao dịch
+  const idemKey = useRef(crypto.randomUUID()).current
 
   useEffect(() => {
     Promise.all([getVndRate('USDC'), getVndRate('EURC')])
@@ -32,20 +35,30 @@ export default function SendConfirm() {
                    : currency === 'CNY' ? (amount * rates.CNY) / rates.USDC
                    : amount
   const sendAmountStr = (currency === 'VND' || currency === 'CNY') ? sendAmount.toFixed(4) : sendAmount.toFixed(2)
-  const mainText = (currency === 'VND' || currency === 'USDC' || currency === 'EURC') ? (currency === 'VND' ? fmtVND(amount) : `${amount} ${currency}`) : `${amount} CNY`
-  const vndEquiv = currency === 'VND' ? amount
-                 : currency === 'CNY' ? Math.round(amount * rates.CNY)
-                 : Math.round(amount * (rates[currency] || 1))
-  const convText = (currency === 'VND' || currency === 'CNY') ? `${sendAmountStr} USDC` : fmtVND(vndEquiv)
+  const mainText = currency === 'VND' ? fmtVND(amount) : `${amount} ${currency}`
+  // "Quy đổi" = lượng token thật chuyển đi; chỉ hiện khi nhập bằng tiền pháp định (VND/CNY)
+  const convText = `${sendAmountStr} ${token}`
+  const showConv = currency === 'VND' || currency === 'CNY'
+
+  // Phí mạng theo TIỀN TỆ MẶC ĐỊNH (ez_currency), không cứng VND
+  const displayCur = getDisplayCurrency()
+  const dispRates = { VND: 1, ...rates }
+  function feeStr() {
+    if (feeVnd === null) return t('Đang tính...')
+    if (displayCur === 'VND') return feeVnd < 1 ? '< 1đ' : fmtVND(feeVnd)
+    const v = feeVnd / (dispRates[displayCur] || 1)
+    return v < 0.01 ? `< 0.01 ${displayCur}` : `${v.toFixed(2)} ${displayCur}`
+  }
 
   async function handleConfirm() {
+    if (loading || done) return   // chặn bấm lặp / gửi trùng
     setLoading(true); setError('')
     try {
       const userToken = localStorage.getItem('ez_user_token')
       const encryptionKey = localStorage.getItem('ez_encryption_key')
       const walletId = localStorage.getItem('ez_wallet_id')
 
-      // Tạo challenge gửi tiền
+      // Tạo challenge gửi tiền — idempotencyKey cố định để Circle dedupe nếu gọi lại
       const res = await fetch('/api/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -55,6 +68,7 @@ export default function SendConfirm() {
           token,
           amountDecimal: sendAmountStr,
           memo,
+          idempotencyKey: idemKey,
         }),
       })
       const data = await res.json()
@@ -63,6 +77,7 @@ export default function SendConfirm() {
       // User ký bằng PIN qua W3S SDK
       await executeChallenge(getSDK(), userToken, encryptionKey, data.challengeId)
 
+      setDone(true)   // ký thành công → khóa màn, không cho gửi lại
       navigate('SendReceipt', { address, name, amount, memo, currency, timestamp: Date.now() })
     } catch (e) {
       setError(e.message || 'Có lỗi xảy ra')
@@ -96,12 +111,14 @@ export default function SendConfirm() {
               {mainText}
             </span>
           </div>
-          <div className="confirm-row">
-            <span className="confirm-label">{t('Quy đổi')}</span>
-            <span className="confirm-value num" style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>
-              {convText}
-            </span>
-          </div>
+          {showConv && (
+            <div className="confirm-row">
+              <span className="confirm-label">{t('Quy đổi')}</span>
+              <span className="confirm-value num" style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>
+                {convText}
+              </span>
+            </div>
+          )}
           {memo && (
             <div className="confirm-row">
               <span className="confirm-label">{t('Nội dung')}</span>
@@ -111,13 +128,13 @@ export default function SendConfirm() {
           <div className="confirm-row">
             <span className="confirm-label">{t('Phí mạng')}</span>
             <span className="confirm-value num" style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>
-              {feeVnd === null ? t('Đang tính...') : feeVnd < 1 ? '< 1đ' : fmtVND(feeVnd)}
+              {feeStr()}
             </span>
           </div>
         </div>
 
         <div className="warning-badge" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-          <Icon name="hint" size={16} color="var(--color-warning)" />{t('Giao dịch không thể hoàn tác sau khi xác nhận')}
+          <Icon name="warning" size={16} color="var(--color-warning)" />{t('Giao dịch không thể hoàn tác sau khi xác nhận')}
         </div>
 
         {error && <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-error)', textAlign: 'center' }}>{error}</span>}
@@ -125,9 +142,9 @@ export default function SendConfirm() {
       </div>
 
       <div className="row-10 row10-dual">
-        <button className="btn btn-secondary" disabled={loading} onClick={() => navigate('SendAmount', params)}>{t('Sửa')}</button>
+        <button className="btn btn-secondary" disabled={loading || done} onClick={() => navigate('SendAmount', params)}>{t('Sửa')}</button>
         <button className="btn btn-primary" style={{ flex: 1 }}
-          disabled={loading} onClick={handleConfirm}>
+          disabled={loading || done} onClick={handleConfirm}>
           {loading ? t('Đang xử lý...') : t('Xác nhận · PIN')}
         </button>
       </div>
