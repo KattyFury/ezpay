@@ -18,7 +18,6 @@ export default function SendConfirm() {
   const [feeVnd, setFeeVnd] = useState(null)      // phí gas thật (null = đang tính)
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)         // đã gửi thành công → khóa, không gửi lại
-  const [error, setError] = useState('')
   // idempotencyKey CỐ ĐỊNH cho 1 lần mở màn xác nhận → bấm/retry không tạo 2 giao dịch
   const idemKey = useRef(crypto.randomUUID()).current
 
@@ -52,7 +51,7 @@ export default function SendConfirm() {
 
   async function handleConfirm() {
     if (loading || done) return   // chặn bấm lặp / gửi trùng
-    setLoading(true); setError('')
+    setLoading(true)
     try {
       const userToken = localStorage.getItem('ez_user_token')
       const encryptionKey = localStorage.getItem('ez_encryption_key')
@@ -80,10 +79,12 @@ export default function SendConfirm() {
       setDone(true)   // ký thành công → khóa màn, không cho gửi lại
       navigate('SendReceipt', { address, name, amount, memo, currency, timestamp: Date.now() })
     } catch (e) {
-      setError(e.message || 'Có lỗi xảy ra')
-      addNotif(`Gửi thất bại: ${e.message || 'có lỗi xảy ra'}`, 'error')
-    } finally {
+      // Sai PIN / hủy / lỗi → KHÔNG cho sửa tại chỗ (gây kẹt với challenge cũ).
+      // Ra ngoài màn nhập số tiền để làm LẠI TỪ ĐẦU: lần xác nhận mới sẽ tạo
+      // challenge mới + idempotencyKey mới (component remount) → flow sạch.
       setLoading(false)
+      addNotif(`Gửi thất bại: ${e.message || 'có lỗi xảy ra'}`, 'error')
+      navigate('SendAmount', params)
     }
   }
 
@@ -137,7 +138,6 @@ export default function SendConfirm() {
           <Icon name="warning" size={16} color="var(--color-warning)" />{t('Giao dịch không thể hoàn tác sau khi xác nhận')}
         </div>
 
-        {error && <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-error)', textAlign: 'center' }}>{error}</span>}
         {loading && <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)', textAlign: 'center' }}>{t('Đang mở xác nhận PIN...')}</span>}
       </div>
 

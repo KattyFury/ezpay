@@ -14,7 +14,6 @@ export default function HomeReceive() {
   const [copied, setCopied] = useState(false)
   const [totalVND, setTotalVND] = useState(0)
   const [walletAddr, setWalletAddr] = useState(localStorage.getItem('ez_wallet_addr') || '')
-  const shortAddr = walletAddr ? walletAddr.slice(0, 6) + '...' + walletAddr.slice(-4) : '…'
 
   // Lấy lại địa chỉ ví nếu thiếu (tạo ví xong nhưng Circle provision chậm)
   useEffect(() => {
@@ -36,37 +35,26 @@ export default function HomeReceive() {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  function copyAddr() {
-    navigator.clipboard.writeText(walletAddr)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 1500)
-  }
-
   return (
     <div className="screen">
       <BalanceHeader totalVND={totalVND} loading={false} />
 
-      <div className="row-3-5 center col" style={{ gap: 12 }}>
+      <div className="row-3-5 center col" style={{ gap: 14 }}>
         <QRCodeSVG value={walletAddr || '0x'} size={200} level="M" />
-        <button onClick={copyAddr} style={{
-          display: 'flex', alignItems: 'center', gap: 6,
-          border: '1px solid var(--color-gray)', borderRadius: 8,
-          padding: '6px 14px', background: 'none', cursor: 'pointer',
-        }}>
-          <span className="num" style={{ fontSize: 'var(--fs-body)', color: 'var(--color-content)' }}>{shortAddr}</span>
-          <Icon name={copied ? 'check' : 'copy'} size={16} color={copied ? 'var(--color-primary)' : 'var(--color-content)'} />
-        </button>
+        <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)', textAlign: 'center' }}>
+          {t('Cho người khác quét để nhận tiền')}
+        </span>
       </div>
 
       <div className="row-7-8" style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '2dvh' }}>
         <NotifArea fallback={
-          <div style={{ width: '100%', background: 'var(--color-warning-soft)', borderRadius: 12, padding: '12px 14px', display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-            <Icon name="hint" size={18} color="var(--color-warning)" style={{ flexShrink: 0, marginTop: 2 }} />
+          <div style={{ width: '100%', background: 'var(--color-warning-soft)', borderRadius: 12, padding: '12px 14px', display: 'flex', gap: 10, alignItems: 'center' }}>
+            <Icon name="hint" size={18} color="var(--color-warning)" style={{ flexShrink: 0 }} />
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 'var(--fs-label)', textAlign: 'left', color: 'var(--color-content)' }}>
-              <div><span style={{ fontWeight: 'var(--fw-semibold)' }}>{t('QR mặc định')}</span> – {t('Đây chính là địa chỉ ví của bạn')}</div>
-              <div><span style={{ fontWeight: 'var(--fw-semibold)' }}>{t('Chia sẻ')}</span> – {t('Bấm để chia sẻ địa chỉ ví của bạn')}</div>
-              <div><span style={{ fontWeight: 'var(--fw-semibold)' }}>{t('Tạo QR')}</span> – {t('Tạo mã QR nhận đúng số tiền bạn muốn')}</div>
-              <div><span style={{ fontWeight: 'var(--fw-semibold)' }}>{t('Kho QR')}</span> – {t('Nơi bạn lưu trữ những QR hay dùng')}</div>
+              <div>{t('QR mặc định chính là địa chỉ ví của bạn')}</div>
+              <div>{t('Chia sẻ: Bấm để chia sẻ địa chỉ ví của bạn')}</div>
+              <div>{t('Tạo QR: Tạo mã QR nhận đúng số tiền bạn muốn')}</div>
+              <div>{t('Kho QR: Nơi bạn lưu trữ những QR hay dùng')}</div>
             </div>
           </div>
         } />
