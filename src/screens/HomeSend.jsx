@@ -59,8 +59,9 @@ export default function HomeSend() {
       <div className="row-7-8" style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '2dvh' }}>
         <NotifArea fallback={
           !loading && (tokens.find(tk => tk.symbol === 'USDC')?.amount ?? 0) <= 1 ? (
-            <div className="tip-box" style={{ borderColor: 'var(--color-warning)', color: 'var(--color-warning)' }}>
-              <Icon name="hint" size={16} color="var(--color-warning)" style={{ marginRight: 6 }} />{t('Hết USDC — cần USDC để thanh toán phí giao dịch. Vào')} <b>{t('Đổi tiền')}</b> {t('để swap.')}
+            <div className="tip-box" onClick={() => window.open('https://faucet.circle.com/', '_blank')}
+              style={{ borderColor: 'var(--color-warning)', color: 'var(--color-warning)', cursor: 'pointer' }}>
+              <Icon name="hint" size={16} color="var(--color-warning)" style={{ marginRight: 6 }} />{t('Hết USDC để trả phí giao dịch — bấm để nhận USDC miễn phí từ Faucet')}
             </div>
           ) : (
             <div className="tip-box" style={{ flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 8, textAlign: 'left', padding: '12px 16px' }}>

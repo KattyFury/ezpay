@@ -22,6 +22,7 @@ const EN = {
   'Bấm để dán địa chỉ ví của người nhận': "Tap to paste the recipient's wallet address",
   'Hết USDC — cần USDC để thanh toán phí giao dịch. Vào': 'Out of USDC — needed for transaction fees. Go to',
   'để swap.': 'to swap.',
+  'Hết USDC để trả phí giao dịch — bấm để nhận USDC miễn phí từ Faucet': 'Out of USDC for fees — tap to get free USDC from the Faucet',
   'Đổi tiền': 'Swap',
   // HomeReceive
   'QR mặc định': 'Default QR',
@@ -166,6 +167,7 @@ const ZH = {
   'Bấm để dán địa chỉ ví của người nhận': '点击粘贴收款人钱包地址',
   'Hết USDC — cần USDC để thanh toán phí giao dịch. Vào': 'USDC 不足 — 需要 USDC 支付手续费。前往',
   'để swap.': '兑换。', 'Đổi tiền': '兑换',
+  'Hết USDC để trả phí giao dịch — bấm để nhận USDC miễn phí từ Faucet': 'USDC 不足以支付手续费 — 点击从水龙头免费领取 USDC',
   'QR mặc định': '默认二维码', 'Đây chính là địa chỉ ví của bạn': '这是您的钱包地址',
   'Chia sẻ': '分享', 'Đã copy!': '已复制！',
   'Bấm để chia sẻ địa chỉ ví của bạn': '点击分享您的钱包地址',

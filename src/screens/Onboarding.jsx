@@ -14,10 +14,13 @@ const CURRENCIES = [
   { code: 'CNY', label: 'CNY', sub: '人民币 / Chinese Yuan' },
 ]
 
+// Tiền tệ mặc định theo ngôn ngữ (anh có thể đổi tay sau)
+const CUR_BY_LANG = { vi: 'VND', zh: 'CNY', en: 'USDC' }
+
 const L = {
-  vi: { title: 'Chào mừng!', langLabel: 'Ngôn ngữ', curLabel: 'Tiền tệ mặc định', start: 'Bắt đầu', selectLang: 'Chọn ngôn ngữ', selectCur: 'Chọn tiền tệ' },
-  en: { title: 'Welcome!', langLabel: 'Language', curLabel: 'Default currency', start: 'Get started', selectLang: 'Select language', selectCur: 'Select currency' },
-  zh: { title: '欢迎！', langLabel: '语言', curLabel: '默认货币', start: '开始', selectLang: '选择语言', selectCur: '选择货币' },
+  vi: { title: 'Chào mừng!', sub: 'Chọn ngôn ngữ và tiền tệ hiển thị', langLabel: 'Ngôn ngữ', curLabel: 'Tiền tệ mặc định', start: 'Bắt đầu', selectLang: 'Chọn ngôn ngữ', selectCur: 'Chọn tiền tệ' },
+  en: { title: 'Welcome!', sub: 'Choose your language and display currency', langLabel: 'Language', curLabel: 'Default currency', start: 'Get started', selectLang: 'Select language', selectCur: 'Select currency' },
+  zh: { title: '欢迎！', sub: '选择语言和显示货币', langLabel: '语言', curLabel: '默认货币', start: '开始', selectLang: '选择语言', selectCur: '选择货币' },
 }
 
 export default function Onboarding() {
@@ -29,21 +32,21 @@ export default function Onboarding() {
   })()
 
   const [lang, setLang] = useState(browserLang)
-  const [currency, setCurrency] = useState('VND')
-  const [picker, setPicker] = useState(null) // 'lang' | 'currency' | null
+  const [currency, setCurrency] = useState(CUR_BY_LANG[browserLang] || 'USDC')
+  const [curTouched, setCurTouched] = useState(false) // anh đã tự chọn tiền tệ chưa
+  const [picker, setPicker] = useState(null)           // 'lang' | 'currency' | null
   const l = L[lang] || L.en
 
   const langLabel = LANGUAGES.find(x => x.code === lang)?.label || ''
   const curLabel = CURRENCIES.find(x => x.code === currency)?.label || ''
 
-  const chipStyle = {
-    display: 'inline-flex', alignItems: 'center', gap: 6,
-    border: '1.5px solid var(--color-gray)', borderRadius: 10,
-    padding: '6px 12px', background: 'var(--color-white)',
-    fontFamily: 'var(--font-base)', fontSize: 'var(--fs-body)',
-    fontWeight: 'var(--fw-medium)', color: 'var(--color-content)',
-    cursor: 'pointer', flexShrink: 0,
+  // Đổi ngôn ngữ → tiền tệ tự theo (trừ khi anh đã tự chọn tiền tệ riêng)
+  function pickLang(code) {
+    setLang(code)
+    if (!curTouched) setCurrency(CUR_BY_LANG[code] || 'USDC')
+    setPicker(null)
   }
+  function pickCur(code) { setCurrency(code); setCurTouched(true); setPicker(null) }
 
   function handleStart() {
     localStorage.setItem('ez_lang', lang)
@@ -52,28 +55,27 @@ export default function Onboarding() {
     window.location.reload()
   }
 
+  // Hàng chọn — đồng bộ style .menu-item như màn Ngôn ngữ & tiền tệ
+  const Row = ({ label, value, onClick }) => (
+    <button className="menu-item" style={{ width: '100%', padding: '16px 4px' }} onClick={onClick}>
+      <span style={{ flex: 1, fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>{label}</span>
+      <span style={{ fontSize: 'var(--fs-label)', color: 'var(--color-content)', border: '1.5px solid var(--color-gray)', borderRadius: 8, padding: '4px 12px', marginRight: 8 }}>{value}</span>
+      <Icon name="right2" size={15} color="var(--color-faint)" />
+    </button>
+  )
+
   return (
     <div className="screen">
-      <div className="row-1 center screen-title" style={{ fontSize: 'var(--fs-title)', fontWeight: 'var(--fw-medium)' }}>
-        {l.title}
+      {/* Tiêu đề + phụ đề, nhóm trên */}
+      <div className="row-2-3" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+        <div className="screen-title" style={{ fontSize: 'var(--fs-amount)', fontWeight: 'var(--fw-medium)' }}>{l.title}</div>
+        <div style={{ fontSize: 'var(--fs-label)', color: 'var(--color-muted)' }}>{l.sub}</div>
       </div>
 
-      {/* Ngôn ngữ */}
-      <div className="row-4" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>{l.langLabel}</span>
-        <button style={chipStyle} onClick={() => setPicker('lang')}>
-          {langLabel}
-          <Icon name="right2" size={13} color="var(--color-muted)" />
-        </button>
-      </div>
-
-      {/* Tiền tệ */}
-      <div className="row-6" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontSize: 'var(--fs-body)', fontWeight: 'var(--fw-medium)' }}>{l.curLabel}</span>
-        <button style={chipStyle} onClick={() => setPicker('currency')}>
-          {curLabel}
-          <Icon name="right2" size={13} color="var(--color-muted)" />
-        </button>
+      {/* 2 hàng chọn — nhóm gọn, căn giữa khối */}
+      <div style={{ gridRow: '4 / 9', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <Row label={l.langLabel} value={langLabel} onClick={() => setPicker('lang')} />
+        <Row label={l.curLabel} value={curLabel} onClick={() => setPicker('currency')} />
       </div>
 
       <div className="row-10 row10-single">
@@ -92,7 +94,7 @@ export default function Onboarding() {
             </div>
             {(picker === 'lang' ? LANGUAGES : CURRENCIES).map(o => (
               <button key={o.code}
-                onClick={() => { picker === 'lang' ? setLang(o.code) : setCurrency(o.code); setPicker(null) }}
+                onClick={() => picker === 'lang' ? pickLang(o.code) : pickCur(o.code)}
                 className={`btn ${(picker === 'lang' ? o.code === lang : o.code === currency) ? 'btn-primary' : 'btn-secondary'}`}
                 style={{ width: '100%', justifyContent: 'flex-start', paddingLeft: 18, gap: 6 }}>
                 <span style={{ fontWeight: 'var(--fw-semibold)' }}>{o.label}</span>
