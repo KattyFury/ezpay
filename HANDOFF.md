@@ -1,6 +1,6 @@
 # HANDOFF — EZwallet
 
-**Cập nhật:** 2026-06-29 (session 2)
+**Cập nhật:** 2026-06-30 (session 3)
 **Repo:** https://github.com/KattyFury/ezwallet
 **Local:** `D:\Files\Claude_laptop\Build_on_Arc\ezwallet`
 **Live:** https://ezwallet.pages.dev (Cloudflare Pages, auto-deploy từ GitHub `main`)
@@ -195,8 +195,8 @@
 - ~~i18n (đa ngôn ngữ)~~ ✅ — VI/EN/ZH, mặc định theo trình duyệt (xem phần "Chạy thật").
 - ~~Đưa nút Đăng xuất ra Menu~~ ✅.
 
-**Đang làm tiếp (user yêu cầu — ƯU TIÊN):**
-- **TỐI GIẢN GIAO DIỆN cho người dùng phổ thông:** bỏ bớt "yếu tố ví" mang tính kỹ thuật/crypto (vd phơi địa chỉ `0x...` ra UI chính). Người già/phổ thông không cần thấy địa chỉ ví dài dòng. Giữ địa chỉ ở chỗ cần (nhận tiền/QR, danh bạ) nhưng ẩn/giảm ở các màn chính. Sẽ làm đợt tới.
+**🔜 LÀM TIẾP TỐI 2026-06-30 (user yêu cầu — ƯU TIÊN, bắt đầu từ đây):**
+- **TỐI GIẢN GIAO DIỆN cho người dùng phổ thông / người già:** bỏ bớt "yếu tố ví" kỹ thuật/crypto khỏi các màn CHÍNH. Cụ thể: đừng phơi địa chỉ `0x1234...5678` dài dòng ở HomeReceive/Security/màn chính. Người phổ thông không cần thấy nó. GIỮ địa chỉ ở chỗ THỰC SỰ cần (QR nhận tiền, copy khi chia sẻ, danh bạ) nhưng ẩn/thu nhỏ ở nơi khác. User sẽ chỉ rõ từng chỗ khi vào việc. (Chưa bắt đầu code.)
 
 **Còn lại:**
 1. **Trạng thái giao dịch thật** — poll txHash → "✓ đã lên blockchain" (Arc finality <1s).
@@ -206,3 +206,4 @@
 
 > **Session 1 (2026-06-29):** i18n VI/EN/ZH, bọc t() toàn bộ màn, Đăng xuất ra Menu, memo on-chain, tỷ giá live, jsQR iOS.
 > **Session 2 (2026-06-29):** 12 mobile UX bugs (contacts, hints, QR, paste, onboarding, CNY), Circle SDK full VI localization + green theme, Onboarding screen, securityConfirm PC bug discovered (unfixable — Circle iframe).
+> **Session 3 (2026-06-30):** RÚT RA: Circle securityConfirm bắt gõ "I agree" (không phải nhập lại câu trả lời) → đã trả `getSDK()` về Circle DEFAULT THUẦN (English, KHÔNG localize/theme/customSecurityQuestions — đừng đụng nữa). Per-account contacts/QR (`src/store.js`, theo địa chỉ ví). Double-send guard (idempotencyKey cố định + notif dedup theo hash). **Tiền tệ hiển thị theo `ez_currency` toàn app** (BalanceHeader/token list/SendConfirm; helper `getDisplayCurrency/fmtDisplay/displayNum` data.js + `getDisplayRates` chain.js). **ensureWalletAddress()** self-heal địa chỉ ví (fix ví/QR không hiện khi tạo email mới; App.jsx session chỉ cần userToken). Hệ thông báo + hint + cảnh báo = NỀN MÀU NHẠT (Nhận=xanh lá, Gửi=xanh dương `--color-info`, Lỗi=đỏ, Cảnh báo=vàng; icon warning cho lỗi+cảnh báo). Bỏ sạch em-dash (dùng en-dash `–`). Security mỗi mục 1 hàng grid. TxHistory nút lọc Gửi/Nhận viền xanh. Contacts copy icon. **TẤT CẢ đã push, build pass.**
