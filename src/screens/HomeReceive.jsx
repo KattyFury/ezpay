@@ -62,11 +62,11 @@ export default function HomeReceive() {
         <NotifArea fallback={
           <div style={{ width: '100%', background: 'var(--color-warning-soft)', borderRadius: 12, padding: '12px 14px', display: 'flex', gap: 10, alignItems: 'flex-start' }}>
             <Icon name="hint" size={18} color="var(--color-warning)" style={{ flexShrink: 0, marginTop: 2 }} />
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 'var(--fs-label)', textAlign: 'left' }}>
-              <div><span style={{ color: 'var(--color-content)' }}>{t('QR mặc định')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Đây chính là địa chỉ ví của bạn')}</span></div>
-              <div><span style={{ color: 'var(--color-content)' }}>{t('Chia sẻ')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Bấm để chia sẻ địa chỉ ví của bạn')}</span></div>
-              <div><span style={{ color: 'var(--color-content)' }}>{t('Tạo QR')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Tạo mã QR nhận đúng số tiền bạn muốn')}</span></div>
-              <div><span style={{ color: 'var(--color-content)' }}>{t('Kho QR')}</span> <span style={{ color: 'var(--color-muted)' }}>– {t('Nơi bạn lưu trữ những QR hay dùng')}</span></div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 'var(--fs-label)', textAlign: 'left', color: 'var(--color-content)' }}>
+              <div><span style={{ fontWeight: 'var(--fw-semibold)' }}>{t('QR mặc định')}</span> – {t('Đây chính là địa chỉ ví của bạn')}</div>
+              <div><span style={{ fontWeight: 'var(--fw-semibold)' }}>{t('Chia sẻ')}</span> – {t('Bấm để chia sẻ địa chỉ ví của bạn')}</div>
+              <div><span style={{ fontWeight: 'var(--fw-semibold)' }}>{t('Tạo QR')}</span> – {t('Tạo mã QR nhận đúng số tiền bạn muốn')}</div>
+              <div><span style={{ fontWeight: 'var(--fw-semibold)' }}>{t('Kho QR')}</span> – {t('Nơi bạn lưu trữ những QR hay dùng')}</div>
             </div>
           </div>
         } />
