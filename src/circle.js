@@ -2,60 +2,28 @@ import { W3SSdk } from '@circle-fin/w3s-pw-web-sdk'
 
 let sdk = null
 
-const VI = {
-  enterPincode: {
-    headline: 'Xác nhận giao dịch',
-    headline2: '',
-    subhead: 'Nhập mã PIN 6 chữ số của bạn',
-    forgotPin: 'Quên PIN?',
-  },
-  newPincode: {
-    headline: 'Tạo mã PIN',
-    headline2: 'Xác nhận mã PIN',
-    subhead: 'Mã PIN 6 chữ số bảo vệ ví của bạn',
-  },
-  recoverPincode: {
-    headline: 'Khôi phục PIN',
-    headline2: 'Trả lời câu hỏi bảo mật',
-    subhead: 'Nhập câu trả lời để đặt lại PIN',
-    answerInputHeader: 'Câu trả lời',
-    answerInputPlaceholder: 'Nhập câu trả lời',
-  },
-  securityIntros: {
-    headline: 'Thiết lập bảo mật',
-    headline2: 'Bảo vệ tài khoản của bạn',
-    description: 'Chọn câu hỏi bảo mật để khôi phục PIN khi cần',
-    link: 'Tìm hiểu thêm',
-  },
-  securityQuestions: {
-    title: 'Câu hỏi bảo mật',
-    questionHeader: 'Câu hỏi',
-    questionPlaceholder: 'Chọn câu hỏi',
-    answerHeader: 'Câu trả lời',
-    answerPlaceholder: 'Nhập câu trả lời',
-    answerHintHeader: 'Gợi ý (tuỳ chọn)',
-    answerHintPlaceholder: 'Nhập gợi ý',
-  },
-  securityConfirm: {
-    title: 'Xác nhận bảo mật',
-    headline: 'Xác nhận câu trả lời',
-    inputHeadline: 'Nhập lại câu trả lời',
-    inputPlaceholder: 'Xác nhận câu trả lời',
-    inputMatch: 'Câu trả lời khớp ✓',
-  },
-  securitySummary: {
-    title: 'Tóm tắt bảo mật',
-    question: 'Câu hỏi',
-  },
+// ⚠️ Việt hóa CHỈ các màn NHẬP/TẠO PIN — an toàn, không dính bẫy "I agree".
+// KHÔNG Việt hóa cụm CÂU HỎI BẢO MẬT (securityIntros/Questions/Confirm/Summary):
+// bước securityConfirm bắt user gõ CHÍNH XÁC chuỗi "I agree" (Circle HARDCODE, không đổi
+// được qua localization). Bản Việt hóa cũ từng ghi placeholder = "Nhập lại câu trả lời"
+// → user gõ câu trả lời thay vì "I agree" → nút Tiếp tục không bao giờ sáng (bug session 2).
+// → Để cụm câu hỏi bảo mật ở ENGLISH cho user thấy rõ phải gõ "I agree".
+// (setLocalizations chỉ override màn nào được khai báo; màn khác giữ English mặc định.)
+const PIN_VI = {
+  common: { continue: 'Tiếp tục', showPin: 'Hiện PIN', hidePin: 'Ẩn PIN', confirm: 'Xác nhận' },
+  enterPincode: { headline: 'Xác nhận giao dịch', subhead: 'Nhập mã PIN 6 số của bạn', forgotPin: 'Quên PIN?' },
+  initPincode: { headline: 'Tạo mã PIN', subhead: 'Mã PIN 6 số bảo vệ ví của bạn' },
+  confirmInitPincode: { headline: 'Xác nhận mã PIN', subhead: 'Nhập lại mã PIN 6 số vừa tạo' },
+  newPincode: { headline: 'Tạo mã PIN mới', subhead: 'Mã PIN 6 số bảo vệ ví của bạn' },
+  confirmNewPincode: { headline: 'Xác nhận mã PIN mới', subhead: 'Nhập lại mã PIN 6 số mới' },
 }
 
 export function getSDK() {
   if (!sdk) {
-    // ⚠️ TEST MODE: Circle SDK default THUẦN (English, zero customization).
-    // Tách bạch xem flow gốc của Circle có chạy không — KHÔNG setLocalizations,
-    // KHÔNG setCustomSecurityQuestions, KHÔNG setThemeColor. Nếu default vẫn fail
-    // ở bước xác nhận câu trả lời → lỗi hoàn toàn phía Circle, không phải code mình.
     sdk = new W3SSdk({ appSettings: { appId: '518fec6a-4680-5175-9de6-0810fb3dfd04' } })
+    // Việt hóa màn nhập/tạo PIN (nhất là "Xác nhận giao dịch" khi gửi tiền — màn user gặp
+    // nhiều nhất). Cụm câu hỏi bảo mật giữ English (xem chú thích PIN_VI ở trên).
+    sdk.setLocalizations(PIN_VI)
   }
   return sdk
 }
