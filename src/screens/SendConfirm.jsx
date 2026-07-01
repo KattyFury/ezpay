@@ -83,7 +83,11 @@ export default function SendConfirm() {
       // Ra ngoài màn nhập số tiền để làm LẠI TỪ ĐẦU: lần xác nhận mới sẽ tạo
       // challenge mới + idempotencyKey mới (component remount) → flow sạch.
       setLoading(false)
-      const msg = `${t('Gửi thất bại:')} ${e.message || t('có lỗi xảy ra')}`
+      // Lỗi từ W3S SDK không phải lúc nào cũng là Error chuẩn (có thể là
+      // {code,message} hoặc string) — dò nhiều dạng để không rớt về "có lỗi xảy ra" mù mờ.
+      console.error('[SendConfirm] gửi thất bại:', e)
+      const reason = e?.message || e?.error?.message || (typeof e === 'string' ? e : null) || (e?.code ? `code ${e.code}` : null) || t('có lỗi xảy ra')
+      const msg = `${t('Gửi thất bại:')} ${reason}`
       addNotif(msg, 'error')
       // SendAmount không có NotifArea → truyền lỗi qua params để màn đó tự hiện
       // banner (nếu không, người dùng chỉ thấy "tự nhiên bị đá về", không rõ vì sao).

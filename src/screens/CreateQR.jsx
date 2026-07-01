@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNav } from '../nav'
 import Numpad from '../components/Numpad'
 import Icon from '../components/Icon'
+import AmountSuggest from '../components/AmountSuggest'
 import { t } from '../i18n'
 
 const CURRENCIES = ['VND', 'USDC', 'EURC', 'CNY']
@@ -47,6 +48,8 @@ export default function CreateQR() {
           </span>
         </div>
       </div>
+
+      <AmountSuggest cur={cur} amount={amount} digits={digits} fmtNum={fmtNum} onPick={v => setDigits(String(v))} />
 
       {/* Numpad 2.5 hàng + nút ở ranh giới 9/10 — đồng bộ màn Gửi tiền */}
       <div style={{ gridRow: '7 / 11', display: 'flex', flexDirection: 'column' }}>

@@ -3,6 +3,7 @@ import { useNav } from '../nav'
 import Numpad from '../components/Numpad'
 import Icon from '../components/Icon'
 import ErrorToast from '../components/ErrorToast'
+import AmountSuggest from '../components/AmountSuggest'
 import { getTokenInfo, getVndRate } from '../chain'
 import { t } from '../i18n'
 import { findContactName } from '../store'
@@ -90,6 +91,8 @@ export default function SendAmount() {
           </span>
         )}
       </div>
+
+      <AmountSuggest cur={cur} amount={amount} digits={digits} fmtNum={fmtNum} onPick={v => setDigits(String(v))} />
 
       <div className="row-5 center">
         <input
