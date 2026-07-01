@@ -1,6 +1,6 @@
 # HANDOFF — EZwallet
 
-**Cập nhật:** 2026-06-30 (session 3)
+**Cập nhật:** 2026-07-01 (session 4)
 **Repo:** https://github.com/KattyFury/ezwallet
 **Local:** `D:\Files\Claude_laptop\Build_on_Arc\ezwallet`
 **Live:** https://ezwallet.pages.dev (Cloudflare Pages, auto-deploy từ GitHub `main`)
@@ -79,6 +79,7 @@
 **⚠️ QUY TẮC THIẾT KẾ (user yêu cầu — đừng vi phạm):**
 - **KHÔNG BAO GIỜ dùng em-dash `—`.** Dấu ngăn cách chuẩn của app là **en-dash `–`** (vd "Danh bạ – Nơi lưu địa chỉ"). Placeholder rỗng dùng `…` (không phải `—`). Đồng bộ mọi thông báo/hint, đừng chỗ en chỗ em.
 - **Thông báo & hint đồng bộ:** cùng kiểu `.tip-box` căn TRÁI (column, flex-start), nhãn đậm + mô tả xám. Warning (hết USDC) cũng dùng layout này (màu warning + phần clickable có `text-decoration: underline`).
+  - **NGOẠI LỆ (2026-07-01, user chốt):** hint HomeSend ("Danh bạ/Quét QR/Dán để gửi") + HomeReceive ("QR mặc định/Chia sẻ/Tạo QR/Kho QR") đổi sang dạng liền dòng **`Nhãn: mô tả`** — KHÔNG bold nhãn, KHÔNG en-dash (chỉ dấu `:`), chữ regular đồng bộ với thông báo. Icon căn **GIỮA-TRÁI theo chiều dọc** (`alignItems: 'center'`), không phải trên-cùng (`flex-start`). Warning Faucet (hết USDC) giữ nguyên layout cũ riêng.
 - **Mục danh sách trong sub-screen (Security/Language/About): MỖI MỤC 1 HÀNG GRID riêng** (`row-2`, `row-3`...). ĐỪNG nhồi hết vào 1 `.row-2-9` flex column — vì `.menu-item` có `flex:1` sẽ dàn đều kín trang (lỗi Security cũ).
 - **Nút lọc/toggle khi BẬT = nền trắng + viền xanh + chữ xanh** (`borderColor/color = --color-primary`), KHÔNG tô đặc xanh. Xem `activeFilter` trong TxHistory.
 - **Trong BOX CÓ NỀN MÀU: chữ FULL ĐEN, phân cấp bằng ĐẬM/NHẠT (label `--fw-semibold`, mô tả thường), KHÔNG dùng combo đen-xám.** Màu xám (`--color-muted`) chỉ cho text trên nền trắng. Áp dụng cho hint box, thông báo.
@@ -107,6 +108,7 @@
 - **Numpad:** SendAmount/CreateQR: numpad đúng **2.5 hàng (7,8,nửa 9)** + nút ở ranh giới 9/10 — bằng `gridRow: '7/11'` flex `2.5` (numpad) / `1.5` (nút). KHÔNG để numpad lấn hàng 6. (Swap vẫn `row-7-9`.)
 - **⚠ Input text (email, địa chỉ ví, tên, ảnh) PHẢI ở hàng 1–4 hoặc trong popup neo nửa trên.** Bàn phím iPhone che ~1/2 dưới (hàng 5–10). Popup form (vd thêm danh bạ) dùng overlay `align-items: flex-start` + paddingTop để nằm vùng trên.
 - **Không dùng line xám ngăn cách** (border-bottom) ở header/list — đã bỏ toàn bộ.
+- **Khóa cuộn trang toàn cục (`App.jsx`, 2026-07-01):** listener `scroll` → `window.scrollTo(0,0)` mỗi khi trang bị đẩy — chặn iOS/Android tự cuộn khi bàn phím mở (input đã luôn nằm nửa trên theo rule ở trên nên không cần cuộn trang). Trước fix này, focus vào input làm cả màn/popup "nhảy lên" dù còn dư chỗ. Đừng xóa listener này nếu không có lý do thay thế.
 
 ---
 
@@ -115,10 +117,11 @@
 - **Số dư (BalanceHeader, dùng chung HomeSend/HomeReceive/Menu):** số căn giữa tuyệt đối (--fs-amount, Condensed), "VND" treo phải absolute + căn giữa dọc. Component `src/components/BalanceHeader.jsx`, hàng 1-2.
 - **NavBar:** tab active = **vạch xanh lá** trên đỉnh (width 70%, cao 5px, bo dưới) + icon/chữ đen; tab khác xám.
 - **Login:** Email (active, icon mail SVG) / Google (disabled). Facebook gỡ.
-- **HomeSend:** BalanceHeader h1-2; list token h3-5 (logo thật + số token **bold** + check xanh + VND **regular** xám); hint h7-8 (label đậm – mô tả xám, en-dash); actions h9 (Danh bạ/Quét QR/Dán để gửi); nav h10.
-- **SendAmount:** h1 tiêu đề / h2 "Gửi cho:" (tra **tên danh bạ** theo địa chỉ) / h3-4 số **căn giữa tuyệt đối** + **chip `[VND ›]`** (right2) đổi tiền tệ (**VND/USDC/EURC/CNY**, popup nửa trên) / h5 memo "Nội dung chuyển khoản (không bắt buộc)" / **numpad đúng 2.5 hàng (7,8,nửa 9)** + nút ở ranh giới 9/10 (gridRow 7/11, flex 2.5/1.5). Default currency đọc từ `ez_currency`. Khả dụng hiển thị theo tiền tệ đang chọn.
-- **SendConfirm:** quy đổi theo `currency` (VND→USDC, CNY→USDC via rate USDC/7.25, USDC→USDC, EURC→EURC); phí gas thật; nút đỏ "Xác nhận · PIN".
-- **HomeReceive:** BalanceHeader; QR h3-5; hint "QR mặc định/Chia sẻ/Custom QR/Kho QR"; actions Chia sẻ (chỉ địa chỉ) / Custom QR / **Kho QR**.
+- **HomeSend:** BalanceHeader h1-2; list token h3-5 (logo thật + số token **bold** + check xanh + VND **regular** xám); hint h7-8 dạng liền dòng `Nhãn: mô tả` (regular, không bold/en-dash — 2026-07-01), icon căn giữa dọc; actions h9 (Danh bạ/Quét QR/Dán để gửi); nav h10.
+- **SendAmount:** h1 tiêu đề / h2 "Gửi cho:" (tra **tên danh bạ** theo địa chỉ) / h3-4 số **căn giữa tuyệt đối** + **chip `[VND ›]`** (right2) đổi tiền tệ (**VND/USDC/EURC/CNY**, popup nửa trên) / **h6: `AmountSuggest`** — nếu VND và số đang gõ ≤3 chữ số, hiện 3 nút gợi ý x1.000/x10.000/x100.000 (2026-07-01) / h5 memo "Nội dung chuyển khoản (không bắt buộc)" / **numpad đúng 2.5 hàng (7,8,nửa 9)** + nút ở ranh giới 9/10 (gridRow 7/11, flex 2.5/1.5). Default currency đọc từ `ez_currency`. Khả dụng hiển thị theo tiền tệ đang chọn. Gửi thất bại → `ErrorToast` (banner đỏ nổi, tự ẩn 5s) hiện lý do thật (màn này không có `NotifArea`).
+- **SendConfirm:** quy đổi theo `currency` (VND→USDC, CNY→USDC via rate USDC/7.25, USDC→USDC, EURC→EURC); phí gas thật; nút đỏ "Xác nhận · PIN". **Flow lỗi (2026-07-01, user chốt):** đúng PIN → thành công; sai PIN/hủy/lỗi bất kỳ → THOÁT hẳn về SendAmount kèm `sendError` (KHÔNG cho sửa tại chỗ với challenge cũ — đó là nguyên nhân bug cũ "sai PIN nhưng vẫn gửi được"). Mỗi lần mở lại tạo challenge + idempotencyKey MỚI.
+- **CreateQR:** cũng có `AmountSuggest` (đồng bộ SendAmount, 2026-07-01).
+- **HomeReceive:** BalanceHeader; QR h3-5 + câu điều hướng to "Cho người khác quét để nhận tiền" (2026-07-01 — **đã bỏ** địa chỉ ví + nút copy dưới QR, vì đã có nút Chia sẻ riêng); hint dạng liền dòng `Nhãn: mô tả` ("QR mặc định/Chia sẻ/Tạo QR/Kho QR"); actions Chia sẻ / Tạo QR / **Kho QR**.
 - **CreateQR:** đồng bộ SendAmount (VND/USDC/EURC/CNY, default đọc `ez_currency`). Navigate ShowQR với `from: 'CreateQR'`. **ShowQR:** từ CreateQR → nút "Lưu vào thư viện" (lưu vào `ez_saved_qrs`) + "Quay lại"; từ SavedQRList → nút "Lưu vào kho ảnh" (Photos) + "Quay lại". **KHÔNG tự auto-save** (bug cũ đã fix). **SavedQRList (Kho QR):** lưới 3 cột, bấm → ShowQR với `from: 'SavedQRList'`.
 - **TxHistory:** hiện **tên danh bạ** nếu lưu; bấm dòng → **popup chi tiết** (loại/người/địa chỉ/số tiền/quy đổi/thời gian/memo nếu có/link ArcScan); nút lọc "Chỉ gửi"/"Chỉ nhận" (active xanh); "Quay lại" xanh.
 - **MenuScreen:** Rút (trắng, khóa, trái) / Nạp (xanh, phải); menu items icon SVG (clock/globe/shield/info).
@@ -173,6 +176,10 @@
 - **Tra docs Arc bằng MCP `arc-docs`** (search_arc_docs / query_docs_filesystem) — ưu tiên hơn trí nhớ.
 - **⚠️⚠️ NGUYÊN NHÂN THẬT "nút Tiếp tục không sáng" ở màn securityConfirm = bước đó bắt gõ "I agree" (đồng ý điều khoản), KHÔNG phải nhập lại câu trả lời.** Localization VI của Sonnet ghi `securityConfirm.inputPlaceholder/inputHeadline = "Nhập lại câu trả lời"` → user gõ câu trả lời vào ô đáng lẽ phải gõ `I agree` → nút không bao giờ sáng. Chuỗi `I agree` là Circle HARDCODE (không localize được). **Hiện `getSDK()` để Circle SDK DEFAULT THUẦN (English, KHÔNG setLocalizations/setCustomSecurityQuestions/setThemeColor) — màn Circle tiếng Anh nhưng CHẠY ĐÚNG, user thấy rõ phải gõ "I agree".** Nếu muốn re-localize VI sau: PHẢI sửa `securityConfirm` thành hướng dẫn gõ đúng "I agree" (vd inputPlaceholder = 'Gõ: I agree'), và test kỹ. ĐỪNG ghi "nhập lại câu trả lời".
 - EURC trên CoinGecko = id `euro-coin`; USDC = `usd-coin`; cirBTC dùng `bitcoin`.
+- **⚠️⚠️ Circle `userToken` chỉ sống ~1 tiếng** (2026-07-01) — nếu đọc thẳng từ `localStorage` lúc ký PIN mà phiên mở app lâu hơn, W3S SDK từ chối **NGAY TRƯỚC KHI hiện màn PIN** với lỗi `userToken had expired` → cảm giác "bấm gửi tiền không hiện PIN, tự nhiên bị đá ra ngoài" (dễ tưởng nhầm là bug flow PIN). Fix: `refreshSession()` (`src/circle.js`) tạo token mới qua `ez_email` đã lưu **ngay trước MỌI thao tác cần PIN** (gửi tiền, đổi PIN) — Circle cho tạo token mới bất cứ lúc nào chỉ cần userId (=email), không cần mật khẩu. Áp dụng ở `SendConfirm` + `Security` (đổi PIN); **Swap chưa áp dụng** (execute đang Blocked, không chạy được nên không cần).
+- **Màn không có `NotifArea` (SendAmount, CreateQR...) không tự hiện được lỗi từ `addNotif()`** — lỗi bị "nuốt" vào localStorage, người dùng chỉ thấy bị đá về mà không rõ vì sao (bug thật đã gặp 2026-07-01). Dùng `components/ErrorToast.jsx` (banner đỏ nổi, tự ẩn 5s hoặc bấm X) truyền qua `navigate(screen, { ...params, sendError: msg })` cho các màn dạng này — KHÔNG chỉ gọi `addNotif()` rồi coi như xong.
+- **Lỗi từ W3S SDK không phải lúc nào cũng là `Error` chuẩn** (có thể là `{code, message}` hoặc string) — khi bắt lỗi để hiển thị, dò nhiều dạng: `e?.message || e?.error?.message || (typeof e === 'string' ? e : null) || ...`, đừng chỉ tin `e.message` rồi rớt về thông báo chung chung mù mờ.
+- **NotifArea:** thông báo type `error` KHÔNG bấm mở được Lịch sử giao dịch nữa (2026-07-01) — chỉ `received`/`sent` mới có giao dịch thật để xem, trước đó bấm vào lỗi lại điều hướng nhầm sang TxHistory.
 
 ---
 
@@ -207,3 +214,11 @@
 > **Session 1 (2026-06-29):** i18n VI/EN/ZH, bọc t() toàn bộ màn, Đăng xuất ra Menu, memo on-chain, tỷ giá live, jsQR iOS.
 > **Session 2 (2026-06-29):** 12 mobile UX bugs (contacts, hints, QR, paste, onboarding, CNY), Circle SDK full VI localization + green theme, Onboarding screen, securityConfirm PC bug discovered (unfixable — Circle iframe).
 > **Session 3 (2026-06-30):** RÚT RA: Circle securityConfirm bắt gõ "I agree" (không phải nhập lại câu trả lời) → đã trả `getSDK()` về Circle DEFAULT THUẦN (English, KHÔNG localize/theme/customSecurityQuestions — đừng đụng nữa). Per-account contacts/QR (`src/store.js`, theo địa chỉ ví). Double-send guard (idempotencyKey cố định + notif dedup theo hash). **Tiền tệ hiển thị theo `ez_currency` toàn app** (BalanceHeader/token list/SendConfirm; helper `getDisplayCurrency/fmtDisplay/displayNum` data.js + `getDisplayRates` chain.js). **ensureWalletAddress()** self-heal địa chỉ ví (fix ví/QR không hiện khi tạo email mới; App.jsx session chỉ cần userToken). Hệ thông báo + hint + cảnh báo = NỀN MÀU NHẠT (Nhận=xanh lá, Gửi=xanh dương `--color-info`, Lỗi=đỏ, Cảnh báo=vàng; icon warning cho lỗi+cảnh báo). Bỏ sạch em-dash (dùng en-dash `–`). Security mỗi mục 1 hàng grid. TxHistory nút lọc Gửi/Nhận viền xanh. Contacts copy icon. **TẤT CẢ đã push, build pass.**
+> **Session 4 (2026-07-01):** 8 bug report từ user, tất cả đã sửa + push (build pass mỗi lần):
+> 1. **Khóa cuộn trang** (`App.jsx`) — chặn iOS/Android tự cuộn khi focus input → hết hiện tượng "màn/popup nhảy lên".
+> 2. **Flow PIN sai chốt lại:** sai/hủy/lỗi → thoát hẳn về SendAmount làm lại từ đầu (challenge + idempotencyKey mới), KHÔNG cho sửa tại chỗ.
+> 3-5. Hint HomeReceive đổi sang liền dòng `Nhãn: mô tả` (regular, không bold/en-dash); bỏ địa chỉ ví + nút copy dưới QR, thay bằng slogan to "Cho người khác quét để nhận tiền"; icon hint căn giữa dọc thay vì trên-cùng. Sau đó đồng bộ luôn HomeSend cho khớp (user nhắc "sao sửa bên Nhận không sửa bên Gửi").
+> 6. **NotifArea:** lỗi không còn bấm mở nhầm sang TxHistory (chỉ received/sent mới có gì để xem). "Gửi thất bại:" giờ dịch đúng theo `ez_lang` (trước hardcode tiếng Việt).
+> 7. **Bug PIN thật sự (đào sâu 3 vòng):** (a) `send.js` từng trả lỗi mù mờ "no challengeId" → giờ log full response + trả message thật của Circle; (b) SendAmount không có `NotifArea` nên lỗi bị nuốt mất → thêm `components/ErrorToast.jsx` (banner đỏ nổi); (c) **root cause thật:** Circle `userToken` hết hạn sau ~1h, SDK từ chối trước khi hiện PIN → `refreshSession()` mới trong `circle.js`, gọi trước mọi thao tác cần PIN (SendConfirm + Security đổi PIN).
+> 8. **`components/AmountSuggest.jsx`** (mới): nhập VND ≤3 chữ số → gợi ý x1.000/x10.000/x100.000 ngay dưới ô nhập (SendAmount + CreateQR).
+> Còn tồn: bug PIN userToken **chưa được user xác nhận đã hết hẳn** sau fix `refreshSession()` — cần test lại thực tế trên deploy mới nhất.
